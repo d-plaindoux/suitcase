@@ -16,23 +16,23 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.callback;
+package org.smallibs.suitcase.function;
 
-public final class CallBacks {
+public final class Functions {
 
     // =================================================================================================================
     // Constructors
     // =================================================================================================================
 
-    private CallBacks() {
+    private Functions() {
     }
 
     // =================================================================================================================
     // Static behaviors
     // =================================================================================================================
 
-    public static <M, R> CallBack<M, R> constant(final R constant) {
-        return new CallBack<M, R>() {
+    public static <M, R> Function<M, R> constant(final R constant) {
+        return new Function<M, R>() {
             @Override
             public R apply(M parameters) {
                 return constant;

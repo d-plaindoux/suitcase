@@ -16,11 +16,11 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.callback;
+package org.smallibs.suitcase.function;
 
 import org.smallibs.suitcase.matching.MatchingException;
 
-public interface CallBack<T, R> {
+public interface Function<T, R> {
 
     R apply(T acceptor) throws MatchingException;
 

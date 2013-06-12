@@ -20,7 +20,7 @@ package org.smallibs.suitcase.matching;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.callback.CallBack;
+import org.smallibs.suitcase.function.Function;
 import org.smallibs.suitcase.pattern.core.Cases;
 import org.smallibs.suitcase.pattern.list.Cons;
 import org.smallibs.suitcase.pattern.list.Nil;
@@ -83,7 +83,7 @@ public class MatchTest {
         sizeOfMatcher.
                 when(new Nil()).then(0).
                 when(new Cons()).then(
-                new CallBack<Couple<Object, List>, Integer>() {
+                new Function<Couple<Object, List>, Integer>() {
                     @Override
                     public Integer apply(Couple<Object, List> couple) throws MatchingException {
                         return 1 + sizeOfMatcher.apply(couple._2);
@@ -95,12 +95,29 @@ public class MatchTest {
     }
 
     @Test
+    public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
+        final Match<List<Integer>, Integer> addAll = Match.match();
+        addAll.
+                when(new Nil()).then(0).
+                when(new Cons()).then(
+                new Function<Couple<Integer, List>, Integer>() {
+                    @Override
+                    public Integer apply(Couple<Integer, List> couple) throws MatchingException {
+                        return couple._1 + addAll.apply(couple._2);
+                    }
+                });
+
+        TestCase.assertEquals(0, addAll.apply(Arrays.<Integer>asList()).intValue());
+        TestCase.assertEquals(10, addAll.apply(Arrays.asList(1, 2, 3, 4)).intValue());
+    }
+
+    @Test
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
         multiplyMatcher.
                 when(new Zero()).then(0).
                 when(new Succ()).then(
-                new CallBack<Integer, Integer>() {
+                new Function<Integer, Integer>() {
                     @Override
                     public Integer apply(Integer i) throws MatchingException {
                         return 19 + multiplyMatcher.apply(i);
@@ -117,7 +134,7 @@ public class MatchTest {
         evenMatcher.
                 when(0).then(true).
                 when(new Succ(new Succ())).then(
-                new CallBack<Integer, Boolean>() {
+                new Function<Integer, Boolean>() {
                     @Override
                     public Boolean apply(Integer integer) throws MatchingException {
                         return evenMatcher.apply(integer);

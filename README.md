@@ -58,7 +58,7 @@ for instance we can propose a `function` able to add all integers in a given lis
   addAll.
     when(new Nil()).then(0).
     when(new Cons()).then(
-        new CallBack&lt;Couple&lt;Integer, List>, Integer>() {
+        new Function&lt;Couple&lt;Integer, List>, Integer>() {
             @Override
             public Integer apply(Couple&lt;Integer, List> couple) throws MatchingException {
                 return couple._1 + allAdd.apply(couple._2);

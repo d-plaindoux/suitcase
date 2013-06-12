@@ -19,8 +19,8 @@
 package org.smallibs.suitcase.matching;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.callback.CallBack;
-import org.smallibs.suitcase.callback.CallBacks;
+import org.smallibs.suitcase.function.Function;
+import org.smallibs.suitcase.function.Functions;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.core.Cases;
 import org.smallibs.suitcase.utils.Option;
@@ -36,15 +36,15 @@ public final class Match<T, R> {
     private class Rule<M> {
         private final Class<T> type;
         private final Case<T, M> aCase;
-        private final CallBack<M, R> callBack;
+        private final Function<M, R> function;
 
-        private Rule(Class<T> type, Case<T, M> aCase, CallBack<M, R> callBack) {
+        private Rule(Class<T> type, Case<T, M> aCase, Function<M, R> function) {
             this.type = type;
             this.aCase = aCase;
-            this.callBack = callBack;
+            this.function = function;
         }
 
-        private Case<T, M> getTypedPattern() {
+        private Case<T, M> getPattern() {
             return new Case<T, M>() {
                 @Override
                 public Option<M> unapply(T object) {
@@ -57,8 +57,8 @@ public final class Match<T, R> {
             };
         }
 
-        private CallBack<M, R> getCallBack() {
-            return callBack;
+        private Function<M, R> getFunction() {
+            return function;
         }
     }
 
@@ -72,11 +72,11 @@ public final class Match<T, R> {
         }
 
         public Match<T, R> then(R result) {
-            return then(CallBacks.<M, R>constant(result));
+            return then(Functions.<M, R>constant(result));
         }
 
-        public Match<T, R> then(CallBack<M, R> callBack) {
-            Match.this.rules.add(new Rule<M>(type, aCase, callBack));
+        public Match<T, R> then(Function<M, R> function) {
+            Match.this.rules.add(new Rule<M>(type, aCase, function));
             return Match.this;
         }
     }
@@ -138,11 +138,11 @@ public final class Match<T, R> {
     }
 
     public <M> R apply(Rule<M> rule, T object) throws MatchingException {
-        final Option<M> result = rule.getTypedPattern().unapply(object);
+        final Option<M> result = rule.getPattern().unapply(object);
         if (result.isNone()) {
             throw new MatchingException();
         } else {
-            return rule.getCallBack().apply(result.value());
+            return rule.getFunction().apply(result.value());
         }
 
     }
