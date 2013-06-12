@@ -14,6 +14,7 @@ In addition such mechanism is only enable selection based on types and does not 
 intuitive mechanism filtering objects using their values i.e. attributes.
 
 For this purpose a simple pattern matching inspired by Scala [extractor object](http://www.scala-lang.org/node/112)
+has been designed.
 
 Matching by equality
 --------------------
