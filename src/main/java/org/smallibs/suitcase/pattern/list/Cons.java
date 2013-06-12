@@ -28,6 +28,9 @@ import java.util.List;
 
 @CaseType(List.class)
 public class Cons<E> implements Case<List<E>, Couple<E, List<E>>> {
+
+    // Missing apply capability for construction
+
     public Option<Couple<E, List<E>>> unapply(List<E> list) {
         if (list.isEmpty()) {
             return new Option.None<Couple<E, List<E>>>();
@@ -37,4 +40,5 @@ public class Cons<E> implements Case<List<E>, Couple<E, List<E>>> {
             return new Option.Some<Couple<E, List<E>>>(new Couple<E, List<E>>(head, tail));
         }
     }
+
 }

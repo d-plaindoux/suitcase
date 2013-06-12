@@ -25,7 +25,6 @@ import org.smallibs.suitcase.utils.Option;
 @CaseType(Integer.class)
 public class Succ implements Case<Integer, Integer> {
 
-
     private final Case<Integer, Integer> pattern;
 
     public Succ() {

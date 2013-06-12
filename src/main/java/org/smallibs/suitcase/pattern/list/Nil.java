@@ -25,12 +25,14 @@ import org.smallibs.suitcase.utils.Option;
 import java.util.List;
 
 @CaseType(List.class)
-public class Nil<E> implements Case<List<E>, List<E>> {
-    public Option<List<E>> unapply(List<E> list) {
+public class Nil<E> implements Case<List<E>, Void> {
+
+    public Option<Void> unapply(List<E> list) {
         if (list.isEmpty()) {
-            return new Option.Some<List<E>>(list);
+            return new Option.Some<Void>(null);
         } else {
-            return new Option.None<List<E>>();
+            return new Option.None<Void>();
         }
     }
+
 }
