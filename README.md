@@ -26,7 +26,7 @@ The instance the following sample checks is an integer is <tt>O</tt> or not.
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.&lt;Integer, Boolean>match().
     when(0).then(true).
-    (Cases.&lt;Integer>_()).then(false);
+    when(Cases.&lt;Integer>_()).then(false);
     
   // isZero.apply(0) => true 
 </pre>
