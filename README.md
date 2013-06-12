@@ -6,9 +6,9 @@ SuitCase is a convenient Java library dedicated to object manipulation using `pa
 Overview
 --------
 
-If you want to manipulate object in Java a well known pattern is the visitor. Unfortunately even if
-such pattern is well known its implementation is always painful because it implies code dissemination
-and finally brakes incremental compilation approach.
+If you want to manipulate object based on types in Java the dedicated design pattern is the visitor.
+Unfortunately even if such pattern is well known its implementation is always painful because it implies
+code dissemination and finally brakes incremental compilation approach.
 
 In addition such mechanism is only enable selection based on types and does not provides a simple and
 intuitive mechanism filtering objects using their values i.e. attributes.
