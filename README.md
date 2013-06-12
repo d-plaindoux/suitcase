@@ -13,10 +13,10 @@ and finally brakes incremental compilation approach.
 In addition such mechanism is only enable selection based on types and does not provides a simple and
 intuitive mechanism filtering objects using their values i.e. attributes.
 
-For this purpose a simple pattern matching is proposed based on Scala [extractor objet](http://www.scala-lang.org/node/112) 
+For this purpose a simple pattern matching inspired by Scala [extractor object](http://www.scala-lang.org/node/112)
 
 Matching by equality
--------
+--------------------
 
 The pattern matching offers a simple mechanism for simple object selection based on intrinsic equality.
 This is available also for basic values like boolean, integers etc.
@@ -32,12 +32,12 @@ The instance the following sample checks is an integer is <tt>O</tt> or not.
 </pre>
 
 Matching complex Objects 
--------
+------------------------
 
 The pattern is system is open and accept ad-hoc cases. For instance for the `List` two patterns `Nil` 
 and `Cons` are proposed.
 
-Then a simple function able to check when a list is empty can be the following one:
+Then a simple function able to check when a list is empty can be proposed as follow:
 
 <pre>
   final Match<List, Boolean> isEmpty = Match.<List, Boolean>match().
