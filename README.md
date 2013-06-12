@@ -1,4 +1,4 @@
-wolfgang
+SuitCase
 ========
 
-Simple and convenient java libraries
+SuitCase is a convenient library dedicated to object manipulation using patterm matching mechanism.
