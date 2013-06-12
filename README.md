@@ -74,8 +74,8 @@ Of course such approach is not efficient for one reason: a stack overflow can oc
 to many integers.
 
 
-Propositions
-------------
+Other Propositions
+------------------
 
 Some propositions are also available for this purpose like:
 * [Towards Pattern Matching in Java](http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
