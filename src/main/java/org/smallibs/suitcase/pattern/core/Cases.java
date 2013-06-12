@@ -29,7 +29,7 @@ public final class Cases {
         return new Constant<T>(value);
     }
 
-    public static <T> Case<T, T> nil() {
+    public static <T> Case<T, Void> nil() {
         return new Null<T>();
     }
 
