@@ -1,7 +1,7 @@
 SuitCase
 ========
 
-SuitCase is a convenient library dedicated to object manipulation using `pattern matching` mechanism.
+SuitCase is a convenient Java library dedicated to object manipulation using `pattern matching` mechanism.
 
 Overview
 --------
