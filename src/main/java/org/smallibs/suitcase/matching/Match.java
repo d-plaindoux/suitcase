@@ -62,11 +62,11 @@ public final class Match<T, R> {
         }
     }
 
-    public class With<M> {
+    public class When<M> {
         private final Class<T> type;
         private final Case<T, M> aCase;
 
-        public With(Class<T> type, Case<T, M> aCase) {
+        public When(Class<T> type, Case<T, M> aCase) {
             this.type = type;
             this.aCase = aCase;
         }
@@ -108,33 +108,33 @@ public final class Match<T, R> {
     // Behaviors
     // =================================================================================================================
 
-    public With<T> with(final T object) {
+    public When<T> when(final T object) {
         if (object == null) {
-            return with(Cases.<T>nil(), null);
+            return when(Cases.<T>nil(), null);
         } else if (object instanceof Class<?>) {
-            return withType((Class) object);
+            return whenType((Class) object);
         } else {
-            return with(Cases.<T>constant(object), null);
+            return when(Cases.<T>constant(object), null);
         }
     }
 
-    private <M> With<M> withType(final Class<M> pojo) {
-        return with(Cases.<T, M>typeOf(pojo), null);
+    private <M> When<M> whenType(final Class<M> pojo) {
+        return when(Cases.<T, M>typeOf(pojo), null);
     }
 
-    public <M> With<M> with(final Case<T, M> aCase) {
+    public <M> When<M> when(final Case<T, M> aCase) {
         if (aCase == null) {
-            return with(Cases.<T>nil(), null);
+            return when(Cases.<T>nil(), null);
         } else if (aCase.getClass().isAnnotationPresent(CaseType.class)) {
             final CaseType caseType = aCase.getClass().getAnnotation(CaseType.class);
-            return with(aCase, (Class<T>) caseType.value());
+            return when(aCase, (Class<T>) caseType.value());
         } else {
-            return with(aCase, null);
+            return when(aCase, null);
         }
     }
 
-    public <M> With with(final Case<T, M> aCase, final Class<T> type) {
-        return new With(type, aCase);
+    public <M> When when(final Case<T, M> aCase, final Class<T> type) {
+        return new When(type, aCase);
     }
 
     public <M> R apply(Rule<M> rule, T object) throws MatchingException {

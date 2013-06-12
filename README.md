@@ -25,8 +25,8 @@ The instance the following sample checks is an integer is <tt>O</tt> or not.
 
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.&lt;Integer, Boolean>match().
-    with(0).then(true).
-    with(Cases.&lt;Integer>_()).then(false);
+    when(0).then(true).
+    (Cases.&lt;Integer>_()).then(false);
     
   // isZero.apply(0) => true 
 </pre>
@@ -41,8 +41,8 @@ Then a simple function able to check when a list is empty can be the following o
 
 <pre>
   final Match<List, Boolean> isEmpty = Match.<List, Boolean>match().
-    with(new Nil()).then(true).
-    with(new Cons()).then(false);
+    when(new Nil()).then(true).
+    when(new Cons()).then(false);
 
     // isEmpty.apply(Arrays.asList())   => true
     // isEmpty.apply(Arrays.asList(1))  => false
