@@ -41,13 +41,37 @@ and `Cons` are proposed.
 Then a simple function able to check when a list is empty can be proposed as follow:
 
 <pre>
-  final Match<List, Boolean> isEmpty = Match.<List, Boolean>match().
+  final Match&lt;List, Boolean> isEmpty = Match.&lt;List, Boolean>match().
     when(new Nil()).then(true).
     when(new Cons()).then(false);
 
     // isEmpty.apply(Arrays.asList())   => true
     // isEmpty.apply(Arrays.asList(1))  => false
 </pre>
+
+It's also possible to capture list internal information like the head and the tail of the list. Then
+for instance we can propose a `function` able to add all integers in a given list
+
+<pre>
+  final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
+
+  addAll.
+    when(new Nil()).then(0).
+    when(new Cons()).then(
+        new CallBack&lt;Couple&lt;Integer, List>, Integer>() {
+            @Override
+            public Integer apply(Couple&lt;Integer, List> couple) throws MatchingException {
+                return couple._1 + allAdd.apply(couple._2);
+            }
+        });
+
+    // addAll.apply(Arrays.&lt;Integer>asList())  => 0
+    // addAll.apply(Arrays.asList(1,2,3,4,5))  => 15
+</pre>
+
+Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
+to many integers.
+
 
 
 
