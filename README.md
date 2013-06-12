@@ -78,4 +78,4 @@ Propositions
 ------------
 
 Some propositions are also available for this purpose like:
-* [Towards Pattern Matching in Java][(http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
+* [Towards Pattern Matching in Java](http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
