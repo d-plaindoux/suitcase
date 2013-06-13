@@ -27,7 +27,7 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.&lt;Integer, Boolean>match().
     when(0).then(true).
-    when(Cases.&lt;Integer>_()).then(false);
+    when(_).then(false);
     
   // isZero.apply(0) => true 
 </pre>
@@ -44,7 +44,7 @@ Then a simple function able to check when a list is empty can be proposed.
 <pre>
   final Match&lt;List, Boolean> isEmpty = Match.&lt;List, Boolean>match().
     when(new Nil()).then(true).
-    when(new Cons()).then(false);
+    when(new Cons(_,_)).then(false);
 
     // isEmpty.apply(Arrays.asList())   => true
     // isEmpty.apply(Arrays.asList(1))  => false
@@ -58,7 +58,7 @@ able to add all integers in a given list.
 
   addAll.
     when(new Nil()).then(0).
-    when(new Cons()).then(
+    when(new Cons(_,_)).then(
         new Function&lt;Couple&lt;Integer, List>, Integer>() {
             @Override
             public Integer apply(Couple&lt;Integer, List> couple) throws MatchingException {
