@@ -20,8 +20,19 @@ package org.smallibs.suitcase.pattern.core;
 
 public final class Cases {
 
+    public static Object _ = new Object();
+
     private Cases() {
         // Prevent useless creation
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Case<T, T> reify(Object value) {
+        if (value == null) return nil();
+        else if (value instanceof Case) return (Case<T, T>) value;
+        else if (value.equals(_)) return _();
+        else if (value instanceof Class) return typeOf((Class<T>) value);
+        else return (Case<T, T>) constant(value);
     }
 
     public static <T> Case<T, T> constant(T value) {
@@ -29,7 +40,7 @@ public final class Cases {
         return new Constant<T>(value);
     }
 
-    public static <T> Case<T, Void> nil() {
+    public static <T> Case<T, T> nil() {
         return new Null<T>();
     }
 
@@ -39,7 +50,7 @@ public final class Cases {
 
     public static <T, R> Case<T, R> typeOf(Class<R> type) {
         assert type != null;
-        return new ofType<T, R>(type);
+        return new OfType<T, R>(type);
     }
 
 }

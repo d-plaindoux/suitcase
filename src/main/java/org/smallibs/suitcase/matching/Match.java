@@ -19,8 +19,8 @@
 package org.smallibs.suitcase.matching;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.function.Function;
-import org.smallibs.suitcase.function.Functions;
+import org.smallibs.suitcase.utils.Function;
+import org.smallibs.suitcase.utils.Functions;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.core.Cases;
 import org.smallibs.suitcase.utils.Option;
@@ -109,17 +109,7 @@ public final class Match<T, R> {
     // =================================================================================================================
 
     public When<T> when(final T object) {
-        if (object == null) {
-            return when(Cases.<T>nil(), null);
-        } else if (object instanceof Class<?>) {
-            return whenType((Class) object);
-        } else {
-            return when(Cases.<T>constant(object), null);
-        }
-    }
-
-    private <M> When<M> whenType(final Class<M> pojo) {
-        return when(Cases.<T, M>typeOf(pojo), null);
+        return when(Cases.<T>reify(object));
     }
 
     public <M> When<M> when(final Case<T, M> aCase) {

@@ -16,25 +16,17 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.peano;
+package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case1;
 import org.smallibs.suitcase.utils.Option;
 
-@CaseType(Integer.class)
-public class Succ extends Case1<Integer, Integer> {
+public abstract class Case1<T, R> implements Case<T, R> {
 
-    public Succ(Object o1) {
-        super(o1);
+    protected final Case<R, R> _1;
+
+    protected Case1(Object o1) {
+        this._1 = Cases.reify(o1);
     }
 
-    public Option<Integer> unapply(Integer integer) {
-        if (integer > 0) {
-            return this._1.unapply(integer - 1);
-        } else {
-            return new Option.None<Integer>();
-        }
-    }
+    abstract public Option<R> unapply(T t);
 }
-

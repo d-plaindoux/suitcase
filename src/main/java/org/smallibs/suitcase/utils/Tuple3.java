@@ -16,12 +16,17 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.function;
+package org.smallibs.suitcase.utils;
 
-import org.smallibs.suitcase.matching.MatchingException;
+public class Tuple3<F1, F2, F3> {
 
-public interface Function<T, R> {
+    public final F1 _1;
+    public final F2 _2;
+    public final F3 _3;
 
-    R apply(T acceptor) throws MatchingException;
-
+    public Tuple3(F1 _1, F2 _2, F3 _3) {
+        this._1 = _1;
+        this._2 = _2;
+        this._3 = _3;
+    }
 }

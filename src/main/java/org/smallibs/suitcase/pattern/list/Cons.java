@@ -19,26 +19,36 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case;
-import org.smallibs.suitcase.utils.Couple;
+import org.smallibs.suitcase.pattern.core.Case2;
+import org.smallibs.suitcase.utils.Tuple2;
 import org.smallibs.suitcase.utils.Option;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @CaseType(List.class)
-public class Cons<E> implements Case<List<E>, Couple<E, List<E>>> {
+public class Cons<E> extends Case2<List<E>, E, List<E>> {
+
+    public Cons(Object o1, Object o2) {
+        super(o1, o2);
+    }
 
     // Missing apply capability for construction
 
-    public Option<Couple<E, List<E>>> unapply(List<E> list) {
-        if (list.isEmpty()) {
-            return new Option.None<Couple<E, List<E>>>();
-        } else {
-            final java.util.List<E> tail = new LinkedList<E>(list);
-            final E head = tail.remove(0);
-            return new Option.Some<Couple<E, List<E>>>(new Couple<E, List<E>>(head, tail));
+    public Option<Tuple2<E, List<E>>> unapply(List<E> list) {
+        if (!list.isEmpty()) {
+            final List<E> tail = new LinkedList<E>(list);
+            final Option<E> headResult = this._1.unapply(tail.remove(0));
+
+            if (!headResult.isNone()) {
+                final Option<List<E>> tailResult = this._2.unapply(tail);
+                if (!tailResult.isNone()) {
+                    return new Option.Some<Tuple2<E, List<E>>>(new Tuple2<E, List<E>>(headResult.value(), tailResult.value()));
+                }
+            }
         }
+
+        return new Option.None<Tuple2<E, List<E>>>();
     }
 
 }

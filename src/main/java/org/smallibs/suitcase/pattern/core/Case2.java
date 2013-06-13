@@ -16,15 +16,18 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.utils;
+package org.smallibs.suitcase.pattern.core;
 
-public class Couple<F, S> {
+import org.smallibs.suitcase.utils.Tuple2;
 
-    public final F _1;
-    public final S _2;
+public abstract class Case2<T, R1, R2> implements Case<T, Tuple2<R1, R2>> {
 
-    public Couple(F _1, S _2) {
-        this._1 = _1;
-        this._2 = _2;
+    protected final Case<R1, R1> _1;
+    protected final Case<R2, R2> _2;
+
+    protected Case2(Object o1, Object o2) {
+        this._1 = Cases.reify(o1);
+        this._2 = Cases.reify(o2);
     }
+
 }

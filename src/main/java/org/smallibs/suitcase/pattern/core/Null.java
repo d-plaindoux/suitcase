@@ -20,14 +20,14 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class Null<T> implements Case<T, Void> {
+public class Null<T> implements Case<T, T> {
 
     @Override
-    public Option<Void> unapply(T object) {
+    public Option<T> unapply(T object) {
         if (object == null) {
-            return new Option.Some<Void>(null);
+            return new Option.Some<T>(null);
         } else {
-            return new Option.None<Void>();
+            return new Option.None<T>();
         }
     }
 

@@ -16,25 +16,15 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.peano;
+package org.smallibs.suitcase.utils;
 
-import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case1;
-import org.smallibs.suitcase.utils.Option;
+public class Tuple2<F1, F2> {
 
-@CaseType(Integer.class)
-public class Succ extends Case1<Integer, Integer> {
+    public final F1 _1;
+    public final F2 _2;
 
-    public Succ(Object o1) {
-        super(o1);
-    }
-
-    public Option<Integer> unapply(Integer integer) {
-        if (integer > 0) {
-            return this._1.unapply(integer - 1);
-        } else {
-            return new Option.None<Integer>();
-        }
+    public Tuple2(F1 _1, F2 _2) {
+        this._1 = _1;
+        this._2 = _2;
     }
 }
-

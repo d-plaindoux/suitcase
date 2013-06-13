@@ -20,10 +20,10 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class ofType<T, R> implements Case<T, R> {
+public class OfType<T, R> implements Case<T, R> {
     private final Class<R> type;
 
-    public ofType(Class<R> type) {
+    public OfType(Class<R> type) {
         this.type = type;
     }
 

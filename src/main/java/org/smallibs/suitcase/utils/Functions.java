@@ -16,7 +16,7 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.function;
+package org.smallibs.suitcase.utils;
 
 public final class Functions {
 

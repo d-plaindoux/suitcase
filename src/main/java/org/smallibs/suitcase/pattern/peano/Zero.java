@@ -23,13 +23,13 @@ import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
 @CaseType(Integer.class)
-public class Zero implements Case<Integer, Void> {
+public class Zero implements Case<Integer, Integer> {
 
-    public Option<Void> unapply(Integer integer) {
+    public Option<Integer> unapply(Integer integer) {
         if (integer == 0) {
-            return new Option.Some<Void>(null);
+            return new Option.Some<Integer>(integer);
         } else {
-            return new Option.None<Void>();
+            return new Option.None<Integer>();
         }
     }
 
