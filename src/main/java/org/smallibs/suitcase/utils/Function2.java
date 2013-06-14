@@ -20,8 +20,8 @@ package org.smallibs.suitcase.utils;
 
 import org.smallibs.suitcase.matching.MatchingException;
 
-public interface Function<T, R> {
+public interface Function2<M1, M2, R> {
 
-    R apply(T acceptor) throws MatchingException;
+    R apply(M1 r1, M2 r2) throws MatchingException;
 
 }

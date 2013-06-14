@@ -20,15 +20,17 @@ package org.smallibs.suitcase.pattern.prototype;
 
 import org.smallibs.suitcase.pattern.Case;
 import org.smallibs.suitcase.pattern.Cases;
-import org.smallibs.suitcase.utils.Option;
 
 public abstract class Case1<T, R> implements Case<T, R> {
 
-    protected final Case<R, R> _1;
+    protected final Case<R, ?> _1;
+
+    protected Case1() {
+        this._1 = null;
+    }
 
     protected Case1(Object o1) {
         this._1 = Cases.reify(o1);
     }
 
-    abstract public Option<R> unapply(T t);
 }

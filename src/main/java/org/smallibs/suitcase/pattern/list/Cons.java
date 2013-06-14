@@ -20,8 +20,8 @@ package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.pattern.prototype.Case2;
-import org.smallibs.suitcase.utils.Tuple2;
 import org.smallibs.suitcase.utils.Option;
+import org.smallibs.suitcase.utils.Tuple2;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,18 +37,18 @@ public class Cons<E> extends Case2<List<E>, E, List<E>> {
 
     public Option<Tuple2<E, List<E>>> unapply(List<E> list) {
         if (!list.isEmpty()) {
-            final List<E> tail = new LinkedList<E>(list);
-            final Option<E> headResult = this._1.unapply(tail.remove(0));
+            final List<E> tail = new LinkedList<>(list);
+            final Option<E> headResult = (Option<E>) this._1.unapply(tail.remove(0));
 
             if (!headResult.isNone()) {
-                final Option<List<E>> tailResult = this._2.unapply(tail);
+                final Option<List<E>> tailResult = (Option<List<E>>) this._2.unapply(tail);
                 if (!tailResult.isNone()) {
-                    return new Option.Some<Tuple2<E, List<E>>>(new Tuple2<E, List<E>>(headResult.value(), tailResult.value()));
+                    return new Option.Some<>(new Tuple2<>(headResult.value(), tailResult.value()));
                 }
             }
         }
 
-        return new Option.None<Tuple2<E, List<E>>>();
+        return new Option.None<>();
     }
 
 }

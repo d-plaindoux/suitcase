@@ -31,7 +31,7 @@ public class Succ extends Case1<Integer, Integer> {
 
     public Option<Integer> unapply(Integer integer) {
         if (integer > 0) {
-            return this._1.unapply(integer - 1);
+            return (Option<Integer>) this._1.unapply(integer - 1);
         } else {
             return new Option.None<>();
         }

@@ -31,10 +31,28 @@ public final class Functions {
     // Static behaviors
     // =================================================================================================================
 
-    public static <M, R> Function<M, R> constant(final R constant) {
-        return new Function<M, R>() {
+    public static <R> Function0<R> constant0(final R constant) {
+        return new Function0<R>() {
+            @Override
+            public R apply() {
+                return constant;
+            }
+        };
+    }
+
+    public static <M, R> Function1<M, R> constant1(final R constant) {
+        return new Function1<M, R>() {
             @Override
             public R apply(M parameters) {
+                return constant;
+            }
+        };
+    }
+
+    public static <M1, M2, R> Function2<M1, M2, R> constant2(final R constant) {
+        return new Function2<M1, M2, R>() {
+            @Override
+            public R apply(M1 p1, M2 p2) {
                 return constant;
             }
         };

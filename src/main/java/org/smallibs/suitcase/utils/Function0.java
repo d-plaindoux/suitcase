@@ -16,19 +16,12 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.core;
+package org.smallibs.suitcase.utils;
 
-import org.smallibs.suitcase.pattern.prototype.Case1;
-import org.smallibs.suitcase.utils.Option;
+import org.smallibs.suitcase.matching.MatchingException;
 
-public class Null<T> extends Case1<T, T> {
+public interface Function0<R> {
 
-    @Override
-    public Option<T> unapply(T object) {
-        if (object == null) {
-            return new Option.Some<>(null);
-        } else {
-            return new Option.None<>();
-        }
-    }
+    R apply() throws MatchingException;
+
 }

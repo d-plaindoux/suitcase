@@ -22,6 +22,7 @@ import org.smallibs.suitcase.pattern.core.Any;
 import org.smallibs.suitcase.pattern.core.Constant;
 import org.smallibs.suitcase.pattern.core.Null;
 import org.smallibs.suitcase.pattern.core.TypeOf;
+import org.smallibs.suitcase.pattern.prototype.Case1;
 
 public final class Cases {
 
@@ -31,28 +32,28 @@ public final class Cases {
         // Prevent useless creation
     }
 
-    public static <T> Case<T, T> reify(Object value) {
+    public static <T> Case1<T, ?> reify(Object value) {
         if (value == null) return nil();
         else if (value.equals(_)) return any();
-        else if (value instanceof Class) return typeOf((Class<T>) value);
-        else if (value instanceof Case) return (Case<T, T>) value;
-        else return (Case<T, T>) constant(value);
+        else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
+        else if (value instanceof Case1) return (Case1<T, ?>) value;
+        else return Cases.constant((T) value);
     }
 
-    public static <T> Case<T, T> constant(T value) {
+    public static <T> Case1<T, T> constant(T value) {
         assert value != null;
         return new Constant<>(value);
     }
 
-    public static <T> Case<T, T> nil() {
+    public static <T> Case1<T, T> nil() {
         return new Null<>();
     }
 
-    public static <T> Case<T, T> any() {
+    public static <T> Case1<T, T> any() {
         return new Any<>();
     }
 
-    public static <T, R> Case<T, R> typeOf(Class<R> type) {
+    public static <T, R> Case1<T, R> typeOf(Class<R> type) {
         assert type != null;
         return new TypeOf<>(type);
     }

@@ -18,10 +18,10 @@
 
 package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.prototype.Case1;
 import org.smallibs.suitcase.utils.Option;
 
-public class Constant<T> implements Case<T, T> {
+public class Constant<T> extends Case1<T, T> {
 
     private final Object object;
 

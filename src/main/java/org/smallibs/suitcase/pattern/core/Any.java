@@ -18,14 +18,14 @@
 
 package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.prototype.Case1;
 import org.smallibs.suitcase.utils.Option;
 
-public class Any<T> implements Case<T, T> {
+public class Any<T> extends Case1<T, T> {
 
     @Override
     public Option<T> unapply(T object) {
-        return new Option.Some<T>(object);
+        return new Option.Some<>(object);
     }
 
 }

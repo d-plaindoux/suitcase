@@ -18,10 +18,10 @@
 
 package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.prototype.Case1;
 import org.smallibs.suitcase.utils.Option;
 
-public class TypeOf<T, R> implements Case<T, R> {
+public class TypeOf<T, R> extends Case1<T, R> {
     private final Class<R> type;
 
     public TypeOf(Class<R> type) {
@@ -31,9 +31,9 @@ public class TypeOf<T, R> implements Case<T, R> {
     @Override
     public Option<R> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return new Option.Some<R>(type.cast(object));
+            return new Option.Some<>(type.cast(object));
         } else {
-            return new Option.None<R>();
+            return new Option.None<>();
         }
     }
 }

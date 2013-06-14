@@ -24,8 +24,8 @@ import org.smallibs.suitcase.utils.Tuple2;
 
 public abstract class Case2<T, R1, R2> implements Case<T, Tuple2<R1, R2>> {
 
-    protected final Case<R1, R1> _1;
-    protected final Case<R2, R2> _2;
+    protected final Case<R1, ?> _1;
+    protected final Case<R2, ?> _2;
 
     protected Case2(Object o1, Object o2) {
         this._1 = Cases.reify(o1);

@@ -19,17 +19,17 @@
 package org.smallibs.suitcase.pattern.peano;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.prototype.Case0;
 import org.smallibs.suitcase.utils.Option;
 
 @CaseType(Integer.class)
-public class Zero implements Case<Integer, Integer> {
+public class Zero extends Case0<Integer> {
 
-    public Option<Integer> unapply(Integer integer) {
+    public Option<Void> unapply(Integer integer) {
         if (integer == 0) {
-            return new Option.Some<Integer>(integer);
+            return new Option.Some<>(null);
         } else {
-            return new Option.None<Integer>();
+            return new Option.None<>();
         }
     }
 

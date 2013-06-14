@@ -25,13 +25,14 @@ import org.smallibs.suitcase.pattern.list.Cons;
 import org.smallibs.suitcase.pattern.list.Nil;
 import org.smallibs.suitcase.pattern.peano.Succ;
 import org.smallibs.suitcase.pattern.peano.Zero;
-import org.smallibs.suitcase.utils.Function;
-import org.smallibs.suitcase.utils.Tuple2;
+import org.smallibs.suitcase.utils.Function1;
+import org.smallibs.suitcase.utils.Function2;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.smallibs.suitcase.pattern.Cases._;
+import static org.smallibs.suitcase.pattern.Cases.nil;
 
 public class MatchTest {
 
@@ -39,7 +40,7 @@ public class MatchTest {
     public void shouldMatchNullObject() throws MatchingException {
         final Match<Object, Integer> match = Match.match();
 
-        match.when(null).then(42);
+        match.when(nil()).then(42);
 
         TestCase.assertEquals(42, match.apply(null).intValue());
     }
@@ -48,7 +49,7 @@ public class MatchTest {
     public void shouldNotMatchConstantObject() throws MatchingException {
         final Match<Object, Integer> match = Match.match();
 
-        match.when(null).then(42);
+        match.when(nil()).then(42);
 
         match.apply(19);
     }
@@ -67,7 +68,7 @@ public class MatchTest {
         final Match<Object, Integer> match = Match.match();
 
         match.when(Integer.class).then(42);
-        match.when(null).then(19);
+        match.when(nil()).then(19);
 
         TestCase.assertEquals(42, match.apply(0).intValue());
         TestCase.assertEquals(19, match.apply(null).intValue());
@@ -90,10 +91,10 @@ public class MatchTest {
         final Match<List, Integer> sizeOfMatcher = Match.match();
 
         sizeOfMatcher.when(new Nil()).then(0);
-        sizeOfMatcher.when(new Cons(_, _)).then(new Function<Tuple2<Integer, List<Integer>>, Integer>() {
+        sizeOfMatcher.when(new Cons(_, _)).then(new Function2<Integer, List, Integer>() {
             @Override
-            public Integer apply(Tuple2<Integer, List<Integer>> c) throws MatchingException {
-                return 1 + sizeOfMatcher.apply(c._2);
+            public Integer apply(Integer head, List tail) throws MatchingException {
+                return 1 + sizeOfMatcher.apply(tail);
             }
         });
 
@@ -106,10 +107,10 @@ public class MatchTest {
         final Match<List<Integer>, Integer> addAll = Match.match();
 
         addAll.when(new Nil()).then(0);
-        addAll.when(new Cons(_, _)).then(new Function<Tuple2<Integer, List<Integer>>, Integer>() {
+        addAll.when(new Cons(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
             @Override
-            public Integer apply(Tuple2<Integer, List<Integer>> c) throws MatchingException {
-                return c._1 + addAll.apply(c._2);
+            public Integer apply(Integer i, List<Integer> l) throws MatchingException {
+                return i + addAll.apply(l);
             }
         });
 
@@ -122,7 +123,7 @@ public class MatchTest {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
         multiplyMatcher.when(new Zero()).then(0);
-        multiplyMatcher.when(new Succ(_)).then(new Function<Integer, Integer>() {
+        multiplyMatcher.when(new Succ(_)).then(new Function1<Integer, Integer>() {
             @Override
             public Integer apply(Integer i) throws MatchingException {
                 return 19 + multiplyMatcher.apply(i);
@@ -138,7 +139,7 @@ public class MatchTest {
 
         evenMatcher.when(0).then(true);
         evenMatcher.when(new Succ(new Succ(_))).then(
-                new Function<Integer, Boolean>() {
+                new Function1<Integer, Boolean>() {
                     @Override
                     public Boolean apply(Integer i) throws MatchingException {
                         return evenMatcher.apply(i);

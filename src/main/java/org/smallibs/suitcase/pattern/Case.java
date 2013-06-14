@@ -22,6 +22,6 @@ import org.smallibs.suitcase.utils.Option;
 
 public interface Case<T, R> {
 
-    Option<R> unapply(T object);
+    Option<R> unapply(T t);
 
 }
