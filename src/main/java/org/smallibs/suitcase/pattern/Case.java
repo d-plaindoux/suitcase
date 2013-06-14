@@ -16,23 +16,12 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.core;
+package org.smallibs.suitcase.pattern;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class OfType<T, R> implements Case<T, R> {
-    private final Class<R> type;
+public interface Case<T, R> {
 
-    public OfType(Class<R> type) {
-        this.type = type;
-    }
+    Option<R> unapply(T object);
 
-    @Override
-    public Option<R> unapply(T object) {
-        if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return new Option.Some<R>(type.cast(object));
-        } else {
-            return new Option.None<R>();
-        }
-    }
 }

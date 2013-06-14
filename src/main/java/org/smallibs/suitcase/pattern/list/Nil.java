@@ -19,7 +19,7 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case;
+import org.smallibs.suitcase.pattern.Case;
 import org.smallibs.suitcase.utils.Option;
 
 import java.util.List;

@@ -19,7 +19,6 @@ package org.smallibs.suitcase.pattern;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.core.Cases;
 
 public class PatternTest {
 
@@ -78,12 +77,12 @@ public class PatternTest {
 
     @Test
     public void shouldMatchNullValueWithAny() {
-        TestCase.assertFalse(Cases._().unapply(null).isNone());
+        TestCase.assertFalse(Cases.any().unapply(null).isNone());
     }
 
     @Test
     public void shouldMatchNotNullValueWithAny() {
-        TestCase.assertFalse(Cases._().unapply(42).isNone());
+        TestCase.assertFalse(Cases.any().unapply(42).isNone());
     }
 }
 

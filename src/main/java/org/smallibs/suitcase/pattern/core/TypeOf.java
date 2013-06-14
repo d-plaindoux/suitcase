@@ -18,15 +18,22 @@
 
 package org.smallibs.suitcase.pattern.core;
 
+import org.smallibs.suitcase.pattern.Case;
 import org.smallibs.suitcase.utils.Option;
 
-public abstract class Case1<T, R> implements Case<T, R> {
+public class TypeOf<T, R> implements Case<T, R> {
+    private final Class<R> type;
 
-    protected final Case<R, R> _1;
-
-    protected Case1(Object o1) {
-        this._1 = Cases.reify(o1);
+    public TypeOf(Class<R> type) {
+        this.type = type;
     }
 
-    abstract public Option<R> unapply(T t);
+    @Override
+    public Option<R> unapply(T object) {
+        if (object != null && this.type.isAssignableFrom(object.getClass())) {
+            return new Option.Some<R>(type.cast(object));
+        } else {
+            return new Option.None<R>();
+        }
+    }
 }

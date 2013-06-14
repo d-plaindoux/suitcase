@@ -19,7 +19,7 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case2;
+import org.smallibs.suitcase.pattern.prototype.Case2;
 import org.smallibs.suitcase.utils.Tuple2;
 import org.smallibs.suitcase.utils.Option;
 

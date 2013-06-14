@@ -21,8 +21,8 @@ package org.smallibs.suitcase.matching;
 import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Functions;
-import org.smallibs.suitcase.pattern.core.Case;
-import org.smallibs.suitcase.pattern.core.Cases;
+import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.utils.Option;
 
 import java.util.LinkedList;

@@ -18,11 +18,9 @@
 
 package org.smallibs.suitcase.matching;
 
-import static org.smallibs.suitcase.pattern.core.Cases._;
-
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.core.Cases;
+import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.list.Cons;
 import org.smallibs.suitcase.pattern.list.Nil;
 import org.smallibs.suitcase.pattern.peano.Succ;
@@ -33,37 +31,43 @@ import org.smallibs.suitcase.utils.Tuple2;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.smallibs.suitcase.pattern.Cases._;
+
 public class MatchTest {
 
     @Test
     public void shouldMatchNullObject() throws MatchingException {
-        final Match<Object, Integer> match = Match.<Object, Integer>match().
-                when(null).then(42);
+        final Match<Object, Integer> match = Match.match();
+
+        match.when(null).then(42);
 
         TestCase.assertEquals(42, match.apply(null).intValue());
     }
 
     @Test(expected = MatchingException.class)
     public void shouldNotMatchConstantObject() throws MatchingException {
-        final Match<Object, Integer> match = Match.<Object, Integer>match().
-                when(null).then(42);
+        final Match<Object, Integer> match = Match.match();
+
+        match.when(null).then(42);
 
         match.apply(19);
     }
 
     @Test
     public void shouldMatchTypedObject() throws MatchingException {
-        final Match<Object, Integer> match = Match.<Object, Integer>match().
-                when(Integer.class).then(42);
+        final Match<Object, Integer> match = Match.match();
+
+        match.when(Integer.class).then(42);
 
         TestCase.assertEquals(42, match.apply(0).intValue());
     }
 
     @Test
     public void shouldMatchWithAlternativeNullObject() throws MatchingException {
-        final Match<Object, Integer> match = Match.<Object, Integer>match().
-                when(Integer.class).then(42).
-                when(null).then(19);
+        final Match<Object, Integer> match = Match.match();
+
+        match.when(Integer.class).then(42);
+        match.when(null).then(19);
 
         TestCase.assertEquals(42, match.apply(0).intValue());
         TestCase.assertEquals(19, match.apply(null).intValue());
@@ -71,9 +75,10 @@ public class MatchTest {
 
     @Test
     public void shouldMatchLisContainintAnObject() throws MatchingException {
-        final Match<List, Boolean> isEmpty = Match.<List, Boolean>match().
-                when(new Cons(1, _)).then(true).
-                when(_).then(false);
+        final Match<List, Boolean> isEmpty = Match.match();
+
+        isEmpty.when(new Cons(1, _)).then(true);
+        isEmpty.when(_).then(false);
 
         TestCase.assertTrue(isEmpty.apply(Arrays.asList(1)));
         TestCase.assertFalse(isEmpty.apply(Arrays.asList()));
@@ -81,27 +86,16 @@ public class MatchTest {
     }
 
     @Test
-    public void shouldMatchListWithCasesObject() throws MatchingException {
-        final Match<List, Boolean> isEmpty = Match.<List, Boolean>match().
-                when(new Nil(), List.class).then(true).
-                when(new Cons(1, _), List.class).then(false);
-
-        TestCase.assertTrue(isEmpty.apply(Arrays.asList()));
-        TestCase.assertFalse(isEmpty.apply(Arrays.asList(1)));
-    }
-
-    @Test
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
         final Match<List, Integer> sizeOfMatcher = Match.match();
-        sizeOfMatcher.
-                when(new Nil()).then(0).
-                when(new Cons(_,_)).then(
-                new Function<Tuple2<Object, List>, Integer>() {
-                    @Override
-                    public Integer apply(Tuple2<Object, List> couple) throws MatchingException {
-                        return 1 + sizeOfMatcher.apply(couple._2);
-                    }
-                });
+
+        sizeOfMatcher.when(new Nil()).then(0);
+        sizeOfMatcher.when(new Cons(_, _)).then(new Function<Tuple2<Integer, List<Integer>>, Integer>() {
+            @Override
+            public Integer apply(Tuple2<Integer, List<Integer>> c) throws MatchingException {
+                return 1 + sizeOfMatcher.apply(c._2);
+            }
+        });
 
         TestCase.assertEquals(0, sizeOfMatcher.apply(Arrays.asList()).intValue());
         TestCase.assertEquals(4, sizeOfMatcher.apply(Arrays.asList(1, 2, 3, 4)).intValue());
@@ -110,9 +104,9 @@ public class MatchTest {
     @Test
     public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
         final Match<List<Integer>, Integer> addAll = Match.match();
-        addAll.
-                when(new Nil()).then(0).
-                when(new Cons(_,_)).then(new Function<Tuple2<Integer, List<Integer>>, Integer>() {
+
+        addAll.when(new Nil()).then(0);
+        addAll.when(new Cons(_, _)).then(new Function<Tuple2<Integer, List<Integer>>, Integer>() {
             @Override
             public Integer apply(Tuple2<Integer, List<Integer>> c) throws MatchingException {
                 return c._1 + addAll.apply(c._2);
@@ -126,9 +120,9 @@ public class MatchTest {
     @Test
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
-        multiplyMatcher.
-                when(new Zero()).then(0).
-                when(new Succ(_)).then(new Function<Integer, Integer>() {
+
+        multiplyMatcher.when(new Zero()).then(0);
+        multiplyMatcher.when(new Succ(_)).then(new Function<Integer, Integer>() {
             @Override
             public Integer apply(Integer i) throws MatchingException {
                 return 19 + multiplyMatcher.apply(i);
@@ -141,27 +135,39 @@ public class MatchTest {
     @Test
     public void shouldCheckEvenPeano() throws MatchingException {
         final Match<Integer, Boolean> evenMatcher = Match.match();
-        evenMatcher.
-                when(0).then(true).
-                when(new Succ(new Succ(_))).then(
+
+        evenMatcher.when(0).then(true);
+        evenMatcher.when(new Succ(new Succ(_))).then(
                 new Function<Integer, Boolean>() {
                     @Override
                     public Boolean apply(Integer i) throws MatchingException {
                         return evenMatcher.apply(i);
                     }
                 }).
-                when(Cases.<Integer>_()).then(false);
+                when(Cases.<Integer>any()).then(false);
 
         TestCase.assertEquals(true, evenMatcher.apply(10).booleanValue());
     }
 
     @Test
     public void shouldCheckIntegerAndReturnImplicitConstantValue() throws MatchingException {
-        Match<Integer, Boolean> isZero = Match.<Integer, Boolean>match().
-                when(0).then(true).
-                when(Cases.<Integer>_()).then(false);
+        Match<Integer, Boolean> isZero = Match.match();
 
-        TestCase.assertEquals(true, isZero.apply(0).booleanValue());
-        TestCase.assertEquals(false, isZero.apply(1).booleanValue());
+        isZero.when(0).then(true);
+        isZero.when(_).then(false);
+
+        TestCase.assertTrue(isZero.apply(0));
+        TestCase.assertFalse(isZero.apply(1));
+    }
+
+    @Test
+    public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
+        Match<List<Integer>, Boolean> headIsZero = Match.match();
+
+        headIsZero.when(new Cons(0, _)).then(true);
+        headIsZero.when(_).then(false);
+
+        TestCase.assertTrue(headIsZero.apply(Arrays.asList(0)));
+        TestCase.assertFalse(headIsZero.apply(Arrays.asList(1, 2)));
     }
 }
