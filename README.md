@@ -59,10 +59,10 @@ able to add all integers in a given list.
   addAll.
     when(new Nil()).then(0).
     when(new Cons(_,_)).then(
-        new Function&lt;Couple&lt;Integer, List>, Integer>() {
+        new Function2&lt;Integer, List, Integer>() {
             @Override
-            public Integer apply(Couple&lt;Integer, List> couple) throws MatchingException {
-                return couple._1 + allAdd.apply(couple._2);
+            public Integer apply(Integer i, List l) throws MatchingException {
+                return i + allAdd.apply(l);
             }
         });
 
