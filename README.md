@@ -42,12 +42,13 @@ The pattern system is open and accept ad-hoc cases. For instance for the `List` 
 Then a simple function able to check when a list is empty can be proposed.
 
 <pre>
-  final Match&lt;List&lt;Object>, Boolean> isEmpty = Match.&lt;List, Boolean>match().
-    when(new Nil&lt;>()).then(true).
-    when(_).then(false);
+  final Match&lt;List&lt;Object>, Boolean> isEmpty = Match.match();
 
-    // isEmpty.apply(Arrays.&lt;Object>asList())   => true
-    // isEmpty.apply(Arrays.&lt;Object>asList(1))  => false
+  isEmpty.when(new Nil&lt;>()).then(true);
+  isEmpty.when(_).then(false);
+
+  isEmpty.apply(Arrays.&lt;Object>asList());            // == true
+  isEmpty.apply(Arrays.&lt;Object>asList(1));           // == false
 </pre>
 
 It's also possible to capture list elements like the head and the tail. For instance we can propose a `function`
@@ -56,9 +57,8 @@ able to add all integers in a given list.
 <pre>
   final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
 
-  addAll.
-    when(new Nil<Integer>()).then(0).
-    when(new Cons<Integer>(_,_)).then(
+  addAll.when(new Nil<Integer>()).then(0);
+  addAll.when(new Cons<Integer>(_,_)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             @Override
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
@@ -66,8 +66,8 @@ able to add all integers in a given list.
             }
         });
 
-    // addAll.apply(Arrays.&lt;Integer>asList())  => 0
-    // addAll.apply(Arrays.&lt;Integer>asList(1,2,3,4,5))  => 15
+    addAll.apply(Arrays.&lt;Integer>asList());          // == 0
+    addAll.apply(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
 </pre>
 
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
