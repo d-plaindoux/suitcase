@@ -24,12 +24,15 @@ import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.prototype.Case0;
 import org.smallibs.suitcase.pattern.prototype.Case1;
 import org.smallibs.suitcase.pattern.prototype.Case2;
+import org.smallibs.suitcase.pattern.prototype.Case3;
 import org.smallibs.suitcase.utils.Function0;
 import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
+import org.smallibs.suitcase.utils.Function3;
 import org.smallibs.suitcase.utils.Functions;
 import org.smallibs.suitcase.utils.Option;
 import org.smallibs.suitcase.utils.Tuple2;
+import org.smallibs.suitcase.utils.Tuple3;
 
 import java.util.LinkedList;
 
@@ -116,6 +119,27 @@ public final class Match<T, R> {
         }
     }
 
+    private class Rule3<M1, M2, M3> extends Rule {
+        private final Case3<T, M1, M2, M3> aCase;
+        private final Function3<M1, M2, M3, R> function;
+
+        private Rule3(Class<T> type, Case3<T, M1, M2, M3> aCase, Function3<M1, M2, M3, R> function) {
+            super(type);
+            this.aCase = aCase;
+            this.function = function;
+        }
+
+        R apply(T object) throws MatchingException {
+            if (this.typeIsCorrect(object)) {
+                final Option<Tuple3<M1, M2, M3>> result = aCase.unapply(object);
+                if (!result.isNone()) {
+                    return this.function.apply(result.value()._1, result.value()._2, result.value()._3);
+                }
+            }
+            throw new MatchingException();
+        }
+    }
+
     // =================================================================================================================
 
     public class When0 {
@@ -175,6 +199,26 @@ public final class Match<T, R> {
         }
     }
 
+
+    public class When3<M1, M2, M3> {
+        private final Class<T> type;
+        private final Case3<T, M1, M2, M3> aCase;
+
+        public When3(Class<T> type, Case3<T, M1, M2, M3> aCase) {
+            this.type = type;
+            this.aCase = aCase;
+        }
+
+        public Match<T, R> then(R result) {
+            return then(Functions.<M1, M2, M3, R>constant3(result));
+        }
+
+        public Match<T, R> then(Function3<M1, M2, M3, R> function) {
+            Match.this.rules.add(new Rule3<>(type, aCase, function));
+            return Match.this;
+        }
+    }
+
     // =================================================================================================================
     // Attributes
     // =================================================================================================================
@@ -206,6 +250,10 @@ public final class Match<T, R> {
     }
 
     public When1<?> when(final T object) {
+        return when1(Cases.<T>reify(object));
+    }
+
+    public When1<?> when(final Cases.AnyValueObject object) {
         return when1(Cases.<T>reify(object));
     }
 

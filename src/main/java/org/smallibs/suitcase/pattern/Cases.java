@@ -26,7 +26,23 @@ import org.smallibs.suitcase.pattern.prototype.Case1;
 
 public final class Cases {
 
-    public static Any _ = new Any();
+    public static class AnyValueObject {
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof AnyValueObject)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return 13;
+        }
+    }
+
+    public static AnyValueObject _ = new AnyValueObject();
 
     private Cases() {
         // Prevent useless creation

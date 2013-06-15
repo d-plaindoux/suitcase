@@ -58,4 +58,13 @@ public final class Functions {
         };
     }
 
+    public static <M1, M2, M3, R> Function3<M1, M2, M3, R> constant3(final R constant) {
+        return new Function3<M1, M2, M3, R>() {
+            @Override
+            public R apply(M1 p1, M2 p2, M3 p3) {
+                return constant;
+            }
+        };
+    }
+
 }

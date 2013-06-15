@@ -75,39 +75,39 @@ public class MatchTest {
     }
 
     @Test
-    public void shouldMatchLisContainintAnObject() throws MatchingException {
-        final Match<List, Boolean> isEmpty = Match.match();
+    public void shouldMatchLisContainingAnObject() throws MatchingException {
+        final Match<List<Object>, Boolean> isEmpty = Match.match();
 
-        isEmpty.when(new Cons(1, _)).then(true);
+        isEmpty.when(new Cons<>(1, _)).then(true);
         isEmpty.when(_).then(false);
 
-        TestCase.assertTrue(isEmpty.apply(Arrays.asList(1)));
-        TestCase.assertFalse(isEmpty.apply(Arrays.asList()));
-        TestCase.assertFalse(isEmpty.apply(Arrays.asList(2, 3)));
+        TestCase.assertTrue(isEmpty.apply(Arrays.<Object>asList(1)));
+        TestCase.assertFalse(isEmpty.apply(Arrays.<Object>asList()));
+        TestCase.assertFalse(isEmpty.apply(Arrays.<Object>asList(2, 3)));
     }
 
     @Test
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
-        final Match<List, Integer> sizeOfMatcher = Match.match();
+        final Match<List<Object>, Integer> sizeOfMatcher = Match.match();
 
-        sizeOfMatcher.when(new Nil()).then(0);
-        sizeOfMatcher.when(new Cons(_, _)).then(new Function2<Integer, List, Integer>() {
+        sizeOfMatcher.when(new Nil<>()).then(0);
+        sizeOfMatcher.when(new Cons<>(_, _)).then(new Function2<Object, List<Object>, Integer>() {
             @Override
-            public Integer apply(Integer head, List tail) throws MatchingException {
+            public Integer apply(Object head, List<Object> tail) throws MatchingException {
                 return 1 + sizeOfMatcher.apply(tail);
             }
         });
 
-        TestCase.assertEquals(0, sizeOfMatcher.apply(Arrays.asList()).intValue());
-        TestCase.assertEquals(4, sizeOfMatcher.apply(Arrays.asList(1, 2, 3, 4)).intValue());
+        TestCase.assertEquals(0, sizeOfMatcher.apply(Arrays.<Object>asList()).intValue());
+        TestCase.assertEquals(4, sizeOfMatcher.apply(Arrays.<Object>asList(1, 2, 3, 4)).intValue());
     }
 
     @Test
     public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
         final Match<List<Integer>, Integer> addAll = Match.match();
 
-        addAll.when(new Nil()).then(0);
-        addAll.when(new Cons(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
+        addAll.when(new Nil<Integer>()).then(0);
+        addAll.when(new Cons<Integer>(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
             @Override
             public Integer apply(Integer i, List<Integer> l) throws MatchingException {
                 return i + addAll.apply(l);
@@ -165,7 +165,7 @@ public class MatchTest {
     public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
         Match<List<Integer>, Boolean> headIsZero = Match.match();
 
-        headIsZero.when(new Cons(0, _)).then(true);
+        headIsZero.when(new Cons<Integer>(0, _)).then(true);
         headIsZero.when(_).then(false);
 
         TestCase.assertTrue(headIsZero.apply(Arrays.asList(0)));
