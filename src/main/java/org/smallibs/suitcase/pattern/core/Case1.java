@@ -16,9 +16,8 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.prototype;
+package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.Case;
 import org.smallibs.suitcase.pattern.Cases;
 
 public abstract class Case1<T, R> implements Case<T, R> {
@@ -30,7 +29,7 @@ public abstract class Case1<T, R> implements Case<T, R> {
     }
 
     protected Case1(Object o1) {
-        this._1 = Cases.reify(o1);
+        this._1 = Cases.reifyAll(o1);
     }
 
 }

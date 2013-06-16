@@ -118,6 +118,24 @@ public class MatchTest {
         TestCase.assertEquals(10, addAll.apply(Arrays.asList(1, 2, 3, 4)).intValue());
     }
 
+    /*
+    @Test
+    public void shouldComputeAdditionWithAdHocPatternObjectAndTailRecursion() throws MatchingException {
+        final Match<List<Integer>, Match.Rec<Integer>> addAll = Match.Rec().match(0);;
+
+        addAll.when(new Nil<Integer>()).then(addAll);
+        addAll.when(new Cons<Integer>(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
+            @Override
+            public TailRec<Integer> apply(Integer i, List<Integer> l) throws MatchingException {
+                return deRec.accu(i + deRec.accu()).recurse(l);
+            }
+        });
+
+        TestCase.assertEquals(0, addAll.apply(Arrays.<Integer>asList()).intValue());
+        TestCase.assertEquals(10, addAll.apply(Arrays.asList(1, 2, 3, 4)).intValue());
+    }
+    */
+
     @Test
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Match<Integer, Integer> multiplyMatcher = Match.match();

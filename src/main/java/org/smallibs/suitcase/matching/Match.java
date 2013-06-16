@@ -19,12 +19,12 @@
 package org.smallibs.suitcase.matching;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.Case;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.Cases;
-import org.smallibs.suitcase.pattern.prototype.Case0;
-import org.smallibs.suitcase.pattern.prototype.Case1;
-import org.smallibs.suitcase.pattern.prototype.Case2;
-import org.smallibs.suitcase.pattern.prototype.Case3;
+import org.smallibs.suitcase.pattern.core.Case0;
+import org.smallibs.suitcase.pattern.core.Case1;
+import org.smallibs.suitcase.pattern.core.Case2;
+import org.smallibs.suitcase.pattern.core.Case3;
 import org.smallibs.suitcase.utils.Function0;
 import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
@@ -250,11 +250,11 @@ public final class Match<T, R> {
     }
 
     public When1<?> when(final T object) {
-        return when1(Cases.<T>reify(object));
+        return when1((Case1<T,?>) Cases.<T>reify(object));
     }
 
     public When1<?> when(final Cases.AnyValueObject object) {
-        return when1(Cases.<T>reify(object));
+        return when1((Case1<T,?>) Cases.<T>reify(object));
     }
 
     public <M> When1<M> when(final Case1<T, M> aCase) {

@@ -18,7 +18,6 @@
 
 package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.prototype.Case1;
 import org.smallibs.suitcase.utils.Option;
 
 public class Constant<T> extends Case1<T, T> {

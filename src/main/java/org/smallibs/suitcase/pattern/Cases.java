@@ -19,10 +19,12 @@
 package org.smallibs.suitcase.pattern;
 
 import org.smallibs.suitcase.pattern.core.Any;
+import org.smallibs.suitcase.pattern.core.Case;
+import org.smallibs.suitcase.pattern.core.Case1;
+import org.smallibs.suitcase.pattern.core.Case2;
 import org.smallibs.suitcase.pattern.core.Constant;
 import org.smallibs.suitcase.pattern.core.Null;
 import org.smallibs.suitcase.pattern.core.TypeOf;
-import org.smallibs.suitcase.pattern.prototype.Case1;
 
 public final class Cases {
 
@@ -53,6 +55,14 @@ public final class Cases {
         else if (value.equals(_)) return any();
         else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
         else if (value instanceof Case1) return (Case1<T, ?>) value;
+        else return Cases.constant((T) value);
+    }
+
+    public static <T> Case<T, ?> reifyAll(Object value) {
+        if (value == null) return nil();
+        else if (value.equals(_)) return any();
+        else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
+        else if (value instanceof Case) return (Case<T, ?>) value;
         else return Cases.constant((T) value);
     }
 

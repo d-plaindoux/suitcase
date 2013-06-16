@@ -19,7 +19,7 @@
 package org.smallibs.suitcase.pattern.peano;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.prototype.Case1;
+import org.smallibs.suitcase.pattern.core.Case1;
 import org.smallibs.suitcase.utils.Option;
 
 @CaseType(Integer.class)

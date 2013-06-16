@@ -25,11 +25,12 @@ This is available for basic values like boolean, integers etc. and POJOs.
 For instance the following sample checks if an integer is <tt>O</tt> or not.
 
 <pre>
-  final Match&lt;Integer, Boolean> isZero = Match.&lt;Integer, Boolean>match().
-    when(0).then(true).
-    when(_).then(false);
+  final Match&lt;Integer, Boolean> isZero = Match.match();
+
+  isZero.when(0).then(true);
+  isZero.when(_).then(false);
     
-  // isZero.apply(0) => true 
+  isZero.apply(0); // == true
 </pre>
 
 Matching complex Objects 
@@ -66,8 +67,8 @@ able to add all integers in a given list.
             }
         });
 
-    addAll.apply(Arrays.&lt;Integer>asList());          // == 0
-    addAll.apply(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
+  addAll.apply(Arrays.&lt;Integer>asList());          // == 0
+  addAll.apply(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
 </pre>
 
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains

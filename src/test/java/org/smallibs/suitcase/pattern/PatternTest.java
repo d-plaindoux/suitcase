@@ -19,6 +19,12 @@ package org.smallibs.suitcase.pattern;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import org.smallibs.suitcase.pattern.list.Cons;
+import org.smallibs.suitcase.pattern.list.Nil;
+
+import java.util.Arrays;
+
+import static org.smallibs.suitcase.pattern.Cases._;
 
 public class PatternTest {
 
@@ -83,6 +89,43 @@ public class PatternTest {
     @Test
     public void shouldMatchNotNullValueWithAny() {
         TestCase.assertFalse(Cases.any().unapply(42).isNone());
+    }
+
+    // List
+
+    @Test
+    public void shouldNilMatchEmptyList() {
+        TestCase.assertFalse(new Nil<>().unapply(Arrays.asList()).isNone());
+    }
+
+    @Test
+    public void shouldNilNotlMatchNonList() {
+        TestCase.assertTrue(new Nil<Integer>().unapply(Arrays.asList(1)).isNone());
+    }
+
+    @Test
+    public void shouldConsNotlMatchEmptyList() {
+        TestCase.assertTrue(new Cons<>(_, _).unapply(Arrays.asList()).isNone());
+    }
+
+    @Test
+    public void shouldConsMatchNonEmptyList() {
+        TestCase.assertFalse(new Cons<Integer>(_, _).unapply(Arrays.asList(1)).isNone());
+    }
+
+    @Test
+    public void shouldConsMatchListSize2() {
+        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_,_)).unapply(Arrays.asList(1,2)).isNone());
+    }
+
+    @Test
+    public void shouldConsMatchListSize2Exactly() {
+        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_,new Nil())).unapply(Arrays.asList(1,2)).isNone());
+    }
+
+    @Test
+    public void shouldMatchTheListExactly() {
+        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2,new Nil())).unapply(Arrays.asList(1,2)).isNone());
     }
 }
 

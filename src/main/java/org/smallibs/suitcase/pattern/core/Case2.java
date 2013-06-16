@@ -16,13 +16,19 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.prototype;
+package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.pattern.Case;
-import org.smallibs.suitcase.utils.Option;
+import org.smallibs.suitcase.pattern.Cases;
+import org.smallibs.suitcase.utils.Tuple2;
 
-public abstract class Case0<T> implements Case<T, Void> {
+public abstract class Case2<T, R1, R2> implements Case<T, Tuple2<R1, R2>> {
 
-    abstract public Option<Void> unapply(T t);
+    protected final Case<R1, ?> _1;
+    protected final Case<R2, ?> _2;
+
+    protected Case2(Object o1, Object o2) {
+        this._1 = Cases.reifyAll(o1);
+        this._2 = Cases.reifyAll(o2);
+    }
 
 }

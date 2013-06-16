@@ -19,7 +19,7 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.prototype.Case2;
+import org.smallibs.suitcase.pattern.core.Case2;
 import org.smallibs.suitcase.utils.Option;
 import org.smallibs.suitcase.utils.Tuple2;
 
@@ -33,17 +33,15 @@ public class Cons<E> extends Case2<List<E>, E, List<E>> {
         super(o1, o2);
     }
 
-    // Missing apply capability for construction
-
     public Option<Tuple2<E, List<E>>> unapply(List<E> list) {
         if (!list.isEmpty()) {
             final List<E> tail = new LinkedList<>(list);
             final Option<E> headResult = (Option<E>) this._1.unapply(tail.remove(0));
 
             if (!headResult.isNone()) {
-                final Option<List<E>> tailResult = (Option<List<E>>) this._2.unapply(tail);
+                final Option<?> tailResult = this._2.unapply(tail);
                 if (!tailResult.isNone()) {
-                    return new Option.Some<>(new Tuple2<>(headResult.value(), tailResult.value()));
+                    return new Option.Some<>(new Tuple2<>(headResult.value(), tail));
                 }
             }
         }
