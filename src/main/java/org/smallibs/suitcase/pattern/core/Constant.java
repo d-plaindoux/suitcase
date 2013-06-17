@@ -32,6 +32,11 @@ public class Constant<T> implements Case<T> {
     }
 
     @Override
+    public int numberOfVariables() {
+        return 0;
+    }
+
+    @Override
     public Option<List<Object>> unapply(T object) {
         if (object != null && object.equals(this.object)) {
             return new Option.Some<>(Arrays.asList());

@@ -31,9 +31,15 @@ public class Succ implements Case<Integer> {
     private final Case<Integer> value;
 
     public Succ(Object o1) {
-        this.value = Cases.reify(o1);
+        this.value = Cases.fromObject(o1);
     }
 
+    @Override
+    public int numberOfVariables() {
+        return this.value.numberOfVariables();
+    }
+
+    @Override
     public Option<List<Object>> unapply(Integer integer) {
         if (integer > 0) {
             return this.value.unapply(integer - 1);

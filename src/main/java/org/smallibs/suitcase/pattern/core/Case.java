@@ -24,6 +24,7 @@ import java.util.List;
 
 public interface Case<T> {
 
-    Option<List<Object>> unapply(T t);
+    int numberOfVariables();
 
+    Option<List<Object>> unapply(T t);
 }

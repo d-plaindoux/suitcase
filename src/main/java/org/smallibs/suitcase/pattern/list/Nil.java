@@ -27,6 +27,13 @@ import java.util.List;
 
 @CaseType(List.class)
 public class Nil<E> implements Case<List<E>> {
+
+    @Override
+    public int numberOfVariables() {
+        return 0;
+    }
+
+    @Override
     public Option<List<Object>> unapply(List<E> list) {
         if (list.isEmpty()) {
             return new Option.Some<>(Arrays.asList());

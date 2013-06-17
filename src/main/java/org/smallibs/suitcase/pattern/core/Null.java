@@ -26,6 +26,11 @@ import java.util.List;
 public class Null<T> implements Case<T> {
 
     @Override
+    public int numberOfVariables() {
+        return 0;
+    }
+
+    @Override
     public Option<List<Object>> unapply(T object) {
         if (object == null) {
             return new Option.Some<>(Arrays.asList());

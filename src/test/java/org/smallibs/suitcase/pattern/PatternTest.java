@@ -21,10 +21,13 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.smallibs.suitcase.pattern.list.Cons;
 import org.smallibs.suitcase.pattern.list.Nil;
+import org.smallibs.suitcase.pattern.peano.Succ;
+import org.smallibs.suitcase.pattern.peano.Zero;
 
 import java.util.Arrays;
 
 import static org.smallibs.suitcase.pattern.Cases._;
+import static org.smallibs.suitcase.pattern.Cases.var;
 
 public class PatternTest {
 
@@ -115,17 +118,39 @@ public class PatternTest {
 
     @Test
     public void shouldConsMatchListSize2() {
-        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_,_)).unapply(Arrays.asList(1,2)).isNone());
+        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_, _)).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_,new Nil())).unapply(Arrays.asList(1,2)).isNone());
+        TestCase.assertFalse(var.of(new Cons<Integer>(_, new Cons<Integer>(_, new Nil()))).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2,new Nil())).unapply(Arrays.asList(1,2)).isNone());
+        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2, new Nil())).unapply(Arrays.asList(1, 2)).isNone());
+    }
+
+    // Peano
+
+    @Test
+    public void shouldMatchZero() {
+        TestCase.assertFalse(new Zero().unapply(0).isNone());
+    }
+
+    @Test
+    public void shouldNotMatchZero() {
+        TestCase.assertTrue(new Zero().unapply(1).isNone());
+    }
+
+    @Test
+    public void shouldMatchNonZero() {
+        TestCase.assertFalse(new Succ(_).unapply(1).isNone());
+    }
+
+    @Test
+    public void shouldNotMatchNonZero() {
+        TestCase.assertTrue(var.of(new Succ(_)).unapply(0).isNone());
     }
 }
 

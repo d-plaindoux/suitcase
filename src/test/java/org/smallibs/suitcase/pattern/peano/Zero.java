@@ -28,6 +28,12 @@ import java.util.List;
 @CaseType(Integer.class)
 public class Zero implements Case<Integer> {
 
+    @Override
+    public int numberOfVariables() {
+        return 0;
+    }
+
+    @Override
     public Option<List<Object>> unapply(Integer integer) {
         if (integer == 0) {
             return new Option.Some<>(Arrays.asList());

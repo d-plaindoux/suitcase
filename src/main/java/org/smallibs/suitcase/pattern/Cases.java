@@ -27,10 +27,10 @@ import org.smallibs.suitcase.pattern.core.Var;
 
 public final class Cases {
 
-    public static class AnyValueObject {
+    public static class AnyObject {
         @Override
         public boolean equals(Object o) {
-            return this == o || o instanceof AnyValueObject;
+            return this == o || o instanceof AnyObject;
         }
 
         @Override
@@ -39,15 +39,45 @@ public final class Cases {
         }
     }
 
-    public static AnyValueObject _ = new AnyValueObject();
+    public static class VariableObject {
+        @Override
+        public boolean equals(Object o) {
+            return this == o || o instanceof VariableObject;
+        }
+
+        @Override
+        public int hashCode() {
+            return 13;
+        }
+
+        public <T> Case<T> of(T value) {
+            return new Var<>(value);
+        }
+
+        public <T> Case<T> of(Class<? extends T> value) {
+            return new Var<>(value);
+        }
+
+        public <T> Case<T> of(Case<T> value) {
+            return new Var<>(value);
+        }
+
+        public <T> Case<T> of(AnyObject _) {
+            return new Var<>(Cases.any());
+        }
+    }
+
+    public static AnyObject _ = new AnyObject();
+    public static VariableObject var = new VariableObject();
 
     private Cases() {
         // Prevent useless creation
     }
 
-    public static <T> Case<T> reify(Object value) {
+    public static <T> Case<T> fromObject(Object value) {
         if (value == null) return nil();
-        else if (value.equals(_)) return any();
+        else if (value.equals(_)) return Cases.any();
+        else if (value.equals(var)) return var.of(Cases.<T>any());
         else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
         else if (value instanceof Case) return (Case<T>) value;
         else return Cases.constant((T) value);
@@ -56,14 +86,6 @@ public final class Cases {
     public static <T> Case<T> constant(T value) {
         assert value != null;
         return new Constant<>(value);
-    }
-
-    public static <T> Case<T> var() {
-        return new Var<>();
-    }
-
-    public static <T> Case<T> var(T value) {
-        return new Var<>(value);
     }
 
     public static <T> Case<T> nil() {

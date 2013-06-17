@@ -33,10 +33,16 @@ public class Cons<E> implements Case<List<E>> {
     private final Case<List<E>> caseTail;
 
     public Cons(Object o1, Object o2) {
-        this.caseHead = Cases.reify(o1);
-        this.caseTail = Cases.reify(o2);
+        this.caseHead = Cases.fromObject(o1);
+        this.caseTail = Cases.fromObject(o2);
     }
 
+    @Override
+    public int numberOfVariables() {
+        return caseHead.numberOfVariables() + caseTail.numberOfVariables();
+    }
+
+    @Override
     public Option<List<Object>> unapply(List<E> list) {
         if (!list.isEmpty()) {
             final List<E> tail = new LinkedList<>(list);

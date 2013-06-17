@@ -11,12 +11,13 @@ public class Var<T> implements Case<T> {
 
     private final Case<Object> value;
 
-    public Var() {
-        this(Cases.any());
+    public Var(Object value) {
+        this.value = Cases.fromObject(value);
     }
 
-    public Var(Object value) {
-        this.value = Cases.reify(value);
+    @Override
+    public int numberOfVariables() {
+        return 1 + this.value.numberOfVariables();
     }
 
     @Override

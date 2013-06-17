@@ -90,7 +90,7 @@ public class MatchTest {
         final Match<List<Object>, Integer> sizeOfMatcher = Match.match();
 
         sizeOfMatcher.when(new Nil<>()).then(0);
-        sizeOfMatcher.when(new Cons<>(_, var())).then(new Function1<List<Object>, Integer>() {
+        sizeOfMatcher.when(new Cons<>(_, var)).then(new Function1<List<Object>, Integer>() {
             public Integer apply(List<Object> tail) throws MatchingException {
                 return 1 + sizeOfMatcher.apply(tail);
             }
@@ -105,7 +105,7 @@ public class MatchTest {
         final Match<List<Integer>, Integer> addAll = Match.match();
 
         addAll.when(new Nil<Integer>()).then(0);
-        addAll.when(new Cons<Integer>(var(), var())).then(new Function2<Integer, List<Integer>, Integer>() {
+        addAll.when(new Cons<Integer>(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
             public Integer apply(Integer i, List<Integer> l) throws MatchingException {
                 return i + addAll.apply(l);
             }
@@ -120,7 +120,7 @@ public class MatchTest {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
         multiplyMatcher.when(new Zero()).then(0);
-        multiplyMatcher.when(new Succ(var())).then(new Function1<Integer, Integer>() {
+        multiplyMatcher.when(new Succ(var)).then(new Function1<Integer, Integer>() {
             public Integer apply(Integer i) throws MatchingException {
                 return 19 + multiplyMatcher.apply(i);
             }
@@ -134,20 +134,20 @@ public class MatchTest {
         final Match<Integer, Boolean> evenMatcher = Match.match();
 
         evenMatcher.when(0).then(true);
-        evenMatcher.when(new Succ(new Succ(var()))).then(new Function1<Integer, Boolean>() {
+        evenMatcher.when(new Succ(new Succ(var))).then(new Function1<Integer, Boolean>() {
             public Boolean apply(Integer i) throws MatchingException {
                 return evenMatcher.apply(i);
             }
         });
 
-        evenMatcher.when(Cases.<Integer>any()).then(false);
+        evenMatcher.when(_).then(false);
 
         TestCase.assertEquals(true, evenMatcher.apply(10).booleanValue());
     }
 
     @Test
     public void shouldCheckIntegerAndReturnImplicitConstantValue() throws MatchingException {
-        Match<Integer, Boolean> isZero = Match.match();
+        final Match<Integer, Boolean> isZero = Match.match();
 
         isZero.when(0).then(true);
         isZero.when(_).then(false);
@@ -158,12 +158,32 @@ public class MatchTest {
 
     @Test
     public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
-        Match<List<Integer>, Boolean> headIsZero = Match.match();
+        final Match<List<Integer>, Boolean> headIsZero = Match.match();
 
         headIsZero.when(new Cons<Integer>(0, _)).then(true);
         headIsZero.when(_).then(false);
 
         TestCase.assertTrue(headIsZero.apply(Arrays.asList(0)));
         TestCase.assertFalse(headIsZero.apply(Arrays.asList(1, 2)));
+    }
+
+    interface A {}
+    static class B implements A {}
+    static class C implements A {}
+
+    @Test
+    public void shouldMatchASubclasses() throws MatchingException {
+        final Match<A, String> matchA = Match.match();
+
+        matchA.when(var.<A>of(B.class)).then(new Function1<B,String>() {
+            public String apply(B acceptor) throws MatchingException {
+                return "B";
+            }
+        });
+        matchA.when(C.class).then("C");
+        matchA.when(_).then("A");
+
+        TestCase.assertEquals("B", matchA.apply(new B()));
+        TestCase.assertEquals("C", matchA.apply(new C()));
     }
 }

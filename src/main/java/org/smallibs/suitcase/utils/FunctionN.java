@@ -16,7 +16,12 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.core;
+package org.smallibs.suitcase.utils;
 
-public interface CallBack {
+import org.smallibs.suitcase.matching.MatchingException;
+
+public interface FunctionN<R> extends Function {
+
+    R apply(Object... parameters) throws MatchingException;
+
 }
