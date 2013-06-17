@@ -19,16 +19,17 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case0;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
+import java.util.Arrays;
 import java.util.List;
 
 @CaseType(List.class)
-public class Nil<E> extends Case0<List<E>> {
-    public Option<Void> unapply(List<E> list) {
+public class Nil<E> implements Case<List<E>> {
+    public Option<List<Object>> unapply(List<E> list) {
         if (list.isEmpty()) {
-            return new Option.Some<>(null);
+            return new Option.Some<>(Arrays.asList());
         } else {
             return new Option.None<>();
         }

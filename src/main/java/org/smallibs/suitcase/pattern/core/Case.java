@@ -20,8 +20,10 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public interface Case<T, R> {
+import java.util.List;
 
-    Option<R> unapply(T t);
+public interface Case<T> {
+
+    Option<List<Object>> unapply(T t);
 
 }

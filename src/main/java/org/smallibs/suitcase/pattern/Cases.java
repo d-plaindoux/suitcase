@@ -20,22 +20,17 @@ package org.smallibs.suitcase.pattern;
 
 import org.smallibs.suitcase.pattern.core.Any;
 import org.smallibs.suitcase.pattern.core.Case;
-import org.smallibs.suitcase.pattern.core.Case1;
-import org.smallibs.suitcase.pattern.core.Case2;
 import org.smallibs.suitcase.pattern.core.Constant;
 import org.smallibs.suitcase.pattern.core.Null;
 import org.smallibs.suitcase.pattern.core.TypeOf;
+import org.smallibs.suitcase.pattern.core.Var;
 
 public final class Cases {
 
     public static class AnyValueObject {
-
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof AnyValueObject)) return false;
-
-            return true;
+            return this == o || o instanceof AnyValueObject;
         }
 
         @Override
@@ -50,36 +45,36 @@ public final class Cases {
         // Prevent useless creation
     }
 
-    public static <T> Case1<T, ?> reify(Object value) {
+    public static <T> Case<T> reify(Object value) {
         if (value == null) return nil();
         else if (value.equals(_)) return any();
         else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
-        else if (value instanceof Case1) return (Case1<T, ?>) value;
+        else if (value instanceof Case) return (Case<T>) value;
         else return Cases.constant((T) value);
     }
 
-    public static <T> Case<T, ?> reifyAll(Object value) {
-        if (value == null) return nil();
-        else if (value.equals(_)) return any();
-        else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
-        else if (value instanceof Case) return (Case<T, ?>) value;
-        else return Cases.constant((T) value);
-    }
-
-    public static <T> Case1<T, T> constant(T value) {
+    public static <T> Case<T> constant(T value) {
         assert value != null;
         return new Constant<>(value);
     }
 
-    public static <T> Case1<T, T> nil() {
+    public static <T> Case<T> var() {
+        return new Var<>();
+    }
+
+    public static <T> Case<T> var(T value) {
+        return new Var<>(value);
+    }
+
+    public static <T> Case<T> nil() {
         return new Null<>();
     }
 
-    public static <T> Case1<T, T> any() {
+    public static <T> Case<T> any() {
         return new Any<>();
     }
 
-    public static <T, R> Case1<T, R> typeOf(Class<R> type) {
+    public static <T> Case<T> typeOf(Class<?> type) {
         assert type != null;
         return new TypeOf<>(type);
     }

@@ -19,19 +19,24 @@
 package org.smallibs.suitcase.pattern.peano;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case1;
+import org.smallibs.suitcase.pattern.Cases;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
+import java.util.List;
+
 @CaseType(Integer.class)
-public class Succ extends Case1<Integer, Integer> {
+public class Succ implements Case<Integer> {
+
+    private final Case<Integer> value;
 
     public Succ(Object o1) {
-        super(o1);
+        this.value = Cases.reify(o1);
     }
 
-    public Option<Integer> unapply(Integer integer) {
+    public Option<List<Object>> unapply(Integer integer) {
         if (integer > 0) {
-            return (Option<Integer>) this._1.unapply(integer - 1);
+            return this.value.unapply(integer - 1);
         } else {
             return new Option.None<>();
         }

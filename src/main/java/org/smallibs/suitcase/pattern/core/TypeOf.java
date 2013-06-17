@@ -20,17 +20,20 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class TypeOf<T, R> extends Case1<T, R> {
-    private final Class<R> type;
+import java.util.Arrays;
+import java.util.List;
 
-    public TypeOf(Class<R> type) {
+public class TypeOf<T> implements Case<T> {
+    private final Class<?> type;
+
+    public TypeOf(Class<?> type) {
         this.type = type;
     }
 
     @Override
-    public Option<R> unapply(T object) {
+    public Option<List<Object>> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return new Option.Some<>(type.cast(object));
+            return new Option.Some<>(Arrays.asList());
         } else {
             return new Option.None<>();
         }

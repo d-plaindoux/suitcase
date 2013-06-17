@@ -19,8 +19,9 @@
 package org.smallibs.suitcase.utils;
 
 import org.smallibs.suitcase.matching.MatchingException;
+import org.smallibs.suitcase.pattern.core.CallBack;
 
-public interface Function0<R> {
+public interface Function0<R> extends CallBack {
 
     R apply() throws MatchingException;
 

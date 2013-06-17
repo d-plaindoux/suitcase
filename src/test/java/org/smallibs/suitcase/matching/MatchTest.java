@@ -31,8 +31,7 @@ import org.smallibs.suitcase.utils.Function2;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.smallibs.suitcase.pattern.Cases._;
-import static org.smallibs.suitcase.pattern.Cases.nil;
+import static org.smallibs.suitcase.pattern.Cases.*;
 
 public class MatchTest {
 
@@ -91,9 +90,8 @@ public class MatchTest {
         final Match<List<Object>, Integer> sizeOfMatcher = Match.match();
 
         sizeOfMatcher.when(new Nil<>()).then(0);
-        sizeOfMatcher.when(new Cons<>(_, _)).then(new Function2<Object, List<Object>, Integer>() {
-            @Override
-            public Integer apply(Object head, List<Object> tail) throws MatchingException {
+        sizeOfMatcher.when(new Cons<>(_, var())).then(new Function1<List<Object>, Integer>() {
+            public Integer apply(List<Object> tail) throws MatchingException {
                 return 1 + sizeOfMatcher.apply(tail);
             }
         });
@@ -107,8 +105,7 @@ public class MatchTest {
         final Match<List<Integer>, Integer> addAll = Match.match();
 
         addAll.when(new Nil<Integer>()).then(0);
-        addAll.when(new Cons<Integer>(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
-            @Override
+        addAll.when(new Cons<Integer>(var(), var())).then(new Function2<Integer, List<Integer>, Integer>() {
             public Integer apply(Integer i, List<Integer> l) throws MatchingException {
                 return i + addAll.apply(l);
             }
@@ -118,31 +115,12 @@ public class MatchTest {
         TestCase.assertEquals(10, addAll.apply(Arrays.asList(1, 2, 3, 4)).intValue());
     }
 
-    /*
-    @Test
-    public void shouldComputeAdditionWithAdHocPatternObjectAndTailRecursion() throws MatchingException {
-        final Match<List<Integer>, Match.Rec<Integer>> addAll = Match.Rec().match(0);;
-
-        addAll.when(new Nil<Integer>()).then(addAll);
-        addAll.when(new Cons<Integer>(_, _)).then(new Function2<Integer, List<Integer>, Integer>() {
-            @Override
-            public TailRec<Integer> apply(Integer i, List<Integer> l) throws MatchingException {
-                return deRec.accu(i + deRec.accu()).recurse(l);
-            }
-        });
-
-        TestCase.assertEquals(0, addAll.apply(Arrays.<Integer>asList()).intValue());
-        TestCase.assertEquals(10, addAll.apply(Arrays.asList(1, 2, 3, 4)).intValue());
-    }
-    */
-
     @Test
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
         multiplyMatcher.when(new Zero()).then(0);
-        multiplyMatcher.when(new Succ(_)).then(new Function1<Integer, Integer>() {
-            @Override
+        multiplyMatcher.when(new Succ(var())).then(new Function1<Integer, Integer>() {
             public Integer apply(Integer i) throws MatchingException {
                 return 19 + multiplyMatcher.apply(i);
             }
@@ -156,14 +134,13 @@ public class MatchTest {
         final Match<Integer, Boolean> evenMatcher = Match.match();
 
         evenMatcher.when(0).then(true);
-        evenMatcher.when(new Succ(new Succ(_))).then(
-                new Function1<Integer, Boolean>() {
-                    @Override
-                    public Boolean apply(Integer i) throws MatchingException {
-                        return evenMatcher.apply(i);
-                    }
-                }).
-                when(Cases.<Integer>any()).then(false);
+        evenMatcher.when(new Succ(new Succ(var()))).then(new Function1<Integer, Boolean>() {
+            public Boolean apply(Integer i) throws MatchingException {
+                return evenMatcher.apply(i);
+            }
+        });
+
+        evenMatcher.when(Cases.<Integer>any()).then(false);
 
         TestCase.assertEquals(true, evenMatcher.apply(10).booleanValue());
     }

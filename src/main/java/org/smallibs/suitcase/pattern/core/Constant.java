@@ -20,7 +20,10 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class Constant<T> extends Case1<T, T> {
+import java.util.Arrays;
+import java.util.List;
+
+public class Constant<T> implements Case<T> {
 
     private final Object object;
 
@@ -29,11 +32,11 @@ public class Constant<T> extends Case1<T, T> {
     }
 
     @Override
-    public Option<T> unapply(T object) {
+    public Option<List<Object>> unapply(T object) {
         if (object != null && object.equals(this.object)) {
-            return new Option.Some<T>(object);
+            return new Option.Some<>(Arrays.asList());
         } else {
-            return new Option.None<T>();
+            return new Option.None<>();
         }
     }
 }

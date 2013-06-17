@@ -59,7 +59,7 @@ able to add all integers in a given list.
   final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
 
   addAll.when(new Nil<Integer>()).then(0);
-  addAll.when(new Cons<Integer>(_,_)).then(
+  addAll.when(new Cons<Integer>(var(),var())).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             @Override
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
@@ -73,10 +73,6 @@ able to add all integers in a given list.
 
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
 to many integers.
-
-Same code in Java8 is more intuitive and compact.
-
-
 
 Other Propositions
 ------------------

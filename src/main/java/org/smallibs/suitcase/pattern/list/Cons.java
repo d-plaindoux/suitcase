@@ -19,29 +19,36 @@
 package org.smallibs.suitcase.pattern.list;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case2;
+import org.smallibs.suitcase.pattern.Cases;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
-import org.smallibs.suitcase.utils.Tuple2;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @CaseType(List.class)
-public class Cons<E> extends Case2<List<E>, E, List<E>> {
+public class Cons<E> implements Case<List<E>> {
+
+    private final Case<E> caseHead;
+    private final Case<List<E>> caseTail;
 
     public Cons(Object o1, Object o2) {
-        super(o1, o2);
+        this.caseHead = Cases.reify(o1);
+        this.caseTail = Cases.reify(o2);
     }
 
-    public Option<Tuple2<E, List<E>>> unapply(List<E> list) {
+    public Option<List<Object>> unapply(List<E> list) {
         if (!list.isEmpty()) {
             final List<E> tail = new LinkedList<>(list);
-            final Option<E> headResult = (Option<E>) this._1.unapply(tail.remove(0));
+            final Option<List<Object>> headResult = this.caseHead.unapply(tail.remove(0));
 
             if (!headResult.isNone()) {
-                final Option<?> tailResult = this._2.unapply(tail);
+                final Option<List<Object>> tailResult = this.caseTail.unapply(tail);
                 if (!tailResult.isNone()) {
-                    return new Option.Some<>(new Tuple2<>(headResult.value(), tail));
+                    final List<Object> result = new LinkedList<>();
+                    result.addAll(headResult.value());
+                    result.addAll(tailResult.value());
+                    return new Option.Some<>(result);
                 }
             }
         }

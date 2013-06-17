@@ -20,12 +20,15 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class Null<T> extends Case1<T, T> {
+import java.util.Arrays;
+import java.util.List;
+
+public class Null<T> implements Case<T> {
 
     @Override
-    public Option<T> unapply(T object) {
+    public Option<List<Object>> unapply(T object) {
         if (object == null) {
-            return new Option.Some<>(null);
+            return new Option.Some<>(Arrays.asList());
         } else {
             return new Option.None<>();
         }

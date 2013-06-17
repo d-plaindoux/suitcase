@@ -19,22 +19,16 @@
 package org.smallibs.suitcase.matching;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.Cases;
-import org.smallibs.suitcase.pattern.core.Case0;
-import org.smallibs.suitcase.pattern.core.Case1;
-import org.smallibs.suitcase.pattern.core.Case2;
-import org.smallibs.suitcase.pattern.core.Case3;
+import org.smallibs.suitcase.pattern.core.CallBack;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Function0;
-import org.smallibs.suitcase.utils.Function1;
-import org.smallibs.suitcase.utils.Function2;
-import org.smallibs.suitcase.utils.Function3;
-import org.smallibs.suitcase.utils.Functions;
 import org.smallibs.suitcase.utils.Option;
-import org.smallibs.suitcase.utils.Tuple2;
-import org.smallibs.suitcase.utils.Tuple3;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
+import java.util.List;
 
 public final class Match<T, R> {
 
@@ -42,179 +36,71 @@ public final class Match<T, R> {
     // Internal classes and intermediate code for DSL like approach
     // =================================================================================================================
 
-    abstract private class Rule {
+    private class Rule {
         private final Class<?> type;
+        private final Case<T> aCase;
+        private final CallBack callBack;
 
-        private Rule(Class<?> type) {
+        private Rule(Class<T> type, Case<T> aCase, CallBack callBack) {
             this.type = type;
+            this.aCase = aCase;
+            this.callBack = callBack;
         }
 
         protected boolean typeIsCorrect(Object object) {
             return type == null || !Cases.typeOf(type).unapply(object).isNone();
         }
 
-        abstract R apply(T object) throws MatchingException;
-    }
-
-    private class Rule0 extends Rule {
-        private final Case0<T> aCase;
-        private final Function0<R> function;
-
-        private Rule0(Class<T> type, Case0<T> aCase, Function0<R> function) {
-            super(type);
-            this.aCase = aCase;
-            this.function = function;
-        }
-
         R apply(T object) throws MatchingException {
             if (this.typeIsCorrect(object)) {
-                final Option<Void> result = aCase.unapply(object);
+                final Option<List<Object>> result = aCase.unapply(object);
                 if (!result.isNone()) {
-                    return this.function.apply();
+                    try {
+                        final Object[] parameters = result.value().toArray(new Object[result.value().size()]);
+                        for (Method method : callBack.getClass().getMethods()) {
+                            if (method.getName().equals("apply") && method.getParameterTypes().length == parameters.length) {
+                                return (R) method.invoke(callBack, parameters);
+                            }
+                        }
+
+                        throw new NoSuchMethodException();
+                    } catch (ClassCastException e) {
+                        throw new IllegalStateException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new IllegalStateException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new IllegalStateException(e);
+                    } catch (NoSuchMethodException e) {
+                        throw new IllegalStateException(e);
+                    }
                 }
             }
-            throw new MatchingException();
-        }
-    }
 
-    private class Rule1<M> extends Rule {
-        private final Case1<T, M> aCase;
-        private final Function1<M, R> function;
-
-        private Rule1(Class<T> type, Case1<T, M> aCase, Function1<M, R> function) {
-            super(type);
-            this.aCase = aCase;
-            this.function = function;
-        }
-
-        R apply(T object) throws MatchingException {
-            if (this.typeIsCorrect(object)) {
-                final Option<M> result = aCase.unapply(object);
-                if (!result.isNone()) {
-                    return this.function.apply(result.value());
-                }
-            }
-            throw new MatchingException();
-        }
-    }
-
-    private class Rule2<M1, M2> extends Rule {
-        private final Case2<T, M1, M2> aCase;
-        private final Function2<M1, M2, R> function;
-
-        private Rule2(Class<T> type, Case2<T, M1, M2> aCase, Function2<M1, M2, R> function) {
-            super(type);
-            this.aCase = aCase;
-            this.function = function;
-        }
-
-        R apply(T object) throws MatchingException {
-            if (this.typeIsCorrect(object)) {
-                final Option<Tuple2<M1, M2>> result = aCase.unapply(object);
-                if (!result.isNone()) {
-                    return this.function.apply(result.value()._1, result.value()._2);
-                }
-            }
-            throw new MatchingException();
-        }
-    }
-
-    private class Rule3<M1, M2, M3> extends Rule {
-        private final Case3<T, M1, M2, M3> aCase;
-        private final Function3<M1, M2, M3, R> function;
-
-        private Rule3(Class<T> type, Case3<T, M1, M2, M3> aCase, Function3<M1, M2, M3, R> function) {
-            super(type);
-            this.aCase = aCase;
-            this.function = function;
-        }
-
-        R apply(T object) throws MatchingException {
-            if (this.typeIsCorrect(object)) {
-                final Option<Tuple3<M1, M2, M3>> result = aCase.unapply(object);
-                if (!result.isNone()) {
-                    return this.function.apply(result.value()._1, result.value()._2, result.value()._3);
-                }
-            }
             throw new MatchingException();
         }
     }
 
     // =================================================================================================================
 
-    public class When0 {
+    public class When {
         private final Class<T> type;
-        private final Case0<T> aCase;
+        private final Case<T> aCase;
 
-        public When0(Class<T> type, Case0<T> aCase) {
+        public When(Class<T> type, Case<T> aCase) {
             this.type = type;
             this.aCase = aCase;
         }
 
-        public Match<T, R> then(R result) {
-            return then(Functions.<R>constant0(result));
+        public Match<T, R> then(final R result) {
+            return then(new Function0<R>() {
+                public R apply() {
+                    return result;
+                }
+            });
         }
 
-        public Match<T, R> then(Function0<R> function) {
-            Match.this.rules.add(new Rule0(type, aCase, function));
-            return Match.this;
-        }
-    }
-
-    public class When1<M> {
-        private final Class<T> type;
-        private final Case1<T, M> aCase;
-
-        public When1(Class<T> type, Case1<T, M> aCase) {
-            this.type = type;
-            this.aCase = aCase;
-        }
-
-        public Match<T, R> then(R result) {
-            return then(Functions.<M, R>constant1(result));
-        }
-
-        public Match<T, R> then(Function1<M, R> function) {
-            Match.this.rules.add(new Rule1<>(type, aCase, function));
-            return Match.this;
-        }
-    }
-
-    public class When2<M1, M2> {
-        private final Class<T> type;
-        private final Case2<T, M1, M2> aCase;
-
-        public When2(Class<T> type, Case2<T, M1, M2> aCase) {
-            this.type = type;
-            this.aCase = aCase;
-        }
-
-        public Match<T, R> then(R result) {
-            return then(Functions.<M1, M2, R>constant2(result));
-        }
-
-        public Match<T, R> then(Function2<M1, M2, R> function) {
-            Match.this.rules.add(new Rule2<>(type, aCase, function));
-            return Match.this;
-        }
-    }
-
-
-    public class When3<M1, M2, M3> {
-        private final Class<T> type;
-        private final Case3<T, M1, M2, M3> aCase;
-
-        public When3(Class<T> type, Case3<T, M1, M2, M3> aCase) {
-            this.type = type;
-            this.aCase = aCase;
-        }
-
-        public Match<T, R> then(R result) {
-            return then(Functions.<M1, M2, M3, R>constant3(result));
-        }
-
-        public Match<T, R> then(Function3<M1, M2, M3, R> function) {
-            Match.this.rules.add(new Rule3<>(type, aCase, function));
+        public Match<T, R> then(CallBack function) {
+            Match.this.rules.add(new Rule(type, aCase, function));
             return Match.this;
         }
     }
@@ -245,32 +131,20 @@ public final class Match<T, R> {
     // Behaviors
     // =================================================================================================================
 
-    public When0 when(final Case0<T> aCase) {
-        return new When0(this.<T>getType(aCase), aCase);
+    public When when(final T object) {
+        return when(Cases.<T>reify(object));
     }
 
-    public When1<?> when(final T object) {
-        return when1((Case1<T,?>) Cases.<T>reify(object));
+    public When when(final Cases.AnyValueObject _) {
+        return when(Cases.<T>any());
     }
 
-    public When1<?> when(final Cases.AnyValueObject object) {
-        return when1((Case1<T,?>) Cases.<T>reify(object));
-    }
-
-    public <M> When1<M> when(final Case1<T, M> aCase) {
-        return when1(aCase);
-    }
-
-    private <M> When1<M> when1(final Case1<T, M> aCase) {
+    public When when(final Case<T> aCase) {
         if (aCase == null) {
-            return new When1(null, Cases.<T>nil());
+            return new When(null, Cases.<T>nil());
         } else {
-            return new When1(this.<T>getType(aCase), aCase);
+            return new When(this.<T>getType(aCase), aCase);
         }
-    }
-
-    public <M1, M2> When2<M1, M2> when(final Case2<T, M1, M2> aCase) {
-        return new When2(this.<T>getType(aCase), aCase);
     }
 
     private <T> Class<T> getType(Case aCase) {

@@ -20,11 +20,14 @@ package org.smallibs.suitcase.pattern.core;
 
 import org.smallibs.suitcase.utils.Option;
 
-public class Any<T> extends Case1<T, T> {
+import java.util.Arrays;
+import java.util.List;
+
+public class Any<T> implements Case<T> {
 
     @Override
-    public Option<T> unapply(T object) {
-        return new Option.Some<>(object);
+    public Option<List<Object>> unapply(T object) {
+        return new Option.Some<>(Arrays.asList());
     }
 
 }

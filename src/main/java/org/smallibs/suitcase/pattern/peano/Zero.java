@@ -19,15 +19,18 @@
 package org.smallibs.suitcase.pattern.peano;
 
 import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.core.Case0;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
-@CaseType(Integer.class)
-public class Zero extends Case0<Integer> {
+import java.util.Arrays;
+import java.util.List;
 
-    public Option<Void> unapply(Integer integer) {
+@CaseType(Integer.class)
+public class Zero implements Case<Integer> {
+
+    public Option<List<Object>> unapply(Integer integer) {
         if (integer == 0) {
-            return new Option.Some<>(null);
+            return new Option.Some<>(Arrays.asList());
         } else {
             return new Option.None<>();
         }

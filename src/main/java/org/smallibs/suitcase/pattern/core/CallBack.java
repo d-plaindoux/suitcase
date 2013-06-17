@@ -18,10 +18,5 @@
 
 package org.smallibs.suitcase.pattern.core;
 
-import org.smallibs.suitcase.utils.Option;
-
-public abstract class Case0<T> implements Case<T, Void> {
-
-    abstract public Option<Void> unapply(T t);
-
+public interface CallBack {
 }
