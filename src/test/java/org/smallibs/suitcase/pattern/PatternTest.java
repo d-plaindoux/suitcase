@@ -123,12 +123,12 @@ public class PatternTest {
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(var.of(new Cons<Integer>(_, new Cons<Integer>(_, new Nil()))).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(var.of(new Cons<Integer>(_, new Cons<Integer>(_, new Nil<Integer>()))).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2, new Nil())).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2, new Nil<Integer>())).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     // Peano

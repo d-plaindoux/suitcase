@@ -16,8 +16,8 @@ intuitive mechanism filtering objects using their values i.e. attributes.
 For this purpose a simple pattern matching inspired by Scala [extractor object](http://www.scala-lang.org/node/112)
 has been designed.
 
-Matching by equality
---------------------
+Matching and Equality
+---------------------
 
 This pattern matching offers a simple mechanism for simple object selection based on intrinsic equality.
 This is available for basic values like boolean, integers etc. and POJOs.
@@ -31,6 +31,23 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
   isZero.when(_).then(false);
     
   isZero.apply(0); // == true
+</pre>
+
+Matching and Typing
+-------------------
+
+This pattern matching also offers a simple mechanism able to discriminate objects using their types.
+
+For instance the following sample checks if an integer or a string.
+
+<pre>
+  final Match&lt;Object, String> typeCase = Match.match();
+
+  typeCase.when(Integer.class).then("int");
+  typeCase.when(String.class).then("string);
+
+  typeCase.apply(0); // == "int"
+  typeCase.apply("Hello"); // == "string"
 </pre>
 
 Matching complex Objects 

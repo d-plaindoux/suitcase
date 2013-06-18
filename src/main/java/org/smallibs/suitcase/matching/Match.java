@@ -32,13 +32,13 @@ import org.smallibs.suitcase.utils.Option;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class Match<T, R> {
+public final class Match<T, R> implements Function1<T, R> {
 
     // =================================================================================================================
     // Internal classes and intermediate code for DSL like approach
     // =================================================================================================================
 
-    private class Rule {
+    private class Rule implements Function1<List<Object>, R> {
         private final Class<?> type;
         private final Case<T> aCase;
         private final Function function;
@@ -62,7 +62,7 @@ public final class Match<T, R> {
         }
 
         @SuppressWarnings("unchecked")
-        R apply(List<Object> result) throws MatchingException {
+        public R apply(List<Object> result) throws MatchingException {
             try {
                 final Object[] parameters = result.toArray(new Object[result.size()]);
                 switch (parameters.length) {
@@ -218,17 +218,19 @@ public final class Match<T, R> {
         if (aCase == null) {
             return new When0(null, Cases.<T>nil());
         } else {
+            final Class<?> type = this.getType(aCase);
+
             switch (aCase.numberOfVariables()) {
                 case 0:
-                    return new When0(this.getType(aCase), aCase);
+                    return new When0(type, aCase);
                 case 1:
-                    return new When1(this.getType(aCase), aCase);
+                    return new When1(type, aCase);
                 case 2:
-                    return new When2(this.getType(aCase), aCase);
+                    return new When2(type, aCase);
                 case 3:
-                    return new When3(this.getType(aCase), aCase);
+                    return new When3(type, aCase);
                 default:
-                    return new WhenN(this.getType(aCase), aCase);
+                    return new WhenN(type, aCase);
             }
         }
     }
@@ -240,6 +242,8 @@ public final class Match<T, R> {
             return null;
         }
     }
+
+    // =================================================================================================================
 
     public R apply(T object) throws MatchingException {
         for (Rule rule : rules) {
