@@ -38,15 +38,15 @@ Matching and Typing
 
 This pattern matching also offers a simple mechanism able to discriminate objects using their types.
 
-For instance the following sample checks if an integer or a string.
+For instance the following sample checks if an object is an integer or a string.
 
 <pre>
   final Match&lt;Object, String> typeCase = Match.match();
 
   typeCase.when(Integer.class).then("int");
-  typeCase.when(String.class).then("string);
+  typeCase.when(String.class).then("string");
 
-  typeCase.apply(0); // == "int"
+  typeCase.apply(0);       // == "int"
   typeCase.apply("Hello"); // == "string"
 </pre>
 

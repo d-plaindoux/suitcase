@@ -39,7 +39,7 @@ public class MatchTest {
     public void shouldMatchNullObject() throws MatchingException {
         final Match<Object, Integer> match = Match.match();
 
-        match.when(nil()).then(42);
+        match.when(null).then(42);
 
         TestCase.assertEquals(42, match.apply(null).intValue());
     }
@@ -48,7 +48,7 @@ public class MatchTest {
     public void shouldNotMatchConstantObject() throws MatchingException {
         final Match<Object, Integer> match = Match.match();
 
-        match.when(nil()).then(42);
+        match.when(null).then(42);
 
         match.apply(19);
     }
@@ -67,7 +67,7 @@ public class MatchTest {
         final Match<Object, Integer> match = Match.match();
 
         match.when(Integer.class).then(42);
-        match.when(nil()).then(19);
+        match.when(null).then(19);
 
         TestCase.assertEquals(42, match.apply(0).intValue());
         TestCase.assertEquals(19, match.apply(null).intValue());
