@@ -18,13 +18,13 @@
 
 package org.smallibs.suitcase.utils;
 
-public interface Option<T> {
+public abstract class Option<T> {
 
-    T value();
+    public abstract T value();
 
-    boolean isNone();
+    public abstract boolean isNone();
 
-    public class None<T> implements Option<T> {
+    public static class None<T> extends Option<T> {
 
         @Override
         public T value() {
@@ -37,7 +37,7 @@ public interface Option<T> {
         }
     }
 
-    public class Some<T> implements Option<T> {
+    public static class Some<T> extends Option<T> {
         public final T value;
 
         public Some(T value) {

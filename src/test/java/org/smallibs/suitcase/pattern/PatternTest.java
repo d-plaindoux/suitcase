@@ -19,10 +19,11 @@ package org.smallibs.suitcase.pattern;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.list.Cons;
-import org.smallibs.suitcase.pattern.list.Nil;
+import org.smallibs.suitcase.pattern.utils.Lists;
 import org.smallibs.suitcase.pattern.peano.Succ;
 import org.smallibs.suitcase.pattern.peano.Zero;
+import org.smallibs.suitcase.pattern.utils.Pairs;
+import org.smallibs.suitcase.utils.Pair;
 
 import java.util.Arrays;
 
@@ -98,37 +99,49 @@ public class PatternTest {
 
     @Test
     public void shouldNilMatchEmptyList() {
-        TestCase.assertFalse(new Nil<>().unapply(Arrays.asList()).isNone());
+        TestCase.assertFalse(Lists.empty().unapply(Arrays.asList()).isNone());
     }
 
     @Test
     public void shouldNilNotlMatchNonList() {
-        TestCase.assertTrue(new Nil<Integer>().unapply(Arrays.asList(1)).isNone());
+        TestCase.assertTrue(Lists.<Integer>empty().unapply(Arrays.asList(1)).isNone());
     }
 
     @Test
     public void shouldConsNotlMatchEmptyList() {
-        TestCase.assertTrue(new Cons<>(_, _).unapply(Arrays.asList()).isNone());
+        TestCase.assertTrue(Lists.cons(_, _).unapply(Arrays.asList()).isNone());
     }
 
     @Test
     public void shouldConsMatchNonEmptyList() {
-        TestCase.assertFalse(new Cons<Integer>(_, _).unapply(Arrays.asList(1)).isNone());
+        TestCase.assertFalse(Lists.<Integer>cons(_, _).unapply(Arrays.asList(1)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2() {
-        TestCase.assertFalse(new Cons<Integer>(_, new Cons<Integer>(_, _)).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(Lists.<Integer>cons(_, Lists.cons(_, _)).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(var.of(new Cons<Integer>(_, new Cons<Integer>(_, new Nil<Integer>()))).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(var.of(Lists.<Integer>cons(_, Lists.cons(_, Lists.empty()))).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(new Cons<Integer>(1, new Cons<Integer>(2, new Nil<Integer>())).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(Lists.<Integer>cons(1, Lists.cons(2, Lists.empty())).unapply(Arrays.asList(1, 2)).isNone());
+    }
+
+    // Pair
+
+    @Test
+    public void shouldMatchPair() {
+        TestCase.assertFalse(Pairs.of(_,_).unapply(new Pair<Object, Object>(1,2)).isNone());
+    }
+
+    @Test
+    public void shouldMatchPairAndValues() {
+        TestCase.assertFalse(Pairs.of(1,2).unapply(new Pair<Object, Object>(1,2)).isNone());
     }
 
     // Peano

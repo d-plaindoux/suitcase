@@ -20,17 +20,19 @@ package org.smallibs.suitcase.matching;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.list.Cons;
-import org.smallibs.suitcase.pattern.list.Nil;
 import org.smallibs.suitcase.pattern.peano.Succ;
 import org.smallibs.suitcase.pattern.peano.Zero;
+import org.smallibs.suitcase.pattern.utils.Lists;
+import org.smallibs.suitcase.pattern.utils.Pairs;
 import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
+import org.smallibs.suitcase.utils.Pair;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.smallibs.suitcase.pattern.Cases.*;
+import static org.smallibs.suitcase.pattern.Cases._;
+import static org.smallibs.suitcase.pattern.Cases.var;
 
 public class MatchTest {
 
@@ -76,7 +78,7 @@ public class MatchTest {
     public void shouldMatchLisContainingAnObject() throws MatchingException {
         final Match<List<Object>, Boolean> isEmpty = Match.match();
 
-        isEmpty.when(new Cons<>(1, _)).then(true);
+        isEmpty.when(Lists.cons(1, _)).then(true);
         isEmpty.when(_).then(false);
 
         TestCase.assertTrue(isEmpty.apply(Arrays.<Object>asList(1)));
@@ -88,8 +90,8 @@ public class MatchTest {
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
         final Match<List<Object>, Integer> sizeOfMatcher = Match.match();
 
-        sizeOfMatcher.when(new Nil<>()).then(0);
-        sizeOfMatcher.when(new Cons<>(_, var)).then(new Function1<List<Object>, Integer>() {
+        sizeOfMatcher.when(Lists.empty()).then(0);
+        sizeOfMatcher.when(Lists.cons(_, var)).then(new Function1<List<Object>, Integer>() {
             public Integer apply(List<Object> tail) throws MatchingException {
                 return 1 + sizeOfMatcher.apply(tail);
             }
@@ -103,8 +105,8 @@ public class MatchTest {
     public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
         final Match<List<Integer>, Integer> addAll = Match.match();
 
-        addAll.when(new Nil<Integer>()).then(0);
-        addAll.when(new Cons<Integer>(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
+        addAll.when(Lists.empty()).then(0);
+        addAll.when(Lists.cons(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
             public Integer apply(Integer i, List<Integer> l) throws MatchingException {
                 return i + addAll.apply(l);
             }
@@ -159,22 +161,27 @@ public class MatchTest {
     public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
         final Match<List<Integer>, Boolean> headIsZero = Match.match();
 
-        headIsZero.when(new Cons<Integer>(0, _)).then(true);
+        headIsZero.when(Lists.cons(0, _)).then(true);
         headIsZero.when(_).then(false);
 
         TestCase.assertTrue(headIsZero.apply(Arrays.asList(0)));
         TestCase.assertFalse(headIsZero.apply(Arrays.asList(1, 2)));
     }
 
-    interface A {}
-    static class B implements A {}
-    static class C implements A {}
+    interface A {
+    }
+
+    static class B implements A {
+    }
+
+    static class C implements A {
+    }
 
     @Test
     public void shouldMatchASubclasses() throws MatchingException {
         final Match<A, String> matchA = Match.match();
 
-        matchA.when(var.<A>of(B.class)).then(new Function1<B,String>() {
+        matchA.when(var.<A>of(B.class)).then(new Function1<B, String>() {
             public String apply(B acceptor) throws MatchingException {
                 return "B";
             }
@@ -184,5 +191,18 @@ public class MatchTest {
 
         TestCase.assertEquals("B", matchA.apply(new B()));
         TestCase.assertEquals("C", matchA.apply(new C()));
+    }
+
+    @Test
+    public void shouldSwitchPair() throws MatchingException {
+        final Match<Pair<Integer, String>, Pair<String, Integer>> match = Match.match();
+
+        match.when(Pairs.of(var, var)).then(new Function2<Integer, String, Pair<String, Integer>>() {
+            public Pair<String, Integer> apply(Integer r1, String r2) throws MatchingException {
+                return new Pair<>(r2, r1);
+            }
+        });
+
+        TestCase.assertEquals(new Pair<>("a", 1), match.apply(new Pair<>(1, "a")));
     }
 }

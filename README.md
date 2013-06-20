@@ -62,7 +62,7 @@ Then a simple function able to check when a list is empty can be proposed.
 <pre>
   final Match&lt;List&lt;Object>, Boolean> isEmpty = Match.match();
 
-  isEmpty.when(new Nil&lt;>()).then(true);
+  isEmpty.when(Lists.empty()).then(true);
   isEmpty.when(_).then(false);
 
   isEmpty.apply(Arrays.&lt;Object>asList());            // == true
@@ -75,8 +75,8 @@ able to add all integers in a given list.
 <pre>
   final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
 
-  addAll.when(new Nil<Integer>()).then(0);
-  addAll.when(new Cons<Integer>(var,var)).then(
+  addAll.when(Lists.empty()).then(0);
+  addAll.when(Lists.cons(var,var)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
                 return i + allAdd.apply(l);
