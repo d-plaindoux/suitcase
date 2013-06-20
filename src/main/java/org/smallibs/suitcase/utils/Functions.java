@@ -65,6 +65,14 @@ public final class Functions {
         };
     }
 
+    private static <R> Function1<List<Object>, R> applyObjectsList(final Function4<Object, Object, Object, Object, R> acceptor) {
+        return new Function1<List<Object>, R>() {
+            public R apply(List<Object> parameters) throws MatchingException {
+                return acceptor.apply(parameters.get(0), parameters.get(1), parameters.get(2), parameters.get(3));
+            }
+        };
+    }
+
     private static <R> Function1<List<Object>, R> applyObjectsList(final FunctionN<R> acceptor) {
         return new Function1<List<Object>, R>() {
             public R apply(List<Object> parameters) throws MatchingException {
@@ -101,6 +109,14 @@ public final class Functions {
     public static <R> Function1<Function3<Object, Object, Object, R>, Function1<List<Object>, R>> Nto3() {
         return new Function1<Function3<Object, Object, Object, R>, Function1<List<Object>, R>>() {
             public Function1<List<Object>, R> apply(final Function3<Object, Object, Object, R> acceptor) throws MatchingException {
+                return Functions.applyObjectsList(acceptor);
+            }
+        };
+    }
+
+    public static <R> Function1<Function4<Object, Object, Object, Object, R>, Function1<List<Object>, R>> Nto4() {
+        return new Function1<Function4<Object, Object, Object, Object, R>, Function1<List<Object>, R>>() {
+            public Function1<List<Object>, R> apply(final Function4<Object, Object, Object, Object, R> acceptor) throws MatchingException {
                 return Functions.applyObjectsList(acceptor);
             }
         };

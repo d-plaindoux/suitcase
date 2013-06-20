@@ -9,7 +9,7 @@ import java.util.List;
 public class Var<T> implements Case<T> {
 
 
-    private final Case<Object> value;
+    private final Case<T> value;
 
     public Var(Object value) {
         this.value = Cases.fromObject(value);

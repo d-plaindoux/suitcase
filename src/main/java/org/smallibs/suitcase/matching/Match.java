@@ -19,21 +19,17 @@
 package org.smallibs.suitcase.matching;
 
 import org.smallibs.suitcase.matching.core.AbstractMatch;
-import org.smallibs.suitcase.matching.core.CoreMatch;
-import org.smallibs.suitcase.pattern.Cases;
-import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function0;
 import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Function3;
+import org.smallibs.suitcase.utils.Function4;
 import org.smallibs.suitcase.utils.FunctionN;
 import org.smallibs.suitcase.utils.Functions;
 
 import java.util.List;
 
-import static org.smallibs.suitcase.pattern.Cases.AnyObject;
-import static org.smallibs.suitcase.pattern.Cases.VariableObject;
 import static org.smallibs.suitcase.pattern.Cases.var;
 
 public final class Match<T, R> extends AbstractMatch<T, R, Match<T, R>> {
@@ -46,6 +42,7 @@ public final class Match<T, R> extends AbstractMatch<T, R, Match<T, R>> {
         applyMatcher.when(var.of(Function1.class)).then(Functions.Nto1());
         applyMatcher.when(var.of(Function2.class)).then(Functions.NTo2());
         applyMatcher.when(var.of(Function3.class)).then(Functions.Nto3());
+        applyMatcher.when(var.of(Function4.class)).then(Functions.Nto4());
         applyMatcher.when(var.of(FunctionN.class)).then(Functions.NtoN());
     }
 

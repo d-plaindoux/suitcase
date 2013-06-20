@@ -96,7 +96,7 @@ public abstract class AbstractMatch<T, R, M extends AbstractMatch<T, R, M>> impl
     // Attributes
     // =================================================================================================================
 
-    private final LinkedList<Rule> rules;
+    private final List<Rule> rules;
 
     // =================================================================================================================
     // Constructors

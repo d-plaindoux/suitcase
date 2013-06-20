@@ -20,8 +20,8 @@ package org.smallibs.suitcase.utils;
 
 import org.smallibs.suitcase.matching.MatchingException;
 
-public interface Function4<M1, M2, M3, R> extends Function {
+public interface Function4<M1, M2, M3, M4, R> extends Function {
 
-    R apply(M1 r1, M2 r2, M3 r3) throws MatchingException;
+    R apply(M1 r1, M2 r2, M3 r3, M4 r4) throws MatchingException;
 
 }

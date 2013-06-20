@@ -18,12 +18,15 @@
 
 package org.smallibs.suitcase.pattern;
 
+import org.smallibs.suitcase.matching.Match;
+import org.smallibs.suitcase.matching.MatchingException;
 import org.smallibs.suitcase.pattern.core.Any;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.core.Constant;
 import org.smallibs.suitcase.pattern.core.Null;
 import org.smallibs.suitcase.pattern.core.TypeOf;
 import org.smallibs.suitcase.pattern.core.Var;
+import org.smallibs.suitcase.utils.Function0;
 
 public final class Cases {
 
@@ -63,7 +66,7 @@ public final class Cases {
         }
 
         public <T> Case<T> of(AnyObject _) {
-            return new Var<>(Cases.any());
+            return new Var<>(Cases.<T>any());
         }
     }
 
@@ -74,11 +77,11 @@ public final class Cases {
         // Prevent useless creation
     }
 
-    public static <T> Case<T> fromObject(Object value) {
+    public static <T> Case<T> fromObject(final Object value) {
         if (value == null) return nil();
-        else if (value.equals(_)) return Cases.any();
+        else if (value.equals(_)) return any();
         else if (value.equals(var)) return var.of(Cases.<T>any());
-        else if (value instanceof Class) return Cases.typeOf((Class<?>) value);
+        else if (value instanceof Class) return typeOf((Class<?>) value);
         else if (value instanceof Case) return (Case<T>) value;
         else return Cases.constant((T) value);
     }

@@ -29,7 +29,11 @@ import org.smallibs.suitcase.utils.FunctionN;
 
 import java.util.List;
 
-public final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> {
+final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> {
+
+    CoreMatch() {
+        // Package protected
+    }
 
     @Override
     protected CoreMatch<T, R> self() {
@@ -45,12 +49,6 @@ public final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> 
                     return ((Function0<R>) function).apply();
                 case 1:
                     return ((Function1<Object, R>) function).apply(parameters[0]);
-                case 2:
-                    return ((Function2<Object, Object, R>) function).apply(parameters[0], parameters[1]);
-                case 3:
-                    return ((Function3<Object, Object, Object, R>) function).apply(parameters[0], parameters[1], parameters[2]);
-                case 4:
-                    return ((Function4<Object, Object, Object, Object, R>) function).apply(parameters[0], parameters[1], parameters[2], parameters[3]);
                 default:
                     return ((FunctionN<R>) function).apply(parameters);
             }

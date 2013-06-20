@@ -78,7 +78,6 @@ able to add all integers in a given list.
   addAll.when(new Nil<Integer>()).then(0);
   addAll.when(new Cons<Integer>(var,var)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
-            @Override
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
                 return i + allAdd.apply(l);
             }
