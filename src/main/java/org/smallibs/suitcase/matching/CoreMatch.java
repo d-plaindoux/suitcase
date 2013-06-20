@@ -43,15 +43,7 @@ final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> {
     @Override
     protected R apply(Function function, List<Object> result) throws MatchingException {
         try {
-            final Object[] parameters = result.toArray(new Object[result.size()]);
-            switch (parameters.length) {
-                case 0:
-                    return ((Function0<R>) function).apply();
-                case 1:
-                    return ((Function1<Object, R>) function).apply(parameters[0]);
-                default:
-                    return ((FunctionN<R>) function).apply(parameters);
-            }
+            return ((Function1<Object, R>) function).apply(result.get(0));
         } catch (ClassCastException e) {
             throw new IllegalStateException(e);
         }
