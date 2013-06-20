@@ -16,15 +16,15 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.matching.core;
+package org.smallibs.suitcase.matching;
 
-import org.smallibs.suitcase.matching.MatchingException;
-import org.smallibs.suitcase.pattern.Cases;
+import org.smallibs.suitcase.matching.core.AbstractMatch;
 import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function0;
 import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Function3;
+import org.smallibs.suitcase.utils.Function4;
 import org.smallibs.suitcase.utils.FunctionN;
 
 import java.util.List;
@@ -49,6 +49,8 @@ public final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> 
                     return ((Function2<Object, Object, R>) function).apply(parameters[0], parameters[1]);
                 case 3:
                     return ((Function3<Object, Object, Object, R>) function).apply(parameters[0], parameters[1], parameters[2]);
+                case 4:
+                    return ((Function4<Object, Object, Object, Object, R>) function).apply(parameters[0], parameters[1], parameters[2], parameters[3]);
                 default:
                     return ((FunctionN<R>) function).apply(parameters);
             }
