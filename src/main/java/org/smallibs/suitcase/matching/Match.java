@@ -27,6 +27,7 @@ import org.smallibs.suitcase.utils.Function1;
 import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Function3;
 import org.smallibs.suitcase.utils.FunctionN;
+import org.smallibs.suitcase.utils.Functions;
 
 import java.util.List;
 
@@ -36,62 +37,11 @@ public final class Match<T, R> extends AbstractMatch<T, R, Match<T, R>> {
 
     {
         applyMatcher = new CoreMatch<>();
-
-        applyMatcher.when(Cases.var.of(Function0.class)).then(new Function1<Function0<R>, Function1<List<Object>, R>>() {
-            public Function1<List<Object>, R> apply(final Function0<R> acceptor) throws MatchingException {
-                return new Function1<List<Object>, R>() {
-                    public R apply(List<Object> parameters) throws MatchingException {
-                        return acceptor.apply();
-                    }
-
-                };
-            }
-        });
-
-        applyMatcher.when(Cases.var.of(Function1.class)).then(new Function1<Function1<Object, R>, Function1<List<Object>, R>>() {
-            public Function1<List<Object>, R> apply(final Function1<Object, R> acceptor) throws MatchingException {
-                return new Function1<List<Object>, R>() {
-                    public R apply(List<Object> parameters) throws MatchingException {
-                        return acceptor.apply(parameters.get(0));
-                    }
-
-                };
-            }
-        });
-
-        applyMatcher.when(Cases.var.of(Function2.class)).then(new Function1<Function2<Object, Object, R>, Function1<List<Object>, R>>() {
-            public Function1<List<Object>, R> apply(final Function2<Object, Object, R> acceptor) throws MatchingException {
-                return new Function1<List<Object>, R>() {
-                    public R apply(List<Object> parameters) throws MatchingException {
-                        return acceptor.apply(parameters.get(0), parameters.get(1));
-                    }
-
-                };
-            }
-        });
-
-        applyMatcher.when(Cases.var.of(Function3.class)).then(new Function1<Function3<Object, Object, Object, R>, Function1<List<Object>, R>>() {
-            public Function1<List<Object>, R> apply(final Function3<Object, Object, Object, R> acceptor) throws MatchingException {
-                return new Function1<List<Object>, R>() {
-                    public R apply(List<Object> parameters) throws MatchingException {
-                        return acceptor.apply(parameters.get(0), parameters.get(1), parameters.get(2));
-                    }
-
-                };
-            }
-        });
-
-        applyMatcher.when(Cases.var.of(FunctionN.class)).then(new Function1<FunctionN<R>, Function1<List<Object>, R>>() {
-            public Function1<List<Object>, R> apply(final FunctionN<R> acceptor) throws MatchingException {
-                return new Function1<List<Object>, R>() {
-                    @Override
-                    public R apply(List<Object> parameters) throws MatchingException {
-                        return acceptor.apply(parameters);
-                    }
-
-                };
-            }
-        });
+        applyMatcher.when(Cases.var.of(Function0.class)).then(Functions.Nto0());
+        applyMatcher.when(Cases.var.of(Function1.class)).then(Functions.Nto1());
+        applyMatcher.when(Cases.var.of(Function2.class)).then(Functions.NTo2());
+        applyMatcher.when(Cases.var.of(Function3.class)).then(Functions.Nto3());
+        applyMatcher.when(Cases.var.of(FunctionN.class)).then(Functions.NtoN());
     }
 
     public static <T, R> Match<T, R> match() {

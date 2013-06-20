@@ -24,7 +24,7 @@ import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function1;
-import org.smallibs.suitcase.utils.FunctionN;
+import org.smallibs.suitcase.utils.Functions;
 import org.smallibs.suitcase.utils.Option;
 
 import java.util.LinkedList;
@@ -82,17 +82,14 @@ public abstract class AbstractMatch<T, R, M extends AbstractMatch<T, R, M>> impl
         }
 
         public M then(final R result) {
-            return then(new FunctionN<R>() {
-                public R apply(Object... o1) {
-                    return result;
-                }
-            });
+            return then(Functions.constant(result));
         }
 
         public M then(Function callBack) {
             rules.add(new Rule(aCase, callBack));
             return AbstractMatch.this.self();
         }
+
     }
 
     // =================================================================================================================

@@ -20,7 +20,6 @@ package org.smallibs.suitcase.matching;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.list.Cons;
 import org.smallibs.suitcase.pattern.list.Nil;
 import org.smallibs.suitcase.pattern.peano.Succ;
