@@ -19,6 +19,7 @@
 package org.smallibs.suitcase.matching.core;
 
 import org.smallibs.suitcase.matching.MatchingException;
+import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function0;
 import org.smallibs.suitcase.utils.Function1;

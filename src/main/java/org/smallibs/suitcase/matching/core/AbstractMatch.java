@@ -111,20 +111,7 @@ public abstract class AbstractMatch<T, R, M extends AbstractMatch<T, R, M>> impl
     // =================================================================================================================
 
     public When when(Object object) {
-        if (object == null) {
-            return whenCase(Cases.<T>nil());
-        } else if (object instanceof Cases.AnyObject) {
-            return whenCase(Cases.<T>any());
-        } else if (object instanceof Cases.VariableObject) {
-            final Cases.VariableObject var = (Cases.VariableObject) object;
-            return whenCase(var.of(Cases.<T>any()));
-        } else {
-            return whenCase(Cases.<T>fromObject(object));
-        }
-    }
-
-    protected When whenCase(final Case<T> aCase) {
-        return new When(aCase);
+        return new When(Cases.<T>fromObject(object));
     }
 
     protected abstract R apply(Function function, List<Object> parameters) throws MatchingException;
