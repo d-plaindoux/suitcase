@@ -31,7 +31,7 @@ public class RecMatchTest {
     public void shouldHaveStackOverflow() throws MatchingException {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
-        multiplyMatcher.when(new Zero()).then(0);
+        multiplyMatcher.when(new Zero()).thenConstant(0);
         multiplyMatcher.when(new Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 1 + multiplyMatcher.apply(i);

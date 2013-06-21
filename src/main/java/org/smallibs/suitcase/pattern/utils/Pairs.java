@@ -28,7 +28,7 @@ import java.util.List;
 
 public final class Pairs {
 
-    public static <T1, T2> Case<Pair<T1, T2>> of(Object o1, Object o2) {
+    public static <T1, T2> Case<Pair<T1, T2>> APair(Object o1, Object o2) {
         return new Of<>(o1, o2);
     }
 

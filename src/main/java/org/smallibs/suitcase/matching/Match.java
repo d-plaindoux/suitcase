@@ -39,12 +39,12 @@ public class Match<T, R> {
     // Internal classes and intermediate code for DSL like approach
     // =================================================================================================================
 
-    protected class Rule {
+    protected class Rule<M> {
         private final Class<?> type;
         private final Case<T> aCase;
-        private final Function function;
+        private final Function<M, R> function;
 
-        private Rule(Case<T> aCase, Function function) {
+        private Rule(Case<T> aCase, Function<M, R> function) {
             this.type = this.getType(aCase);
             this.aCase = aCase;
             this.function = function;
@@ -70,7 +70,7 @@ public class Match<T, R> {
             }
         }
 
-        Function<T, R> getFunction() {
+        Function<M, R> getFunction() {
             return function;
         }
     }
@@ -84,11 +84,11 @@ public class Match<T, R> {
             this.aCase = aCase;
         }
 
-        public Match<T, R> then(final R result) {
-            return then(Functions.constant(result));
+        public Match<T, R> thenConstant(R c) {
+            return then(Functions.constant(c));
         }
 
-        public Match<T, R> then(Function callBack) {
+        public Match<T, R> then(Function<?, R> callBack) {
             rules.add(new Rule(aCase, callBack));
             return Match.this;
         }
@@ -117,8 +117,8 @@ public class Match<T, R> {
         return new When(Cases.<T>fromObject(object));
     }
 
-    protected R reduce(Function<T, R> function, List<Object> result) {
-        final T parameter = (T) generateParameter(result); // TODO -- check this cast ...
+    protected R reduce(Function<Object, R> function, List<Object> result) {
+        final Object parameter = generateParameter(result); // TODO -- check this cast ...
         return function.apply(parameter);
     }
 

@@ -29,11 +29,11 @@ import java.util.List;
 
 public final class Lists {
 
-    public static <T> Case<List<T>> empty() {
+    public static <T> Case<List<T>> Empty() {
         return new Empty<>();
     }
 
-    public static <T> Case<List<T>> cons(Object o1, Object o2) {
+    public static <T> Case<List<T>> Cons(Object o1, Object o2) {
         return new Cons<>(o1, o2);
     }
 

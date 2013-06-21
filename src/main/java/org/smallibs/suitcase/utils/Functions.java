@@ -20,10 +20,10 @@ package org.smallibs.suitcase.utils;
 
 public final class Functions {
 
-    public static <R> Function<R, R> constant(final R object) {
-        return new Function<R, R>() {
+    public static <T, R> Function<T, R> constant(final R object) {
+        return new Function<T, R>() {
             @Override
-            public R apply(R any) {
+            public R apply(T any) {
                 return object;
             }
         };

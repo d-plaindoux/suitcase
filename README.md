@@ -27,8 +27,8 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.match();
 
-  isZero.when(0).then(true);
-  isZero.when(_).then(false);
+  isZero.when(0).thenConstant(true);
+  isZero.when(_).thenConstant(false);
     
   isZero.apply(0); // == true
 </pre>
@@ -43,8 +43,8 @@ For instance the following sample checks if an object is an integer or a string.
 <pre>
   final Match&lt;Object, String> typeCase = Match.match();
 
-  typeCase.when(Integer.class).then("int");
-  typeCase.when(String.class).then("string");
+  typeCase.when(Integer.class).thenConstant("int");
+  typeCase.when(String.class).thenConstant("string");
 
   typeCase.apply(0);       // == "int"
   typeCase.apply("Hello"); // == "string"
@@ -53,17 +53,17 @@ For instance the following sample checks if an object is an integer or a string.
 Matching complex Objects 
 ------------------------
 
-The pattern system is open and accept ad-hoc cases. For instance for the `List` two patterns are available:
-* `Lists.empty()` for the empty list and
-* `Lists.cons(?,?)` for lists containing at least one element.
+The pattern system is open and accept ad-hoc cases. For instance for the `Lists` two patterns are available:
+* `Empty()` for the empty list and
+* `Cons(?,?)` for lists containing at least one element.
 
 Then a simple function able to check when a list is empty can be proposed.
 
 <pre>
   final Match&lt;List&lt;Object>, Boolean> isEmpty = Match.match();
 
-  isEmpty.when(Lists.empty()).then(true);
-  isEmpty.when(_).then(false);
+  isEmpty.when(Empty()).then(constant(true));
+  isEmpty.when(_).thenConstant(false);
 
   isEmpty.apply(Arrays.&lt;Object>asList());            // == true
   isEmpty.apply(Arrays.&lt;Object>asList(1));           // == false
@@ -75,8 +75,8 @@ able to add all integers in a given list.
 <pre>
   final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
 
-  addAll.when(Lists.empty()).then(0);
-  addAll.when(Lists.cons(var,var)).then(
+  addAll.when(Empty()).thenConstant(0);
+  addAll.when(Cons(var,var)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
                 return i + allAdd.apply(l);

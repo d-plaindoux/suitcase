@@ -99,49 +99,49 @@ public class PatternTest {
 
     @Test
     public void shouldNilMatchEmptyList() {
-        TestCase.assertFalse(Lists.empty().unapply(Arrays.asList()).isNone());
+        TestCase.assertFalse(Lists.Empty().unapply(Arrays.asList()).isNone());
     }
 
     @Test
     public void shouldNilNotlMatchNonList() {
-        TestCase.assertTrue(Lists.<Integer>empty().unapply(Arrays.asList(1)).isNone());
+        TestCase.assertTrue(Lists.<Integer>Empty().unapply(Arrays.asList(1)).isNone());
     }
 
     @Test
     public void shouldConsNotlMatchEmptyList() {
-        TestCase.assertTrue(Lists.cons(_, _).unapply(Arrays.asList()).isNone());
+        TestCase.assertTrue(Lists.Cons(_, _).unapply(Arrays.asList()).isNone());
     }
 
     @Test
     public void shouldConsMatchNonEmptyList() {
-        TestCase.assertFalse(Lists.<Integer>cons(_, _).unapply(Arrays.asList(1)).isNone());
+        TestCase.assertFalse(Lists.<Integer>Cons(_, _).unapply(Arrays.asList(1)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2() {
-        TestCase.assertFalse(Lists.<Integer>cons(_, Lists.cons(_, _)).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(Lists.<Integer>Cons(_, Lists.Cons(_, _)).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(var.of(Lists.<Integer>cons(_, Lists.cons(_, Lists.empty()))).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(var.of(Lists.<Integer>Cons(_, Lists.Cons(_, Lists.Empty()))).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(Lists.<Integer>cons(1, Lists.cons(2, Lists.empty())).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(Lists.<Integer>Cons(1, Lists.Cons(2, Lists.Empty())).unapply(Arrays.asList(1, 2)).isNone());
     }
 
-    // Pair
+    // $Pair
 
     @Test
     public void shouldMatchPair() {
-        TestCase.assertFalse(Pairs.of(_,_).unapply(new Pair<Object, Object>(1,2)).isNone());
+        TestCase.assertFalse(Pairs.APair(_, _).unapply(new Pair<Object, Object>(1,2)).isNone());
     }
 
     @Test
     public void shouldMatchPairAndValues() {
-        TestCase.assertFalse(Pairs.of(1,2).unapply(new Pair<Object, Object>(1,2)).isNone());
+        TestCase.assertFalse(Pairs.APair(1, 2).unapply(new Pair<Object, Object>(1,2)).isNone());
     }
 
     // Peano
