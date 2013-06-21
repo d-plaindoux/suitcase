@@ -18,10 +18,12 @@
 
 package org.smallibs.suitcase.utils;
 
-import org.smallibs.suitcase.matching.MatchingException;
+public abstract class Function2<M1, M2, R> implements Function<Pair<M1, M2>, R> {
 
-public interface Function2<M1, M2, R> extends Function {
+    @Override
+    public R apply(Pair<M1, M2> p) {
+        return apply(p._1, p._2);
+    }
 
-    R apply(M1 r1, M2 r2) throws MatchingException;
-
+    public abstract R apply(M1 m1, M2 m2);
 }

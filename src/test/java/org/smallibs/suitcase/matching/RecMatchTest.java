@@ -21,7 +21,7 @@ package org.smallibs.suitcase.matching;
 import org.junit.Test;
 import org.smallibs.suitcase.pattern.peano.Succ;
 import org.smallibs.suitcase.pattern.peano.Zero;
-import org.smallibs.suitcase.utils.Function1;
+import org.smallibs.suitcase.utils.Function;
 
 import static org.smallibs.suitcase.pattern.Cases.var;
 
@@ -32,8 +32,8 @@ public class RecMatchTest {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
         multiplyMatcher.when(new Zero()).then(0);
-        multiplyMatcher.when(new Succ(var)).then(new Function1<Integer, Integer>() {
-            public Integer apply(Integer i) throws MatchingException {
+        multiplyMatcher.when(new Succ(var)).then(new Function<Integer, Integer>() {
+            public Integer apply(Integer i) {
                 return 1 + multiplyMatcher.apply(i);
             }
         });

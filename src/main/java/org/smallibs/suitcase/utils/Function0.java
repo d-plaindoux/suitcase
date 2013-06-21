@@ -18,10 +18,13 @@
 
 package org.smallibs.suitcase.utils;
 
-import org.smallibs.suitcase.matching.MatchingException;
+public abstract class Function0<R> implements Function<Void, R> {
 
-public interface Function0<R> extends Function {
+    @Override
+    public R apply(Void aVoid) {
+        return this.apply();
+    }
 
-    R apply() throws MatchingException;
+    public abstract R apply();
 
 }

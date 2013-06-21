@@ -18,5 +18,8 @@
 
 package org.smallibs.suitcase.utils;
 
-public interface Function {
+public interface Function<T, R> {
+
+    R apply(T t);
+
 }

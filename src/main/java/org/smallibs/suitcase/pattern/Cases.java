@@ -18,15 +18,12 @@
 
 package org.smallibs.suitcase.pattern;
 
-import org.smallibs.suitcase.matching.Match;
-import org.smallibs.suitcase.matching.MatchingException;
 import org.smallibs.suitcase.pattern.core.Any;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.pattern.core.Constant;
 import org.smallibs.suitcase.pattern.core.Null;
 import org.smallibs.suitcase.pattern.core.TypeOf;
 import org.smallibs.suitcase.pattern.core.Var;
-import org.smallibs.suitcase.utils.Function0;
 
 public final class Cases {
 

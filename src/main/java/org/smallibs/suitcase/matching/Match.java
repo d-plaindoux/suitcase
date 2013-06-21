@@ -18,45 +18,133 @@
 
 package org.smallibs.suitcase.matching;
 
-import org.smallibs.suitcase.matching.core.AbstractMatch;
+import org.smallibs.suitcase.annotations.CaseType;
+import org.smallibs.suitcase.pattern.Cases;
+import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Function;
-import org.smallibs.suitcase.utils.Function0;
-import org.smallibs.suitcase.utils.Function1;
-import org.smallibs.suitcase.utils.Function2;
-import org.smallibs.suitcase.utils.Function3;
-import org.smallibs.suitcase.utils.Function4;
-import org.smallibs.suitcase.utils.FunctionN;
 import org.smallibs.suitcase.utils.Functions;
+import org.smallibs.suitcase.utils.Option;
+import org.smallibs.suitcase.utils.Pair;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import static org.smallibs.suitcase.pattern.Cases.var;
-
-public final class Match<T, R> extends AbstractMatch<T, R, Match<T, R>> {
-
-    private final CoreMatch<Function, Function1<List<Object>, R>> applyMatcher;
-
-    {
-        applyMatcher = new CoreMatch<>();
-        applyMatcher.when(var.of(Function0.class)).then(Functions.Nto0());
-        applyMatcher.when(var.of(Function1.class)).then(Functions.Nto1());
-        applyMatcher.when(var.of(Function2.class)).then(Functions.NTo2());
-        applyMatcher.when(var.of(Function3.class)).then(Functions.Nto3());
-        applyMatcher.when(var.of(Function4.class)).then(Functions.Nto4());
-        applyMatcher.when(var.of(FunctionN.class)).then(Functions.NtoN());
-    }
+public class Match<T, R> {
 
     public static <T, R> Match<T, R> match() {
         return new Match<>();
     }
 
-    @Override
-    protected Match<T, R> self() {
-        return this;
+    // =================================================================================================================
+    // Internal classes and intermediate code for DSL like approach
+    // =================================================================================================================
+
+    protected class Rule {
+        private final Class<?> type;
+        private final Case<T> aCase;
+        private final Function function;
+
+        private Rule(Case<T> aCase, Function function) {
+            this.type = this.getType(aCase);
+            this.aCase = aCase;
+            this.function = function;
+        }
+
+        protected Class<?> getType(Case aCase) {
+            if (aCase.getClass().isAnnotationPresent(CaseType.class)) {
+                return aCase.getClass().getAnnotation(CaseType.class).value();
+            } else {
+                return null;
+            }
+        }
+
+        protected boolean typeIsCorrect(Object object) {
+            return type == null || !Cases.typeOf(type).unapply(object).isNone();
+        }
+
+        Option<List<Object>> match(T object) {
+            if (this.typeIsCorrect(object)) {
+                return aCase.unapply(object);
+            } else {
+                return new Option.None<>();
+            }
+        }
+
+        Function<T, R> getFunction() {
+            return function;
+        }
     }
 
-    @Override
-    protected R reduce(Function function, List<Object> objects) throws MatchingException {
-        return applyMatcher.apply(function).apply(objects);
+    // =================================================================================================================
+
+    public class When {
+        protected final Case<T> aCase;
+
+        public When(Case<T> aCase) {
+            this.aCase = aCase;
+        }
+
+        public Match<T, R> then(final R result) {
+            return then(Functions.constant(result));
+        }
+
+        public Match<T, R> then(Function callBack) {
+            rules.add(new Rule(aCase, callBack));
+            return Match.this;
+        }
+
+    }
+
+    // =================================================================================================================
+    // Attributes
+    // =================================================================================================================
+
+    private final List<Rule> rules;
+
+    // =================================================================================================================
+    // Constructors
+    // =================================================================================================================
+
+    public Match() {
+        this.rules = new LinkedList<>();
+    }
+
+    // =================================================================================================================
+    // Behaviors
+    // =================================================================================================================
+
+    public When when(Object object) {
+        return new When(Cases.<T>fromObject(object));
+    }
+
+    protected R reduce(Function<T, R> function, List<Object> result) {
+        final T parameter = (T) generateParameter(result); // TODO -- check this cast ...
+        return function.apply(parameter);
+    }
+
+    private Object generateParameter(List<Object> result) {
+        Object parameter;
+        if (result.isEmpty()) {
+            parameter = null;
+        } else {
+            parameter = result.get(result.size() - 1);
+            for (int i = result.size() - 2; i >= 0; i--) {
+                parameter = new Pair<>(result.get(i), parameter);
+            }
+        }
+        return parameter;
+    }
+
+    // =================================================================================================================
+
+    public R apply(T object) throws MatchingException {
+        for (Rule rule : rules) {
+            final Option<List<Object>> option = rule.match(object);
+            if (!option.isNone()) {
+                return this.reduce(rule.getFunction(), option.value());
+            }
+        }
+
+        throw new MatchingException();
     }
 }

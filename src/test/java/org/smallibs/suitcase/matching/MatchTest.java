@@ -24,7 +24,7 @@ import org.smallibs.suitcase.pattern.peano.Succ;
 import org.smallibs.suitcase.pattern.peano.Zero;
 import org.smallibs.suitcase.pattern.utils.Lists;
 import org.smallibs.suitcase.pattern.utils.Pairs;
-import org.smallibs.suitcase.utils.Function1;
+import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Pair;
 
@@ -91,8 +91,8 @@ public class MatchTest {
         final Match<List<Object>, Integer> sizeOfMatcher = Match.match();
 
         sizeOfMatcher.when(Lists.empty()).then(0);
-        sizeOfMatcher.when(Lists.cons(_, var)).then(new Function1<List<Object>, Integer>() {
-            public Integer apply(List<Object> tail) throws MatchingException {
+        sizeOfMatcher.when(Lists.cons(_, var)).then(new Function<List<Object>, Integer>() {
+            public Integer apply(List<Object> tail) {
                 return 1 + sizeOfMatcher.apply(tail);
             }
         });
@@ -107,7 +107,7 @@ public class MatchTest {
 
         addAll.when(Lists.empty()).then(0);
         addAll.when(Lists.cons(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
-            public Integer apply(Integer i, List<Integer> l) throws MatchingException {
+            public Integer apply(Integer i, List<Integer> l) {
                 return i + addAll.apply(l);
             }
         });
@@ -121,8 +121,8 @@ public class MatchTest {
         final Match<Integer, Integer> multiplyMatcher = Match.match();
 
         multiplyMatcher.when(new Zero()).then(0);
-        multiplyMatcher.when(new Succ(var)).then(new Function1<Integer, Integer>() {
-            public Integer apply(Integer i) throws MatchingException {
+        multiplyMatcher.when(new Succ(var)).then(new Function<Integer, Integer>() {
+            public Integer apply(Integer i) {
                 return 19 + multiplyMatcher.apply(i);
             }
         });
@@ -135,8 +135,8 @@ public class MatchTest {
         final Match<Integer, Boolean> evenMatcher = Match.match();
 
         evenMatcher.when(0).then(true);
-        evenMatcher.when(new Succ(new Succ(var))).then(new Function1<Integer, Boolean>() {
-            public Boolean apply(Integer i) throws MatchingException {
+        evenMatcher.when(new Succ(new Succ(var))).then(new Function<Integer, Boolean>() {
+            public Boolean apply(Integer i) {
                 return evenMatcher.apply(i);
             }
         });
@@ -181,8 +181,8 @@ public class MatchTest {
     public void shouldMatchASubclasses() throws MatchingException {
         final Match<A, String> matchA = Match.match();
 
-        matchA.when(var.<A>of(B.class)).then(new Function1<B, String>() {
-            public String apply(B acceptor) throws MatchingException {
+        matchA.when(var.<A>of(B.class)).then(new Function<B, String>() {
+            public String apply(B acceptor) {
                 return "B";
             }
         });
@@ -198,8 +198,8 @@ public class MatchTest {
         final Match<Pair<Integer, String>, Pair<String, Integer>> match = Match.match();
 
         match.when(Pairs.of(var, var)).then(new Function2<Integer, String, Pair<String, Integer>>() {
-            public Pair<String, Integer> apply(Integer r1, String r2) throws MatchingException {
-                return new Pair<>(r2, r1);
+            public Pair<String, Integer> apply(Integer i, String s) {
+                return new Pair<>(s, i);
             }
         });
 

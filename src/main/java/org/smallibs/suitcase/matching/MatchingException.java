@@ -18,5 +18,5 @@
 
 package org.smallibs.suitcase.matching;
 
-public class MatchingException extends Exception {
+public class MatchingException extends RuntimeException {
 }
