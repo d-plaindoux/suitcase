@@ -29,16 +29,16 @@ public class RecMatchTest {
 
     @Test(expected = StackOverflowError.class)
     public void shouldHaveStackOverflow() throws MatchingException {
-        final Match<Integer, Integer> multiplyMatcher = Match.match();
+        final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.when(new Zero()).thenConstant(0);
-        multiplyMatcher.when(new Succ(var)).then(new Function<Integer, Integer>() {
+        multiplyMatcher.caseOf(new Zero()).thenConstant(0);
+        multiplyMatcher.caseOf(new Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
-                return 1 + multiplyMatcher.apply(i);
+                return 1 + multiplyMatcher.match(i);
             }
         });
 
-        multiplyMatcher.apply(1000000);
+        multiplyMatcher.match(1000000);
     }
 
 }

@@ -41,13 +41,13 @@ This pattern matching also offers a simple mechanism able to discriminate object
 For instance the following sample checks if an object is an integer or a string.
 
 <pre>
-  final Match&lt;Object, String> typeCase = Match.match();
+  final Matcher&lt;Object, String> typeCase = Matcher.create();
 
-  typeCase.when(Integer.class).thenConstant("int");
-  typeCase.when(String.class).thenConstant("string");
+  typeCase.caseOf(Integer.class).thenConstant("int");
+  typeCase.caseOf(String.class).thenConstant("string");
 
-  typeCase.apply(0);       // == "int"
-  typeCase.apply("Hello"); // == "string"
+  typeCase.match(0);       // == "int"
+  typeCase.match("Hello"); // == "string"
 </pre>
 
 Matching complex Objects 
@@ -60,31 +60,31 @@ The pattern system is open and accept ad-hoc cases. For instance for the `Lists`
 Then a simple function able to check when a list is empty can be proposed.
 
 <pre>
-  final Match&lt;List&lt;Object>, Boolean> isEmpty = Match.match();
+  final Matcher&lt;List&lt;Object>, Boolean> isEmpty = Matcher.create();
 
-  isEmpty.when(Empty()).then(constant(true));
-  isEmpty.when(_).thenConstant(false);
+  isEmpty.caseOf(Empty()).then(constant(true));
+  isEmpty.caseOf(_).thenConstant(false);
 
-  isEmpty.apply(Arrays.&lt;Object>asList());            // == true
-  isEmpty.apply(Arrays.&lt;Object>asList(1));           // == false
+  isEmpty.match(Arrays.&lt;Object>asList());            // == true
+  isEmpty.match(Arrays.&lt;Object>asList(1));           // == false
 </pre>
 
 It's also possible to capture list elements like the head and the tail. For instance we can propose a matcher
 able to add all integers in a given list.
 
 <pre>
-  final Match&lt;List&lt;Integer>, Boolean> addAll = Match.match();
+  final Matcher&lt;List&lt;Integer>, Boolean> addAll = Matcher.create();
 
-  addAll.when(Empty()).thenConstant(0);
-  addAll.when(Cons(var,var)).then(
+  addAll.caseOf(Empty()).thenConstant(0);
+  addAll.caseOf(Cons(var,var)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
                 return i + allAdd.apply(l);
             }
         });
 
-  addAll.apply(Arrays.&lt;Integer>asList());          // == 0
-  addAll.apply(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
+  addAll.match(Arrays.&lt;Integer>asList());          // == 0
+  addAll.match(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
 </pre>
 
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains

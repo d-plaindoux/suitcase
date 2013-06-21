@@ -29,10 +29,10 @@ import org.smallibs.suitcase.utils.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Match<T, R> {
+public class Matcher<T, R> {
 
-    public static <T, R> Match<T, R> match() {
-        return new Match<>();
+    public static <T, R> Matcher<T, R> create() {
+        return new Matcher<>();
     }
 
     // =================================================================================================================
@@ -77,20 +77,20 @@ public class Match<T, R> {
 
     // =================================================================================================================
 
-    public class When {
+    public class CaseOf {
         protected final Case<T> aCase;
 
-        public When(Case<T> aCase) {
+        public CaseOf(Case<T> aCase) {
             this.aCase = aCase;
         }
 
-        public Match<T, R> thenConstant(R c) {
+        public Matcher<T, R> thenConstant(R c) {
             return then(Functions.constant(c));
         }
 
-        public Match<T, R> then(Function<?, R> callBack) {
+        public Matcher<T, R> then(Function<?, R> callBack) {
             rules.add(new Rule(aCase, callBack));
-            return Match.this;
+            return Matcher.this;
         }
 
     }
@@ -105,7 +105,7 @@ public class Match<T, R> {
     // Constructors
     // =================================================================================================================
 
-    public Match() {
+    public Matcher() {
         this.rules = new LinkedList<>();
     }
 
@@ -113,8 +113,13 @@ public class Match<T, R> {
     // Behaviors
     // =================================================================================================================
 
-    public When when(Object object) {
-        return new When(Cases.<T>fromObject(object));
+    public CaseOf caseOf(Object object) {
+        return new CaseOf(Cases.<T>fromObject(object));
+    }
+
+    @Deprecated
+    public CaseOf when(Object object) {
+        return new CaseOf(Cases.<T>fromObject(object));
     }
 
     protected R reduce(Function<Object, R> function, List<Object> result) {
@@ -137,7 +142,7 @@ public class Match<T, R> {
 
     // =================================================================================================================
 
-    public R apply(T object) throws MatchingException {
+    public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
             final Option<List<Object>> option = rule.match(object);
             if (!option.isNone()) {
