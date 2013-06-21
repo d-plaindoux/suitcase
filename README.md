@@ -53,9 +53,9 @@ For instance the following sample checks if an object is an integer or a string.
 Matching complex Objects 
 ------------------------
 
-The pattern system is open and accept ad-hoc cases. For instance for the `List` two patterns has been proposed:
-* `Nil` for empty list and
-* `Cons` for the other (contains one element or more).
+The pattern system is open and accept ad-hoc cases. For instance for the `List` two patterns are available:
+* `Lists.empty()` for the empty list and
+* `Lists.cons(?,?)` for lists containing at least one element.
 
 Then a simple function able to check when a list is empty can be proposed.
 
@@ -69,7 +69,7 @@ Then a simple function able to check when a list is empty can be proposed.
   isEmpty.apply(Arrays.&lt;Object>asList(1));           // == false
 </pre>
 
-It's also possible to capture list elements like the head and the tail. For instance we can propose a `function`
+It's also possible to capture list elements like the head and the tail. For instance we can propose a matcher
 able to add all integers in a given list.
 
 <pre>
