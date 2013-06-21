@@ -56,7 +56,7 @@ public final class Match<T, R> extends AbstractMatch<T, R, Match<T, R>> {
     }
 
     @Override
-    protected R apply(Function function, List<Object> objects) throws MatchingException {
+    protected R reduce(Function function, List<Object> objects) throws MatchingException {
         return applyMatcher.apply(function).apply(objects);
     }
 }

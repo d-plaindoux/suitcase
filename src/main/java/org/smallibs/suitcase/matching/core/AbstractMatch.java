@@ -114,8 +114,7 @@ public abstract class AbstractMatch<T, R, M extends AbstractMatch<T, R, M>> impl
         return new When(Cases.<T>fromObject(object));
     }
 
-    protected abstract R apply(Function function, List<Object> parameters) throws MatchingException;
-
+    protected abstract R reduce(Function function, List<Object> parameters) throws MatchingException;
     protected abstract M self();
 
     // =================================================================================================================
@@ -124,7 +123,7 @@ public abstract class AbstractMatch<T, R, M extends AbstractMatch<T, R, M>> impl
         for (Rule rule : rules) {
             final Option<List<Object>> option = rule.match(object);
             if (!option.isNone()) {
-                return this.apply(rule.getFunction(), option.value());
+                return this.reduce(rule.getFunction(), option.value());
             }
         }
 

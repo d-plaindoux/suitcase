@@ -41,7 +41,7 @@ final class CoreMatch<T, R> extends AbstractMatch<T, R, CoreMatch<T, R>> {
     }
 
     @Override
-    protected R apply(Function function, List<Object> result) throws MatchingException {
+    protected R reduce(Function function, List<Object> result) throws MatchingException {
         try {
             return ((Function1<Object, R>) function).apply(result.get(0));
         } catch (ClassCastException e) {
