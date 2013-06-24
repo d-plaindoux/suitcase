@@ -36,8 +36,8 @@ public class ListMatcherTest {
     public void shouldMatchLisContainingAnObject() throws MatchingException {
         final Matcher<List<Object>, Boolean> isEmpty = Matcher.create();
 
-        isEmpty.caseOf(Cons(1, _)).thenConstant(true);
-        isEmpty.caseOf(_).thenConstant(false);
+        isEmpty.caseOf(Cons(1, _)).then.constant(true);
+        isEmpty.caseOf(_).then.constant(false);
 
         TestCase.assertTrue(isEmpty.match(Arrays.<Object>asList(1)));
         TestCase.assertFalse(isEmpty.match(Arrays.<Object>asList()));
@@ -48,7 +48,7 @@ public class ListMatcherTest {
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
         final Matcher<List<Object>, Integer> sizeOfMatcher = Matcher.create();
 
-        sizeOfMatcher.caseOf(Empty()).thenConstant(0);
+        sizeOfMatcher.caseOf(Empty()).then.constant(0);
         sizeOfMatcher.caseOf(Cons(_, var)).then(new Function<List<Object>, Integer>() {
             public Integer apply(List<Object> tail) {
                 return 1 + sizeOfMatcher.match(tail);
@@ -63,7 +63,7 @@ public class ListMatcherTest {
     public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
         final Matcher<List<Integer>, Integer> addAll = Matcher.create();
 
-        addAll.caseOf(Empty()).thenConstant(0);
+        addAll.caseOf(Empty()).then.constant(0);
         addAll.caseOf(Cons(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
             public Integer apply(Integer i, List<Integer> l) {
                 return i + addAll.match(l);
@@ -78,8 +78,8 @@ public class ListMatcherTest {
     public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
         final Matcher<List<Integer>, Boolean> headIsZero = Matcher.create();
 
-        headIsZero.caseOf(Cons(0, _)).thenConstant(true);
-        headIsZero.caseOf(_).thenConstant(false);
+        headIsZero.caseOf(Cons(0, _)).then.constant(true);
+        headIsZero.caseOf(_).then.constant(false);
 
         TestCase.assertTrue(headIsZero.match(Arrays.asList(0)));
         TestCase.assertFalse(headIsZero.match(Arrays.asList(1, 2)));

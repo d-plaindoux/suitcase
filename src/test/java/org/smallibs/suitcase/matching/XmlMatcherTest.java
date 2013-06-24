@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.smallibs.suitcase.pattern.Cases._;
-import static org.smallibs.suitcase.pattern.xml.Xml.Tag;
+import static org.smallibs.suitcase.pattern.xml.Xml.*;
 
 public class XmlMatcherTest {
 
@@ -42,8 +42,8 @@ public class XmlMatcherTest {
 
         final Matcher<Node, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, _)).thenConstant(true);
-        matcher.caseOf(_).thenConstant(false);
+        matcher.caseOf(Tag(_, _)).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
@@ -54,8 +54,8 @@ public class XmlMatcherTest {
 
         final Matcher<Node, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("A", _)).thenConstant(true);
-        matcher.caseOf(_).thenConstant(false);
+        matcher.caseOf(Tag("A", _)).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
@@ -66,10 +66,46 @@ public class XmlMatcherTest {
 
         final Matcher<Node, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("B", _)).thenConstant(true);
-        matcher.caseOf(_).thenConstant(false);
+        matcher.caseOf(Tag("B", _)).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
 
         TestCase.assertFalse(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldNotMatchAnElementNamed_A_with_Text() throws Exception {
+        final Element rootElement = getElementFromSampleDocument();
+
+        final Matcher<Node, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag("A", Seq(Text(_)))).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldNotMatchAnElementNamed_A_with_ExactText() throws Exception {
+        final Element rootElement = getElementFromSampleDocument();
+
+        final Matcher<Node, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag("A", Seq(Text("Text in A")))).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldNotMatchAnElementNamed_A_with_ExactTextAndB() throws Exception {
+        final Element rootElement = getElementFromSampleDocument();
+
+        final Matcher<Node, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag("A", Seq(Text("Text in A"),Tag("B",Seq(Text("Text in B"),Tag("C",_),Tag("D",_)))))).then.constant(true);
+        matcher.caseOf(_).then.constant(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
     }
 
     private Element getElementFromSampleDocument() throws ParserConfigurationException, SAXException, IOException {

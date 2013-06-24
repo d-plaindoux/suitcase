@@ -18,6 +18,7 @@
 
 package org.smallibs.suitcase.pattern.utils;
 
+import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
@@ -31,6 +32,7 @@ public final class Strings {
         return new RegularExpression(Pattern.compile(expression));
     }
 
+    @CaseType(String.class)
     private static class RegularExpression implements Case<String> {
         private final Pattern expression;
 

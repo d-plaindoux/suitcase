@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +16,10 @@ public final class Xml {
 
     public static Case<Element> Tag(Object name, Object content) {
         return new Tag(name, content);
+    }
+
+    public static Case<NodeList> Seq(Object... content) {
+        return new Seq(content);
     }
 
     public static Case<Node> Text(Object content) {
@@ -60,7 +65,7 @@ public final class Xml {
         private final List<Case<Node>> contentCases;
 
         private Seq(Object... content) {
-            this.contentCases = new LinkedList<>();
+            this.contentCases = new ArrayList<>();
             for (Object aContent : content) {
                 final Case<Node> aCase = Cases.fromObject(aContent);
                 this.contentCases.add(aCase);
@@ -78,8 +83,17 @@ public final class Xml {
 
         @Override
         public Option<List<Object>> unapply(NodeList node) {
-
-            return new Option.None<>();
+            final List<Object> objects = new ArrayList<>();
+            for (int i = 0; i < contentCases.size(); i += 1) {
+                final Node item = node.item(i);
+                final Option<List<Object>> unapply = contentCases.get(i).unapply(item);
+                if (!unapply.isNone()) {
+                    objects.addAll(unapply.value());
+                } else {
+                    return new Option.None<>();
+                }
+            }
+            return new Option.Some<>(objects);
         }
     }
 
@@ -99,8 +113,8 @@ public final class Xml {
 
         @Override
         public Option<List<Object>> unapply(Node node) {
-            if (node.getNodeType() == Node.CDATA_SECTION_NODE) {
-                return contentCase.unapply(node.getTextContent());
+            if (node.getNodeType() == Node.TEXT_NODE) {
+                return contentCase.unapply(node.getTextContent().trim());
             } else {
                 return new Option.None<>();
             }

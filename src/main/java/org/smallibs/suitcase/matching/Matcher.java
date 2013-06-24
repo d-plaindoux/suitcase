@@ -77,22 +77,36 @@ public class Matcher<T, R> {
 
     // =================================================================================================================
 
-    public class CaseOf {
+    public class Then {
         protected final Case<T> aCase;
 
-        public CaseOf(Case<T> aCase) {
+        public Then(Case<T> aCase) {
             this.aCase = aCase;
         }
 
-        public Matcher<T, R> thenConstant(R c) {
-            return then(Functions.constant(c));
+        public Matcher<T, R> constant(R c) {
+            return function(Functions.constant(c));
+        }
+
+        public Matcher<T, R> function(Function<?, R> callBack) {
+            rules.add(new Rule(aCase, callBack));
+            return Matcher.this;
+        }
+    }
+
+    public class CaseOf {
+        protected final Case<T> aCase;
+        public final Then then;
+
+        public CaseOf(Case<T> aCase) {
+            this.aCase = aCase;
+            this.then = new Then(aCase);
         }
 
         public Matcher<T, R> then(Function<?, R> callBack) {
             rules.add(new Rule(aCase, callBack));
             return Matcher.this;
         }
-
     }
 
     // =================================================================================================================

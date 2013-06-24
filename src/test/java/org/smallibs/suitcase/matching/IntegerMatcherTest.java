@@ -32,7 +32,7 @@ public class IntegerMatcherTest {
     public void shouldMatchTypedObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Integer.class).thenConstant(42);
+        matcher.caseOf(Integer.class).then.constant(42);
 
         TestCase.assertEquals(42, matcher.match(0).intValue());
     }
@@ -41,8 +41,8 @@ public class IntegerMatcherTest {
     public void shouldMatchWithAlternativeNullObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Integer.class).thenConstant(42);
-        matcher.caseOf(null).thenConstant(19);
+        matcher.caseOf(Integer.class).then.constant(42);
+        matcher.caseOf(null).then.constant(19);
 
         TestCase.assertEquals(42, matcher.match(0).intValue());
         TestCase.assertEquals(19, matcher.match(null).intValue());
@@ -52,7 +52,7 @@ public class IntegerMatcherTest {
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.caseOf(Zero()).thenConstant(0);
+        multiplyMatcher.caseOf(Zero()).then.constant(0);
         multiplyMatcher.caseOf(Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 19 + multiplyMatcher.match(i);
@@ -66,14 +66,14 @@ public class IntegerMatcherTest {
     public void shouldCheckEvenPeano() throws MatchingException {
         final Matcher<Integer, Boolean> evenMatcher = Matcher.create();
 
-        evenMatcher.caseOf(0).thenConstant(true);
+        evenMatcher.caseOf(0).then.constant(true);
         evenMatcher.caseOf(Succ(Succ(var))).then(new Function<Integer, Boolean>() {
             public Boolean apply(Integer i) {
                 return evenMatcher.match(i);
             }
         });
 
-        evenMatcher.caseOf(_).thenConstant(false);
+        evenMatcher.caseOf(_).then.constant(false);
 
         TestCase.assertEquals(true, evenMatcher.match(10).booleanValue());
     }
@@ -82,8 +82,8 @@ public class IntegerMatcherTest {
     public void shouldCheckIntegerAndReturnImplicitConstantValue() throws MatchingException {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
-        isZero.caseOf(0).thenConstant(true);
-        isZero.caseOf(_).thenConstant(false);
+        isZero.caseOf(0).then.constant(true);
+        isZero.caseOf(_).then.constant(false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));

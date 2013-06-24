@@ -1,10 +1,1 @@
-<A>
-    <B>
-        Simple Text
-        <C/>
-        <D>
-            Another Text
-        </D>
-    </B>
-    <E/>
-</A>
+<A>Text in A<B>Text in B<C/><D>Text in D</D></B></A>

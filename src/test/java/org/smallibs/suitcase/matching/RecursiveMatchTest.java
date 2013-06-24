@@ -32,7 +32,7 @@ public class RecursiveMatchTest {
     public void shouldHaveStackOverflow() throws MatchingException {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.caseOf(Zero()).thenConstant(0);
+        multiplyMatcher.caseOf(Zero()).then.constant(0);
         multiplyMatcher.caseOf(Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 1 + multiplyMatcher.match(i);
