@@ -27,10 +27,10 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.match();
 
-  isZero.when(0).thenConstant(true);
-  isZero.when(_).thenConstant(false);
+  isZero.caseOf(0).thenConstant(true);
+  isZero.caseOf(_).thenConstant(false);
     
-  isZero.apply(0); // == true
+  isZero.match(0); // == true
 </pre>
 
 Matching and Typing
