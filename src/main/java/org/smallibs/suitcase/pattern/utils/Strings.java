@@ -16,35 +16,40 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.pattern.peano;
+package org.smallibs.suitcase.pattern.utils;
 
-import org.smallibs.suitcase.annotations.CaseType;
-import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Option;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
-@CaseType(Integer.class)
-public class Succ implements Case<Integer> {
+public final class Strings {
 
-    private final Case<Integer> value;
-
-    public Succ(Object o1) {
-        this.value = Cases.fromObject(o1);
+    public static Case<String> Regex(String expression) {
+        return new RegularExpression(Pattern.compile(expression));
     }
 
-    @Override
-    public int numberOfVariables() {
-        return this.value.numberOfVariables();
-    }
+    private static class RegularExpression implements Case<String> {
+        private final Pattern expression;
 
-    @Override
-    public Option<List<Object>> unapply(Integer integer) {
-        if (integer > 0) {
-            return this.value.unapply(integer - 1);
-        } else {
-            return new Option.None<>();
+        public RegularExpression(Pattern expression) {
+            this.expression = expression;
+        }
+
+        @Override
+        public int numberOfVariables() {
+            return 0;
+        }
+
+        @Override
+        public Option<List<Object>> unapply(String s) {
+            if (expression.matcher(s).matches()) {
+                return new Option.Some<>(Arrays.asList());
+            } else {
+                return new Option.None<>();
+            }
         }
     }
 }

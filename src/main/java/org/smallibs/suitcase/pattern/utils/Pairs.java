@@ -32,12 +32,12 @@ public final class Pairs {
         return new Of<>(o1, o2);
     }
 
-    static class Of<T1, T2> implements Case<Pair<T1, T2>> {
+    private static class Of<T1, T2> implements Case<Pair<T1, T2>> {
 
         private final Case<T1> c1;
         private final Case<T2> c2;
 
-        public Of(Object o1, Object o2) {
+        private Of(Object o1, Object o2) {
             this.c1 = Cases.fromObject(o1);
             this.c2 = Cases.fromObject(o2);
         }

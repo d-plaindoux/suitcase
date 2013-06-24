@@ -38,7 +38,7 @@ public final class Lists {
     }
 
     @CaseType(List.class)
-    static class Empty<E> implements Case<List<E>> {
+    private static class Empty<E> implements Case<List<E>> {
 
         @Override
         public int numberOfVariables() {
@@ -56,12 +56,12 @@ public final class Lists {
     }
 
     @CaseType(List.class)
-    static class Cons<E> implements Case<List<E>> {
+    private static class Cons<E> implements Case<List<E>> {
 
         private final Case<E> caseHead;
         private final Case<List<E>> caseTail;
 
-        public Cons(Object o1, Object o2) {
+        private Cons(Object o1, Object o2) {
             this.caseHead = Cases.fromObject(o1);
             this.caseTail = Cases.fromObject(o2);
         }

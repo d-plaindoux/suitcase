@@ -20,8 +20,6 @@ package org.smallibs.suitcase.pattern;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.smallibs.suitcase.pattern.utils.Lists;
-import org.smallibs.suitcase.pattern.peano.Succ;
-import org.smallibs.suitcase.pattern.peano.Zero;
 import org.smallibs.suitcase.pattern.utils.Pairs;
 import org.smallibs.suitcase.utils.Pair;
 
@@ -29,6 +27,8 @@ import java.util.Arrays;
 
 import static org.smallibs.suitcase.pattern.Cases._;
 import static org.smallibs.suitcase.pattern.Cases.var;
+import static org.smallibs.suitcase.pattern.peano.Peano.Succ;
+import static org.smallibs.suitcase.pattern.peano.Peano.Zero;
 
 public class PatternTest {
 
@@ -136,34 +136,34 @@ public class PatternTest {
 
     @Test
     public void shouldMatchPair() {
-        TestCase.assertFalse(Pairs.APair(_, _).unapply(new Pair<Object, Object>(1,2)).isNone());
+        TestCase.assertFalse(Pairs.APair(_, _).unapply(new Pair<Object, Object>(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchPairAndValues() {
-        TestCase.assertFalse(Pairs.APair(1, 2).unapply(new Pair<Object, Object>(1,2)).isNone());
+        TestCase.assertFalse(Pairs.APair(1, 2).unapply(new Pair<Object, Object>(1, 2)).isNone());
     }
 
     // Peano
 
     @Test
     public void shouldMatchZero() {
-        TestCase.assertFalse(new Zero().unapply(0).isNone());
+        TestCase.assertFalse(Zero().unapply(0).isNone());
     }
 
     @Test
     public void shouldNotMatchZero() {
-        TestCase.assertTrue(new Zero().unapply(1).isNone());
+        TestCase.assertTrue(Zero().unapply(1).isNone());
     }
 
     @Test
     public void shouldMatchNonZero() {
-        TestCase.assertFalse(new Succ(_).unapply(1).isNone());
+        TestCase.assertFalse(Succ(_).unapply(1).isNone());
     }
 
     @Test
     public void shouldNotMatchNonZero() {
-        TestCase.assertTrue(var.of(new Succ(_)).unapply(0).isNone());
+        TestCase.assertTrue(var.of(Succ(_)).unapply(0).isNone());
     }
 }
 

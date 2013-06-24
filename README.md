@@ -79,7 +79,7 @@ able to add all integers in a given list.
   addAll.caseOf(Cons(var,var)).then(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
-                return i + allAdd.apply(l);
+                return i + allAdd.match(l);
             }
         });
 

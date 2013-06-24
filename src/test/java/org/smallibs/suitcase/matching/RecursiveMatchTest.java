@@ -19,20 +19,21 @@
 package org.smallibs.suitcase.matching;
 
 import org.junit.Test;
-import org.smallibs.suitcase.pattern.peano.Succ;
-import org.smallibs.suitcase.pattern.peano.Zero;
+import org.smallibs.suitcase.pattern.peano.Peano;
 import org.smallibs.suitcase.utils.Function;
 
 import static org.smallibs.suitcase.pattern.Cases.var;
+import static org.smallibs.suitcase.pattern.peano.Peano.Succ;
+import static org.smallibs.suitcase.pattern.peano.Peano.Zero;
 
-public class RecMatchTest {
+public class RecursiveMatchTest {
 
     @Test(expected = StackOverflowError.class)
     public void shouldHaveStackOverflow() throws MatchingException {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.caseOf(new Zero()).thenConstant(0);
-        multiplyMatcher.caseOf(new Succ(var)).then(new Function<Integer, Integer>() {
+        multiplyMatcher.caseOf(Zero()).thenConstant(0);
+        multiplyMatcher.caseOf(Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 1 + multiplyMatcher.match(i);
             }
