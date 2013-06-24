@@ -108,13 +108,9 @@ able to add all integers in a given list.
 Such matcher using Java 8 can be expressed differently using lambda expressions.
 
 <pre>
-  final Matcher&lt;List&lt;Integer>, Boolean> addAll = Matcher.create();
-
-  addAll.caseOf(Empty()).then.constant(0);
+  ...
   addAll.caseOf(Cons(var,var)).then.function((Integer i, List&lt;Integer> l) -> i + allAdd.match(l));
-
-  addAll.match(Arrays.&lt;Integer>asList());          // == 0
-  addAll.match(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
+  ...
 </pre>
 
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
