@@ -53,7 +53,7 @@ public class IntegerMatcherTest {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
         multiplyMatcher.caseOf(Zero()).then.constant(0);
-        multiplyMatcher.caseOf(Succ(var)).then(new Function<Integer, Integer>() {
+        multiplyMatcher.caseOf(Succ(var)).then.function(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 19 + multiplyMatcher.match(i);
             }
@@ -67,7 +67,7 @@ public class IntegerMatcherTest {
         final Matcher<Integer, Boolean> evenMatcher = Matcher.create();
 
         evenMatcher.caseOf(0).then.constant(true);
-        evenMatcher.caseOf(Succ(Succ(var))).then(new Function<Integer, Boolean>() {
+        evenMatcher.caseOf(Succ(Succ(var))).then.function(new Function<Integer, Boolean>() {
             public Boolean apply(Integer i) {
                 return evenMatcher.match(i);
             }

@@ -22,6 +22,10 @@ import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.pattern.Cases;
 import org.smallibs.suitcase.pattern.core.Case;
 import org.smallibs.suitcase.utils.Function;
+import org.smallibs.suitcase.utils.Function0;
+import org.smallibs.suitcase.utils.Function2;
+import org.smallibs.suitcase.utils.Function3;
+import org.smallibs.suitcase.utils.Function4;
 import org.smallibs.suitcase.utils.Functions;
 import org.smallibs.suitcase.utils.Option;
 import org.smallibs.suitcase.utils.Pair;
@@ -88,8 +92,28 @@ public class Matcher<T, R> {
             return function(Functions.constant(c));
         }
 
-        public Matcher<T, R> function(Function<?, R> callBack) {
-            rules.add(new Rule(aCase, callBack));
+        public Matcher<T, R> function(Function0<R> callBack) {
+            rules.add(new Rule<>(aCase, Functions.<R>function(callBack)));
+            return Matcher.this;
+        }
+
+        public <M> Matcher<T, R> function(Function<M, R> callBack) {
+            rules.add(new Rule<>(aCase, callBack));
+            return Matcher.this;
+        }
+
+        public <M1, M2> Matcher<T, R> function(Function2<M1, M2, R> callBack) {
+            rules.add(new Rule<Pair<M1, M2>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <M1, M2, M3> Matcher<T, R> function(Function3<M1, M2, M3, R> callBack) {
+            rules.add(new Rule<Pair<M1, Pair<M2, M3>>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <M1, M2, M3, M4> Matcher<T, R> function(Function4<M1, M2, M3, M4, R> callBack) {
+            rules.add(new Rule<Pair<M1, Pair<M2, Pair<M3, M4>>>>(aCase, Functions.function(callBack)));
             return Matcher.this;
         }
     }
@@ -101,11 +125,6 @@ public class Matcher<T, R> {
         public CaseOf(Case<T> aCase) {
             this.aCase = aCase;
             this.then = new Then(aCase);
-        }
-
-        public Matcher<T, R> then(Function<?, R> callBack) {
-            rules.add(new Rule(aCase, callBack));
-            return Matcher.this;
         }
     }
 

@@ -61,7 +61,7 @@ public class SimpleMatcherTest {
     public void shouldMatchASubclasses() throws MatchingException {
         final Matcher<A, String> matcherA = Matcher.create();
 
-        matcherA.caseOf(var.<A>of(B.class)).then(new Function<B, String>() {
+        matcherA.caseOf(var.<A>of(B.class)).then.function(new Function<B, String>() {
             public String apply(B acceptor) {
                 return "B";
             }
@@ -77,7 +77,7 @@ public class SimpleMatcherTest {
     public void shouldSwitchPair() throws MatchingException {
         final Matcher<Pair<Integer, String>, Pair<String, Integer>> matcher = Matcher.create();
 
-        matcher.caseOf(APair(var, var)).then(new Function2<Integer, String, Pair<String, Integer>>() {
+        matcher.caseOf(APair(var, var)).then.function(new Function2<Integer, String, Pair<String, Integer>>() {
             public Pair<String, Integer> apply(Integer i, String s) {
                 return new Pair<>(s, i);
             }

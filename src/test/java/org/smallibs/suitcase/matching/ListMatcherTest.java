@@ -49,7 +49,7 @@ public class ListMatcherTest {
         final Matcher<List<Object>, Integer> sizeOfMatcher = Matcher.create();
 
         sizeOfMatcher.caseOf(Empty()).then.constant(0);
-        sizeOfMatcher.caseOf(Cons(_, var)).then(new Function<List<Object>, Integer>() {
+        sizeOfMatcher.caseOf(Cons(_, var)).then.function(new Function<List<Object>, Integer>() {
             public Integer apply(List<Object> tail) {
                 return 1 + sizeOfMatcher.match(tail);
             }
@@ -64,7 +64,7 @@ public class ListMatcherTest {
         final Matcher<List<Integer>, Integer> addAll = Matcher.create();
 
         addAll.caseOf(Empty()).then.constant(0);
-        addAll.caseOf(Cons(var, var)).then(new Function2<Integer, List<Integer>, Integer>() {
+        addAll.caseOf(Cons(var, var)).then.function(new Function2<Integer, List<Integer>, Integer>() {
             public Integer apply(Integer i, List<Integer> l) {
                 return i + addAll.match(l);
             }

@@ -59,7 +59,7 @@ and ending with <tt>!</tt> are matched returning <tt>true</tt>. Any other senten
 result is <tt>false</tt>.
 
 <pre>
-  final Matcher&lt;Object, Boolean> typeCase = Matcher.create();
+  final Matcher&lt;String, Boolean> typeCase = Matcher.create();
 
   typeCase.caseOf(Regex("Hello,.*!")).then.constant(true);
   typeCase.caseOf(_).then.constant(false);
@@ -94,12 +94,24 @@ able to add all integers in a given list.
   final Matcher&lt;List&lt;Integer>, Boolean> addAll = Matcher.create();
 
   addAll.caseOf(Empty()).then.constant(0);
-  addAll.caseOf(Cons(var,var)).then(
+  addAll.caseOf(Cons(var,var)).then.function(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
-            public Integer apply(Integer i, List&lt;Integer> l) throws MatchingException {
+            public Integer apply(Integer i, List&lt;Integer> l) {
                 return i + allAdd.match(l);
             }
         });
+
+  addAll.match(Arrays.&lt;Integer>asList());          // == 0
+  addAll.match(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15
+</pre>
+
+Such matcher using Java 8 can be expressed differently using lambda expressions.
+
+<pre>
+  final Matcher&lt;List&lt;Integer>, Boolean> addAll = Matcher.create();
+
+  addAll.caseOf(Empty()).then.constant(0);
+  addAll.caseOf(Cons(var,var)).then.function((Integer i, List&lt;Integer> l) -> i + allAdd.match(l));
 
   addAll.match(Arrays.&lt;Integer>asList());          // == 0
   addAll.match(Arrays.&lt;Integer>asList(1,2,3,4,5)); // == 15

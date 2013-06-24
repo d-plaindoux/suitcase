@@ -33,7 +33,7 @@ public class RecursiveMatchTest {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
         multiplyMatcher.caseOf(Zero()).then.constant(0);
-        multiplyMatcher.caseOf(Succ(var)).then(new Function<Integer, Integer>() {
+        multiplyMatcher.caseOf(Succ(var)).then.function(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 1 + multiplyMatcher.match(i);
             }

@@ -18,12 +18,8 @@
 
 package org.smallibs.suitcase.utils;
 
-public abstract class Function4<M1, M2, M3, M4, R> extends Function3<M1, M2, Pair<M3, M4>, R> {
+public interface Function4<M1, M2, M3, M4, R> {
 
-    @Override
-    public R apply(M1 p1, M2 p2, Pair<M3, M4> p3) {
-        return apply(p1, p2, p3._1, p3._2);
-    }
+    R apply(M1 m1, M2 m2, M3 m3, M4 m4);
 
-    public abstract R apply(M1 m1, M2 m2, M3 m3, M4 _2);
 }

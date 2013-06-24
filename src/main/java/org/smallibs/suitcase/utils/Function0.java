@@ -18,13 +18,8 @@
 
 package org.smallibs.suitcase.utils;
 
-public abstract class Function0<R> implements Function<Void, R> {
+public interface Function0<R> {
 
-    @Override
-    public R apply(Void aVoid) {
-        return this.apply();
-    }
-
-    public abstract R apply();
+    R apply();
 
 }

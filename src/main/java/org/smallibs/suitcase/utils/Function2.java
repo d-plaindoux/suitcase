@@ -18,12 +18,8 @@
 
 package org.smallibs.suitcase.utils;
 
-public abstract class Function2<M1, M2, R> implements Function<Pair<M1, M2>, R> {
+public interface Function2<M1, M2, R> {
 
-    @Override
-    public R apply(Pair<M1, M2> p) {
-        return apply(p._1, p._2);
-    }
+    R apply(M1 m1, M2 m2);
 
-    public abstract R apply(M1 m1, M2 m2);
 }
