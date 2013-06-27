@@ -23,8 +23,5 @@ import org.smallibs.suitcase.utils.Option;
 import java.util.List;
 
 public interface Case<T> {
-
-    int numberOfVariables();
-
     Option<List<Object>> unapply(T t);
 }

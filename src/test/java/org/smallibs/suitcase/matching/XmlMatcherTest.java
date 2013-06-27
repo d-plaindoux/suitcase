@@ -20,9 +20,9 @@ package org.smallibs.suitcase.matching;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import org.smallibs.suitcase.pattern.xml.Xml;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -37,83 +37,131 @@ import static org.smallibs.suitcase.pattern.xml.Xml.*;
 public class XmlMatcherTest {
 
     @Test
+    public void shouldMatchAsingleElement() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
+
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
     public void shouldMatchAnElement() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
+        final NodeList rootElement = getElementFromSampleDocument();
 
-        final Matcher<Node, Boolean> matcher = Matcher.create();
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, _)).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
-    }
-
-    @Test
-    public void shouldMatchAnElementNamed_A() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
-
-        final Matcher<Node, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A", _)).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Tag(_, _, _)).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
 
     @Test
-    public void shouldNotMatchAnElementNamed_B() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
+    public void shouldMatchElementNamedA() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
 
-        final Matcher<Node, Boolean> matcher = Matcher.create();
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("B", _)).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Tag("A", _, _)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldMatchElements() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
+
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(OptRep(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldMatchElements2() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
+
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(_, OptRep(_))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldMatchAnElementNamedAAndMayBeAContent() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
+
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag("A", OptRep(_))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(rootElement));
+    }
+
+    @Test
+    public void shouldNotMatchAnElementNamedB() throws Exception {
+        final NodeList rootElement = getElementFromSampleDocument();
+
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag("B", _)).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertFalse(matcher.match(rootElement));
     }
 
     @Test
     public void shouldNotMatchAnElementNamed_A_with_Text() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
+        final NodeList rootElement = getElementFromSampleDocument();
 
-        final Matcher<Node, Boolean> matcher = Matcher.create();
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("A", Seq(Text(_)))).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Tag("A", Text(_), _)).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
 
     @Test
     public void shouldNotMatchAnElementNamed_A_with_ExactText() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
+        final NodeList rootElement = getElementFromSampleDocument();
 
-        final Matcher<Node, Boolean> matcher = Matcher.create();
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("A", Seq(Text("Text in A")))).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Tag("A", Text("Text in A"), OptRep(_))).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
 
     @Test
     public void shouldNotMatchAnElementNamed_A_with_ExactTextAndB() throws Exception {
-        final Element rootElement = getElementFromSampleDocument();
+        final NodeList rootElement = getElementFromSampleDocument();
 
-        final Matcher<Node, Boolean> matcher = Matcher.create();
+        final Matcher<NodeList, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("A", Seq(Text("Text in A"),Tag("B",Seq(Text("Text in B"),Tag("C",_),Tag("D",_)))))).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Tag("A", Text("Text in A"), Tag("B", Text("Text in B"), Tag("C"), Tag("D", OptRep(_))))).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(rootElement));
     }
 
-    private Element getElementFromSampleDocument() throws ParserConfigurationException, SAXException, IOException {
+    private NodeList getElementFromSampleDocument() throws ParserConfigurationException, SAXException, IOException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
         try (InputStream resourceAsStream = XmlMatcherTest.class.getResourceAsStream("/sample.xml")) {
             final Document document = builder.parse(resourceAsStream);
-            return document.getDocumentElement();
+            return Xml.toNodeList(document.getDocumentElement());
         }
     }
 }

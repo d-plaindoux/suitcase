@@ -27,8 +27,8 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
 <pre>
   final Match&lt;Integer, Boolean> isZero = Match.match();
 
-  isZero.caseOf(0).then.constant(true);
-  isZero.caseOf(_).then.constant(false);
+  isZero.caseOf(0).then.value(true);
+  isZero.caseOf(_).then.value(false);
     
   isZero.match(0); // == true
 </pre>
@@ -43,8 +43,8 @@ For instance the following sample checks if an object is an integer or a string.
 <pre>
   final Matcher&lt;Object, String> typeCase = Matcher.create();
 
-  typeCase.caseOf(Integer.class).then.constant("int");
-  typeCase.caseOf(String.class).then.constant("string");
+  typeCase.caseOf(Integer.class).then.value("int");
+  typeCase.caseOf(String.class).then.value("string");
 
   typeCase.match(0);       // == "int"
   typeCase.match("Hello"); // == "string"
@@ -61,8 +61,8 @@ result is <tt>false</tt>.
 <pre>
   final Matcher&lt;String, Boolean> typeCase = Matcher.create();
 
-  typeCase.caseOf(Regex("Hello,.*!")).then.constant(true);
-  typeCase.caseOf(_).then.constant(false);
+  typeCase.caseOf(Regex("Hello,.*!")).then.value(true);
+  typeCase.caseOf(_).then.value(false);
 
   typeCase.match("Hello, World!);   // == true
   typeCase.match("Bob, Hello");     // == false
@@ -80,8 +80,8 @@ Then a simple function able to check when a list is empty can be proposed.
 <pre>
   final Matcher&lt;List&lt;Object>, Boolean> isEmpty = Matcher.create();
 
-  isEmpty.caseOf(Empty()).then.constant(true);
-  isEmpty.caseOf(_).then.constant(false);
+  isEmpty.caseOf(Empty()).then.value(true);
+  isEmpty.caseOf(_).then.value(false);
 
   isEmpty.match(Arrays.&lt;Object>asList());            // == true
   isEmpty.match(Arrays.&lt;Object>asList(1));           // == false
@@ -93,7 +93,7 @@ able to add all integers in a given list.
 <pre>
   final Matcher&lt;List&lt;Integer>, Boolean> addAll = Matcher.create();
 
-  addAll.caseOf(Empty()).then.constant(0);
+  addAll.caseOf(Empty()).then.value(0);
   addAll.caseOf(Cons(var,var)).then.function(
         new Function2&lt;Integer, List&lt;Integer>, Integer>() {
             public Integer apply(Integer i, List&lt;Integer> l) {

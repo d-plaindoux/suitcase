@@ -34,7 +34,7 @@ public class SimpleMatcherTest {
     public void shouldMatchNullObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then.constant(42);
+        matcher.caseOf(null).then.value(42);
 
         TestCase.assertEquals(42, matcher.match(null).intValue());
     }
@@ -43,7 +43,7 @@ public class SimpleMatcherTest {
     public void shouldNotMatchConstantObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then.constant(42);
+        matcher.caseOf(null).then.value(42);
 
         matcher.match(19);
     }
@@ -66,8 +66,8 @@ public class SimpleMatcherTest {
                 return "B";
             }
         });
-        matcherA.caseOf(C.class).then.constant("C");
-        matcherA.caseOf(_).then.constant("A");
+        matcherA.caseOf(C.class).then.value("C");
+        matcherA.caseOf(_).then.value("A");
 
         TestCase.assertEquals("B", matcherA.match(new B()));
         TestCase.assertEquals("C", matcherA.match(new C()));

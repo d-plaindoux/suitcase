@@ -88,7 +88,7 @@ public class Matcher<T, R> {
             this.aCase = aCase;
         }
 
-        public Matcher<T, R> constant(R c) {
+        public Matcher<T, R> value(R c) {
             return function(Functions.constant(c));
         }
 
@@ -119,11 +119,9 @@ public class Matcher<T, R> {
     }
 
     public class CaseOf {
-        protected final Case<T> aCase;
         public final Then then;
 
         public CaseOf(Case<T> aCase) {
-            this.aCase = aCase;
             this.then = new Then(aCase);
         }
     }
@@ -149,6 +147,8 @@ public class Matcher<T, R> {
     public CaseOf caseOf(Object object) {
         return new CaseOf(Cases.<T>fromObject(object));
     }
+
+    @interface A {}
 
     @Deprecated
     public CaseOf when(Object object) {

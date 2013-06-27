@@ -18,27 +18,28 @@
 
 package org.smallibs.suitcase.matching;
 
+import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.utils.Function;
 
-import static org.smallibs.suitcase.pattern.Cases.var;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.smallibs.suitcase.pattern.Cases._;
 import static org.smallibs.suitcase.pattern.peano.Peano.Succ;
 import static org.smallibs.suitcase.pattern.peano.Peano.Zero;
+import static org.smallibs.suitcase.pattern.utils.Maps.Entry;
 
-public class RecursiveMatchTest {
+public class MapMatcherTest {
+    @Test
+    public void shouldMatchTypedObject() throws MatchingException {
+        final Matcher<Map<String,Integer>, Boolean> matcher = Matcher.create();
 
-    @Test(expected = StackOverflowError.class)
-    public void shouldHaveStackOverflow() throws MatchingException {
-        final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
+        matcher.caseOf(Entry("hello", 42)).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
-        multiplyMatcher.caseOf(Zero).then.value(0);
-        multiplyMatcher.caseOf(Succ(var)).then.function(new Function<Integer, Integer>() {
-            public Integer apply(Integer i) {
-                return 1 + multiplyMatcher.match(i);
-            }
-        });
+        final HashMap<String, Integer> map = new HashMap<>();
+        map.put("hello",42);
 
-        multiplyMatcher.match(1000000);
+        TestCase.assertTrue(matcher.match(map));
     }
-
 }

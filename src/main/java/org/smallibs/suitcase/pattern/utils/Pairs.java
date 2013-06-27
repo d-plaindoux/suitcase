@@ -43,11 +43,6 @@ public final class Pairs {
         }
 
         @Override
-        public int numberOfVariables() {
-            return c1.numberOfVariables() + c2.numberOfVariables();
-        }
-
-        @Override
         public Option<List<Object>> unapply(Pair<T1, T2> pair) {
             final Option<List<Object>> unapply1 = c1.unapply(pair._1);
             if (!unapply1.isNone()) {

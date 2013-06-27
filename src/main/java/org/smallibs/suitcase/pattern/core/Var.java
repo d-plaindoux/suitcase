@@ -16,11 +16,6 @@ public class Var<T> implements Case<T> {
     }
 
     @Override
-    public int numberOfVariables() {
-        return 1 + this.value.numberOfVariables();
-    }
-
-    @Override
     public Option<List<Object>> unapply(T t) {
         if (this.value.unapply(t).isNone()) {
             return new Option.None<>();

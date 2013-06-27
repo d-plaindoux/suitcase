@@ -28,21 +28,13 @@ import java.util.List;
 
 public final class Peano {
 
-    public static Case<Integer> Zero() {
-        return new Zero();
-    }
-
+    public static Case<Integer> Zero = new Zero();
     public static Case<Integer> Succ(Object o) {
         return new Succ(o);
     }
 
     @CaseType(Integer.class)
     public static class Zero implements Case<Integer> {
-
-        @Override
-        public int numberOfVariables() {
-            return 0;
-        }
 
         @Override
         public Option<List<Object>> unapply(Integer integer) {
@@ -62,11 +54,6 @@ public final class Peano {
 
         public Succ(Object o1) {
             this.value = Cases.fromObject(o1);
-        }
-
-        @Override
-        public int numberOfVariables() {
-            return this.value.numberOfVariables();
         }
 
         @Override

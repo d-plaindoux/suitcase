@@ -31,8 +31,8 @@ public class RegexMatcherTest {
     public void shouldMatchStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Regex("Hello")).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Regex("Hello")).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match("Hello"));
     }
@@ -41,8 +41,8 @@ public class RegexMatcherTest {
     public void shouldNotMatchStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Regex("Hello")).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(Regex("Hello")).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertFalse(matcher.match("Hello, World"));
     }
@@ -51,8 +51,8 @@ public class RegexMatcherTest {
     public void shouldMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Regex("Hello, .*"))).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(var.of(Regex("Hello, .*"))).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match("Hello, World"));
     }
@@ -61,8 +61,8 @@ public class RegexMatcherTest {
     public void shouldNotMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Regex("Hello, .*!"))).then.constant(true);
-        matcher.caseOf(_).then.constant(false);
+        matcher.caseOf(var.of(Regex("Hello, .*!"))).then.value(true);
+        matcher.caseOf(_).then.value(false);
 
         TestCase.assertFalse(matcher.match("Hello, World"));
     }

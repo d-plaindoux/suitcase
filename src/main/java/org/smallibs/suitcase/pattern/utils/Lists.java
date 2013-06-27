@@ -29,9 +29,7 @@ import java.util.List;
 
 public final class Lists {
 
-    public static <T> Case<List<T>> Empty() {
-        return new Empty<>();
-    }
+    public static Case<List<?>> Empty = new Empty();
 
     public static <T> Case<List<T>> Cons(Object o1, Object o2) {
         return new Cons<>(o1, o2);
@@ -39,11 +37,6 @@ public final class Lists {
 
     @CaseType(List.class)
     private static class Empty<E> implements Case<List<E>> {
-
-        @Override
-        public int numberOfVariables() {
-            return 0;
-        }
 
         @Override
         public Option<List<Object>> unapply(List<E> list) {
@@ -64,11 +57,6 @@ public final class Lists {
         private Cons(Object o1, Object o2) {
             this.caseHead = Cases.fromObject(o1);
             this.caseTail = Cases.fromObject(o2);
-        }
-
-        @Override
-        public int numberOfVariables() {
-            return caseHead.numberOfVariables() + caseTail.numberOfVariables();
         }
 
         @Override

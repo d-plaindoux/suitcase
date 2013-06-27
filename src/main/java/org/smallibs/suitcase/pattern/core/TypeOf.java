@@ -31,11 +31,6 @@ public class TypeOf<T> implements Case<T> {
     }
 
     @Override
-    public int numberOfVariables() {
-        return 0;
-    }
-
-    @Override
     public Option<List<Object>> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
             return new Option.Some<>(Arrays.asList());

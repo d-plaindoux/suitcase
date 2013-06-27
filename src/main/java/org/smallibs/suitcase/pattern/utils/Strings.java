@@ -41,11 +41,6 @@ public final class Strings {
         }
 
         @Override
-        public int numberOfVariables() {
-            return 0;
-        }
-
-        @Override
         public Option<List<Object>> unapply(String s) {
             if (expression.matcher(s).matches()) {
                 return new Option.Some<>(Arrays.asList());
