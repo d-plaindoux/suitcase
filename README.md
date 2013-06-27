@@ -116,6 +116,11 @@ Such matcher using Java 8 can be expressed differently using lambda expressions.
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
 to many integers.
 
+Ad-Hoc Case class
+-----------------
+
+Design process of case classes is described using [integer denotation Peano axioms](./wiki/Case-class)
+
 Other Propositions
 ------------------
 
