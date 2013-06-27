@@ -119,7 +119,7 @@ to many integers.
 Ad-Hoc Case class
 -----------------
 
-Design process of case classes is described using [integer denotation Peano axioms](./wiki/Case-class)
+Design process of case classes is described using [integer denotation Peano axioms](https://github.com/d-plaindoux/suitcase/wiki/Case-Extractor)
 
 Other Propositions
 ------------------
