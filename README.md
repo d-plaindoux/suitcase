@@ -84,7 +84,7 @@ to many integers.
 Ad-Hoc Case class and more ...
 ------------------------------
 
-For more information are given in the [corresponding Wiki](https://github.com/d-plaindoux/suitcase/wiki/Introduction)
+More information and descriptions are given in the [corresponding Wiki](https://github.com/d-plaindoux/suitcase/wiki/Introduction)
 
 Other Propositions
 ------------------
