@@ -33,41 +33,6 @@ For instance the following sample checks if an integer is <tt>O</tt> or not.
   isZero.match(0); // == true
 </pre>
 
-Matching and Typing
--------------------
-
-This pattern matching also offers a simple mechanism able to discriminate objects using their types.
-
-For instance the following sample checks if an object is an integer or a string.
-
-<pre>
-  final Matcher&lt;Object, String> typeCase = Matcher.create();
-
-  typeCase.caseOf(Integer.class).then.value("int");
-  typeCase.caseOf(String.class).then.value("string");
-
-  typeCase.match(0);       // == "int"
-  typeCase.match("Hello"); // == "string"
-</pre>
-
-Matching using Regular Expressions
-----------------------------------
-
-Indeed a string can be matched using inherited equality predicate but the selection can also be performed using
-more complex structure like regular expressions. In the next example each sentence starting with <tt>Hello,</tt>
-and ending with <tt>!</tt> are matched returning <tt>true</tt>. Any other sentences are not matched and then the
-result is <tt>false</tt>.
-
-<pre>
-  final Matcher&lt;String, Boolean> typeCase = Matcher.create();
-
-  typeCase.caseOf(Regex("Hello,.*!")).then.value(true);
-  typeCase.caseOf(_).then.value(false);
-
-  typeCase.match("Hello, World!);   // == true
-  typeCase.match("Bob, Hello");     // == false
-</pre>
-
 Matching complex Objects 
 ------------------------
 
@@ -116,10 +81,10 @@ Such matcher using Java 8 can be expressed differently using lambda expressions.
 Of course such approach is not efficient for one reason: a stack overflow can occurs if the list contains
 to many integers.
 
-Ad-Hoc Case class
------------------
+Ad-Hoc Case class and more ...
+------------------------------
 
-Design process of case classes is described using [integer denotation Peano axioms](https://github.com/d-plaindoux/suitcase/wiki/Case-Extractor)
+For more information are given in the [corresponding Wiki](https://github.com/d-plaindoux/suitcase/wiki/Introduction)
 
 Other Propositions
 ------------------
