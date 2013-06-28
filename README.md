@@ -55,7 +55,7 @@ Then a simple function able to check when a list is empty can be proposed.
 Ad-Hoc Case class and more ...
 ------------------------------
 
-More information and descriptions are given in the [corresponding Wiki](https://github.com/d-plaindoux/suitcase/wiki/Introduction)
+More information and descriptions are given in the [corresponding Wiki](https://github.com/d-plaindoux/suitcase/wiki)
 
 Other Propositions
 ------------------
