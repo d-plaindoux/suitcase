@@ -1,18 +1,18 @@
 package smallibs.suitcase.pattern.xml;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.pattern.Cases;
 import smallibs.suitcase.pattern.core.Case;
 import smallibs.suitcase.utils.Option;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public final class Xml {
+public class Xml {
 
 
     public static Case<NodeList> Tag(Object name, Object... content) {
@@ -21,6 +21,14 @@ public final class Xml {
 
     public static Case<NodeList> OptRep(Object... content) {
         return new OptRep(Seq(content));
+    }
+
+    public static Case<NodeList> Opt(Object... content) {
+        return new Opt(Seq(content));
+    }
+
+    public static Case<NodeList> Rep(Object... content) {
+        return new Rep(Seq(content));
     }
 
     public static Case<NodeList> Seq(Object... content) {
@@ -74,23 +82,23 @@ public final class Xml {
             this.nodeList = nodeList;
         }
 
-        public boolean hasNextNode() {
+        private boolean hasNextNode() {
             return getLength() > 0;
         }
 
-        public int offset() {
+        private int offset() {
             return this.offset;
         }
 
-        public void reset(int offset) {
+        private void reset(int offset) {
             this.offset = offset;
         }
 
-        public void nextNode() {
+        private void nextNode() {
             this.offset += 1;
         }
 
-        public Node current() {
+        private Node current() {
             return this.item(0);
         }
 
@@ -151,15 +159,19 @@ public final class Xml {
 
         protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList visited) {
             final List<Object> objects = new ArrayList<>();
+            final int offset = visited.offset();
 
             for (int index = 0; visited.hasNextNode() && index < contentCases.size(); index += 1) {
                 final int length = visited.getLength();
-                final Option<List<Object>> unapply = contentCases.get(index).unapply(visited);
+                final Case<NodeList> nodeListCase = contentCases.get(index);
+                final Option<List<Object>> unapply = nodeListCase.unapply(visited);
 
                 if (unapply.isNone()) {
+                    visited.reset(offset);
                     return unapply;
                 } else {
-                    if (visited.getLength() == length) {
+                    // Consume current node only if the term is not a dedicated Xml term
+                    if (visited.getLength() == length && !(nodeListCase instanceof LambdaTransition)) {
                         visited.nextNode();
                     }
                     objects.addAll(unapply.value());
@@ -172,8 +184,13 @@ public final class Xml {
 
     // =================================================================================================================
 
+    private interface LambdaTransition {
+    }
+
+    // =================================================================================================================
+
     @CaseType(NodeList.class)
-    private static class OptRep extends NodeListCase {
+    private static class OptRep extends NodeListCase implements LambdaTransition {
 
         private final Case<NodeList> contentCases;
 
@@ -187,12 +204,68 @@ public final class Xml {
             Option<List<Object>> unapply = this.contentCases.unapply(node);
 
             while (!unapply.isNone() && node.hasNextNode()) {
-                int offset = node.offset();
                 objects.addAll(unapply.value());
                 unapply = this.contentCases.unapply(node);
-                if (unapply.isNone()) {
-                    node.reset(offset);
-                }
+            }
+
+            if (!unapply.isNone()) {
+                objects.addAll(unapply.value());
+            }
+
+            return new Option.Some<>(objects);
+        }
+    }
+
+    // =================================================================================================================
+
+    @CaseType(NodeList.class)
+    private static class Rep extends NodeListCase {
+
+        private final Case<NodeList> contentCases;
+
+        private Rep(Case<NodeList> content) {
+            contentCases = content;
+        }
+
+        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList node) {
+            final List<Object> objects = new ArrayList<>();
+
+            Option<List<Object>> unapply = this.contentCases.unapply(node);
+
+            if (unapply.isNone()) {
+                return new Option.None<>();
+            }
+
+            while (!unapply.isNone() && node.hasNextNode()) {
+                objects.addAll(unapply.value());
+                unapply = this.contentCases.unapply(node);
+            }
+
+            if (!unapply.isNone()) {
+                objects.addAll(unapply.value());
+            }
+
+            return new Option.Some<>(objects);
+        }
+    }
+    // =================================================================================================================
+
+    @CaseType(NodeList.class)
+    private static class Opt extends NodeListCase implements LambdaTransition {
+
+        private final Case<NodeList> contentCases;
+
+        private Opt(Case<NodeList> content) {
+            contentCases = content;
+        }
+
+        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList node) {
+            final List<Object> objects = new ArrayList<>();
+
+            final Option<List<Object>> unapply = this.contentCases.unapply(node);
+
+            if (!unapply.isNone()) {
+                objects.addAll(unapply.value());
             }
 
             return new Option.Some<>(objects);
