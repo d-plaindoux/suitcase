@@ -20,7 +20,7 @@ public class Var<T> implements Case<T> {
         if (unapply.isNone()) {
             return new Option.None<>();
         } else {
-            return new Option.Some<>(new MatchResult(unapply.value().getReturnedObject(), t));
+            return new Option.Some<>(new MatchResult(unapply.value().matchedObject(), t));
         }
     }
 }

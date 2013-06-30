@@ -42,11 +42,11 @@ public class MatchResult {
         return this;
     }
 
-    public List<Object> getBindings() {
+    public List<Object> bindings() {
         return bindings;
     }
 
-    public Object getReturnedObject() {
+    public Object matchedObject() {
         return returnedObject;
     }
 }

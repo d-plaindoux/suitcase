@@ -44,7 +44,7 @@ public class Matcher<T, R> {
     // Internal classes and intermediate code for DSL like approach
     // =================================================================================================================
 
-    protected class Rule<M> {
+    private class Rule<M> {
         private final Class<?> type;
         private final Case<T> aCase;
         private final Function<M, R> function;
@@ -119,6 +119,8 @@ public class Matcher<T, R> {
         }
     }
 
+    // =================================================================================================================
+
     public class CaseOf {
         public final Then then;
 
@@ -149,19 +151,6 @@ public class Matcher<T, R> {
         return new CaseOf(Cases.<T>fromObject(object));
     }
 
-    @interface A {
-    }
-
-    @Deprecated
-    public CaseOf when(Object object) {
-        return new CaseOf(Cases.<T>fromObject(object));
-    }
-
-    protected R reduce(final Function<Object, R> function, final List<Object> result) {
-        final Object parameter = generateParameter(result); // TODO -- check this cast ...
-        return function.apply(parameter);
-    }
-
     private Object generateParameter(List<Object> result) {
         Object parameter;
         if (result.isEmpty()) {
@@ -175,13 +164,16 @@ public class Matcher<T, R> {
         return parameter;
     }
 
-    // =================================================================================================================
+    protected R reduce(final Function<Object, R> function, final List<Object> result) {
+        return function.apply(generateParameter(result));
+    }
 
+    @SuppressWarnings("unchecked") // TODO
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
             final Option<MatchResult> option = rule.match(object);
             if (!option.isNone()) {
-                return this.reduce(rule.getFunction(), option.value().getBindings());
+                return this.reduce(rule.getFunction(), option.value().bindings());
             }
         }
 
