@@ -20,16 +20,16 @@ This pattern matching offers a simple mechanism for simple object selection base
 Indeed pattern matching cases can be done on the object kind and it's internal state. For instance the following sample
 checks if an integer is <tt>O</tt> or not.
 
-<pre>
-  final Match&lt;Integer, Boolean> isZero = Match.match();
+``` java
+final Match<Integer, Boolean> isZero = Match.match();
 
-  isZero.caseOf(0).then.value(true);
-  isZero.caseOf(_).then.value(false);
-    
-  isZero.match(0); // == true
-</pre>
+isZero.caseOf(0).then.value(true);
+isZero.caseOf(_).then.value(false);
 
-More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki)
+isZero.match(0); // == true
+```
+
+**More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki)**
 
 Other Propositions
 ------------------
