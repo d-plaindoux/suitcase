@@ -20,7 +20,9 @@ package smallibs.suitcase.matching;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import smallibs.suitcase.matching.Matcher;
+import smallibs.suitcase.utils.Function;
+
+import java.util.List;
 
 import static smallibs.suitcase.pattern.Cases._;
 import static smallibs.suitcase.pattern.Cases.var;
@@ -52,7 +54,11 @@ public class RegexMatcherTest {
     public void shouldMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Regex("Hello, .*"))).then.value(true);
+        matcher.caseOf(var.of(Regex("Hello, (.*)"))).then.function(new Function<List<String>, Boolean>() {
+            public Boolean apply(List<String> strings) {
+                return strings.get(1).equals("World");
+            }
+        });
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match("Hello, World"));
@@ -62,7 +68,7 @@ public class RegexMatcherTest {
     public void shouldNotMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Regex("Hello, .*!"))).then.value(true);
+        matcher.caseOf(Regex("Hello, .*!")).then.value(true);
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertFalse(matcher.match("Hello, World"));

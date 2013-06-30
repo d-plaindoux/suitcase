@@ -47,7 +47,7 @@ public final class Strings {
             final Matcher matcher = expression.matcher(s);
             if (matcher.matches()) {
                 final List<String> strings = new ArrayList<>();
-                for (int i = 0; i < matcher.groupCount(); i += 1) {
+                for (int i = 0; i <= matcher.groupCount(); i += 1) {
                     strings.add(s.substring(matcher.start(i), matcher.end(i)));
                 }
                 return new Option.Some<>(new MatchResult(strings));
