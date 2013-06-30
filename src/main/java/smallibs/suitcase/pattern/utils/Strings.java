@@ -19,11 +19,13 @@
 package smallibs.suitcase.pattern.utils;
 
 import smallibs.suitcase.annotations.CaseType;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class Strings {
@@ -41,9 +43,14 @@ public final class Strings {
         }
 
         @Override
-        public Option<List<Object>> unapply(String s) {
-            if (expression.matcher(s).matches()) {
-                return new Option.Some<>(Arrays.asList());
+        public Option<MatchResult> unapply(String s) {
+            final Matcher matcher = expression.matcher(s);
+            if (matcher.matches()) {
+                final List<String> strings = new ArrayList<>();
+                for (int i = 0; i < matcher.groupCount(); i += 1) {
+                    strings.add(s.substring(matcher.start(i), matcher.end(i)));
+                }
+                return new Option.Some<>(new MatchResult(strings));
             } else {
                 return new Option.None<>();
             }

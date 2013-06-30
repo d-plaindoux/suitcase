@@ -19,16 +19,15 @@
 package smallibs.suitcase.pattern.peano;
 
 import smallibs.suitcase.annotations.CaseType;
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
-
-import java.util.Arrays;
-import java.util.List;
 
 public final class Peano {
 
     public static Case<Integer> Zero = new Zero();
+
     public static Case<Integer> Succ(Object o) {
         return new Succ(o);
     }
@@ -37,9 +36,9 @@ public final class Peano {
     public static class Zero implements Case<Integer> {
 
         @Override
-        public Option<List<Object>> unapply(Integer integer) {
+        public Option<MatchResult> unapply(Integer integer) {
             if (integer == 0) {
-                return new Option.Some<>(Arrays.asList());
+                return new Option.Some<>(new MatchResult(integer));
             } else {
                 return new Option.None<>();
             }
@@ -57,7 +56,7 @@ public final class Peano {
         }
 
         @Override
-        public Option<List<Object>> unapply(Integer integer) {
+        public Option<MatchResult> unapply(Integer integer) {
             if (integer > 0) {
                 return this.value.unapply(integer - 1);
             } else {

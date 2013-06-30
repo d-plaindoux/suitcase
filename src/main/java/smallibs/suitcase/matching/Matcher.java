@@ -19,8 +19,9 @@
 package smallibs.suitcase.matching;
 
 import smallibs.suitcase.annotations.CaseType;
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
@@ -66,7 +67,7 @@ public class Matcher<T, R> {
             return type == null || !Cases.typeOf(type).unapply(object).isNone();
         }
 
-        Option<List<Object>> match(T object) {
+        Option<MatchResult> match(T object) {
             if (this.typeIsCorrect(object)) {
                 return aCase.unapply(object);
             } else {
@@ -148,14 +149,15 @@ public class Matcher<T, R> {
         return new CaseOf(Cases.<T>fromObject(object));
     }
 
-    @interface A {}
+    @interface A {
+    }
 
     @Deprecated
     public CaseOf when(Object object) {
         return new CaseOf(Cases.<T>fromObject(object));
     }
 
-    protected R reduce(Function<Object, R> function, List<Object> result) {
+    protected R reduce(final Function<Object, R> function, final List<Object> result) {
         final Object parameter = generateParameter(result); // TODO -- check this cast ...
         return function.apply(parameter);
     }
@@ -177,9 +179,9 @@ public class Matcher<T, R> {
 
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
-            final Option<List<Object>> option = rule.match(object);
+            final Option<MatchResult> option = rule.match(object);
             if (!option.isNone()) {
-                return this.reduce(rule.getFunction(), option.value());
+                return this.reduce(rule.getFunction(), option.value().getBindings());
             }
         }
 

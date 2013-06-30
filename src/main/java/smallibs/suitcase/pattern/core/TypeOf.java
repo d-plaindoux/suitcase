@@ -18,10 +18,11 @@
 
 package smallibs.suitcase.pattern.core;
 
+import smallibs.suitcase.pattern.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class TypeOf<T> implements Case<T> {
     private final Class<?> type;
@@ -31,9 +32,9 @@ public class TypeOf<T> implements Case<T> {
     }
 
     @Override
-    public Option<List<Object>> unapply(T object) {
+    public Option<MatchResult> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return new Option.Some<>(Arrays.asList());
+            return new Option.Some<>(new MatchResult(object));
         } else {
             return new Option.None<>();
         }

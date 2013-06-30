@@ -1,15 +1,33 @@
+/*
+ * Copyright (C)2013 D. Plaindoux.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation; either version 2, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; see the file COPYING.  If not, write to
+ * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package smallibs.suitcase.pattern.xml;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import smallibs.suitcase.annotations.CaseType;
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Xml {
@@ -129,9 +147,9 @@ public class Xml {
 
     private static abstract class NodeListCase implements Case<NodeList> {
         @Override
-        public Option<List<Object>> unapply(NodeList nodeList) {
+        public Option<MatchResult> unapply(NodeList nodeList) {
             final VisitedNodeList visitedNodeList = getVisitedNodeList(nodeList);
-            final Option<List<Object>> unapply = unapplyVisitedNodeList(visitedNodeList);
+            final Option<MatchResult> unapply = unapplyVisitedNodeList(visitedNodeList);
 
             if (!unapply.isNone() && visitedNodeList != nodeList && visitedNodeList.getLength() > 0) {
                 return new Option.None<>();
@@ -140,7 +158,7 @@ public class Xml {
             }
         }
 
-        protected abstract Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList visitedNodeList);
+        protected abstract Option<MatchResult> unapplyVisitedNodeList(VisitedNodeList visitedNodeList);
     }
 
     // =================================================================================================================
@@ -157,14 +175,14 @@ public class Xml {
             }
         }
 
-        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList visited) {
-            final List<Object> objects = new ArrayList<>();
+        protected Option<MatchResult> unapplyVisitedNodeList(VisitedNodeList visited) {
+            final MatchResult matchResult = new MatchResult(visited);
             final int offset = visited.offset();
 
             for (int index = 0; visited.hasNextNode() && index < contentCases.size(); index += 1) {
                 final int length = visited.getLength();
                 final Case<NodeList> nodeListCase = contentCases.get(index);
-                final Option<List<Object>> unapply = nodeListCase.unapply(visited);
+                final Option<MatchResult> unapply = nodeListCase.unapply(visited);
 
                 if (unapply.isNone()) {
                     visited.reset(offset);
@@ -174,11 +192,11 @@ public class Xml {
                     if (visited.getLength() == length && !(nodeListCase instanceof LambdaTransition)) {
                         visited.nextNode();
                     }
-                    objects.addAll(unapply.value());
+                    matchResult.with(unapply.value());
                 }
             }
 
-            return new Option.Some<>(objects);
+            return new Option.Some<>(matchResult);
         }
     }
 
@@ -198,21 +216,21 @@ public class Xml {
             contentCases = content;
         }
 
-        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList node) {
-            final List<Object> objects = new ArrayList<>();
+        protected Option<MatchResult> unapplyVisitedNodeList(VisitedNodeList node) {
+            final MatchResult matchResult = new MatchResult(node);
 
-            Option<List<Object>> unapply = this.contentCases.unapply(node);
+            Option<MatchResult> unapply = this.contentCases.unapply(node);
 
             while (!unapply.isNone() && node.hasNextNode()) {
-                objects.addAll(unapply.value());
+                matchResult.with(unapply.value());
                 unapply = this.contentCases.unapply(node);
             }
 
             if (!unapply.isNone()) {
-                objects.addAll(unapply.value());
+                matchResult.with(unapply.value());
             }
 
-            return new Option.Some<>(objects);
+            return new Option.Some<>(matchResult);
         }
     }
 
@@ -227,25 +245,25 @@ public class Xml {
             contentCases = content;
         }
 
-        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList node) {
-            final List<Object> objects = new ArrayList<>();
+        protected Option<MatchResult> unapplyVisitedNodeList(VisitedNodeList node) {
+            final MatchResult matchResult = new MatchResult(node);
 
-            Option<List<Object>> unapply = this.contentCases.unapply(node);
+            Option<MatchResult> unapply = this.contentCases.unapply(node);
 
             if (unapply.isNone()) {
                 return new Option.None<>();
             }
 
             while (!unapply.isNone() && node.hasNextNode()) {
-                objects.addAll(unapply.value());
+                matchResult.with(unapply.value());
                 unapply = this.contentCases.unapply(node);
             }
 
             if (!unapply.isNone()) {
-                objects.addAll(unapply.value());
+                matchResult.with(unapply.value());
             }
 
-            return new Option.Some<>(objects);
+            return new Option.Some<>(matchResult);
         }
     }
     // =================================================================================================================
@@ -259,16 +277,16 @@ public class Xml {
             contentCases = content;
         }
 
-        protected Option<List<Object>> unapplyVisitedNodeList(VisitedNodeList node) {
-            final List<Object> objects = new ArrayList<>();
+        protected Option<MatchResult> unapplyVisitedNodeList(VisitedNodeList node) {
+            final MatchResult matchResult = new MatchResult(node);
 
-            final Option<List<Object>> unapply = this.contentCases.unapply(node);
+            final Option<MatchResult> unapply = this.contentCases.unapply(node);
 
             if (!unapply.isNone()) {
-                objects.addAll(unapply.value());
+                matchResult.with(unapply.value());
             }
 
-            return new Option.Some<>(objects);
+            return new Option.Some<>(matchResult);
         }
     }
 
@@ -276,7 +294,7 @@ public class Xml {
 
     private static abstract class NodeCase implements Case<NodeList> {
         @Override
-        public Option<List<Object>> unapply(NodeList nodeList) {
+        public Option<MatchResult> unapply(NodeList nodeList) {
             final VisitedNodeList visitedNodeList = getVisitedNodeList(nodeList);
 
             if (visitedNodeList != nodeList && visitedNodeList.getLength() > 1) {
@@ -290,7 +308,7 @@ public class Xml {
             }
         }
 
-        protected abstract Option<List<Object>> unapplyNode(Node current);
+        protected abstract Option<MatchResult> unapplyNode(Node current);
     }
 
     // =================================================================================================================
@@ -306,17 +324,14 @@ public class Xml {
             this.contentCase = Cases.fromObject(content);
         }
 
-        protected Option<List<Object>> unapplyNode(Node node) {
+        protected Option<MatchResult> unapplyNode(Node node) {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 final Element element = (Element) node;
-                final Option<List<Object>> unapplyName = nameCase.unapply(element.getTagName());
+                final Option<MatchResult> unapplyName = nameCase.unapply(element.getTagName());
                 if (!unapplyName.isNone()) {
-                    final Option<List<Object>> unapplyContent = contentCase.unapply(element.getChildNodes());
+                    final Option<MatchResult> unapplyContent = contentCase.unapply(element.getChildNodes());
                     if (!unapplyContent.isNone()) {
-                        final List<Object> objects = new LinkedList<>();
-                        objects.addAll(unapplyName.value());
-                        objects.addAll(unapplyContent.value());
-                        return new Option.Some<>(objects);
+                        return new Option.Some<>(new MatchResult(node).with(unapplyName.value()).with(unapplyContent.value()));
                     }
                 }
             }
@@ -335,7 +350,7 @@ public class Xml {
             this.contentCase = Cases.fromObject(content);
         }
 
-        protected Option<List<Object>> unapplyNode(Node node) {
+        protected Option<MatchResult> unapplyNode(Node node) {
             if (node.getNodeType() == Node.TEXT_NODE) {
                 return contentCase.unapply(node.getTextContent().trim());
             } else {

@@ -18,16 +18,15 @@
 
 package smallibs.suitcase.pattern.core;
 
+import smallibs.suitcase.pattern.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Any<T> implements Case<T> {
 
     @Override
-    public Option<List<Object>> unapply(T object) {
-        return new Option.Some<>(Arrays.asList());
+    public Option<MatchResult> unapply(T object) {
+        return new Option.Some<>(new MatchResult(object));
     }
 
 }

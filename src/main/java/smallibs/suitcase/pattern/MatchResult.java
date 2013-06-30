@@ -16,12 +16,37 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.pattern.core;
+package smallibs.suitcase.pattern;
 
-import smallibs.suitcase.utils.Option;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public interface Case<T> {
-    Option<List<Object>> unapply(T t);
+public class MatchResult {
+
+    private final List<Object> bindings;
+    private final Object returnedObject;
+
+    public MatchResult(Object returnedObject) {
+        this.bindings = new ArrayList<>();
+        this.returnedObject = returnedObject;
+    }
+
+    public MatchResult(Object binding, Object returnedObject) {
+        this.bindings = new ArrayList<>();
+        this.bindings.add(binding);
+        this.returnedObject = returnedObject;
+    }
+
+    public MatchResult with(MatchResult result) {
+        this.bindings.addAll(result.bindings);
+        return this;
+    }
+
+    public List<Object> getBindings() {
+        return bindings;
+    }
+
+    public Object getReturnedObject() {
+        return returnedObject;
+    }
 }

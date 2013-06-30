@@ -18,13 +18,11 @@
 
 package smallibs.suitcase.pattern.utils;
 
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 import smallibs.suitcase.utils.Pair;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public final class Pairs {
 
@@ -43,15 +41,12 @@ public final class Pairs {
         }
 
         @Override
-        public Option<List<Object>> unapply(Pair<T1, T2> pair) {
-            final Option<List<Object>> unapply1 = c1.unapply(pair._1);
+        public Option<MatchResult> unapply(Pair<T1, T2> pair) {
+            final Option<MatchResult> unapply1 = c1.unapply(pair._1);
             if (!unapply1.isNone()) {
-                final Option<List<Object>> unapply2 = c2.unapply(pair._2);
+                final Option<MatchResult> unapply2 = c2.unapply(pair._2);
                 if (!unapply2.isNone()) {
-                    final LinkedList<Object> objects = new LinkedList<>();
-                    objects.addAll(unapply1.value());
-                    objects.addAll(unapply2.value());
-                    return new Option.Some<List<Object>>(objects);
+                    return new Option.Some<>(new MatchResult(pair).with(unapply1.value()).with(unapply2.value()));
                 }
             }
             return new Option.None<>();

@@ -1,10 +1,9 @@
 package smallibs.suitcase.pattern.core;
 
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Var<T> implements Case<T> {
 
@@ -16,11 +15,12 @@ public class Var<T> implements Case<T> {
     }
 
     @Override
-    public Option<List<Object>> unapply(T t) {
-        if (this.value.unapply(t).isNone()) {
+    public Option<MatchResult> unapply(T t) {
+        final Option<MatchResult> unapply = this.value.unapply(t);
+        if (unapply.isNone()) {
             return new Option.None<>();
         } else {
-            return new Option.Some<>(Arrays.<Object>asList(t));
+            return new Option.Some<>(new MatchResult(unapply.value().getReturnedObject(), t));
         }
     }
 }

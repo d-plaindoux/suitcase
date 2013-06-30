@@ -19,7 +19,6 @@
 package smallibs.suitcase.pattern;
 
 import smallibs.suitcase.pattern.core.Any;
-import smallibs.suitcase.pattern.core.Case;
 import smallibs.suitcase.pattern.core.Constant;
 import smallibs.suitcase.pattern.core.Null;
 import smallibs.suitcase.pattern.core.TypeOf;

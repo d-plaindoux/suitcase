@@ -16,22 +16,13 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.pattern.core;
+package smallibs.suitcase.pattern;
 
-import smallibs.suitcase.pattern.Case;
-import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
+import smallibs.suitcase.utils.Pair;
 
-import java.util.Arrays;
+import java.util.List;
 
-public class Null<T> implements Case<T> {
-
-    @Override
-    public Option<MatchResult> unapply(T object) {
-        if (object == null) {
-            return new Option.Some<>(new MatchResult(object));
-        } else {
-            return new Option.None<>();
-        }
-    }
+public interface Case<T> {
+    Option<MatchResult> unapply(T t);
 }

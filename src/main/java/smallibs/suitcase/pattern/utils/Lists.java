@@ -19,11 +19,11 @@
 package smallibs.suitcase.pattern.utils;
 
 import smallibs.suitcase.annotations.CaseType;
+import smallibs.suitcase.pattern.Case;
 import smallibs.suitcase.pattern.Cases;
-import smallibs.suitcase.pattern.core.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,9 +39,9 @@ public final class Lists {
     private static class Empty<E> implements Case<List<E>> {
 
         @Override
-        public Option<List<Object>> unapply(List<E> list) {
+        public Option<MatchResult> unapply(List<E> list) {
             if (list.isEmpty()) {
-                return new Option.Some<>(Arrays.asList());
+                return new Option.Some<>(new MatchResult(list));
             } else {
                 return new Option.None<>();
             }
@@ -60,18 +60,15 @@ public final class Lists {
         }
 
         @Override
-        public Option<List<Object>> unapply(List<E> list) {
+        public Option<MatchResult> unapply(List<E> list) {
             if (!list.isEmpty()) {
                 final List<E> tail = new LinkedList<>(list);
-                final Option<List<Object>> headResult = this.caseHead.unapply(tail.remove(0));
+                final Option<MatchResult> headResult = this.caseHead.unapply(tail.remove(0));
 
                 if (!headResult.isNone()) {
-                    final Option<List<Object>> tailResult = this.caseTail.unapply(tail);
+                    final Option<MatchResult> tailResult = this.caseTail.unapply(tail);
                     if (!tailResult.isNone()) {
-                        final List<Object> result = new LinkedList<>();
-                        result.addAll(headResult.value());
-                        result.addAll(tailResult.value());
-                        return new Option.Some<>(result);
+                        return new Option.Some<>(new MatchResult(list).with(headResult.value()).with(tailResult.value()));
                     }
                 }
             }

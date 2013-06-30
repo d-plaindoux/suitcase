@@ -18,10 +18,11 @@
 
 package smallibs.suitcase.pattern.core;
 
+import smallibs.suitcase.pattern.Case;
+import smallibs.suitcase.pattern.MatchResult;
 import smallibs.suitcase.utils.Option;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class Constant<T> implements Case<T> {
 
@@ -32,9 +33,9 @@ public class Constant<T> implements Case<T> {
     }
 
     @Override
-    public Option<List<Object>> unapply(T object) {
+    public Option<MatchResult> unapply(T object) {
         if (object != null && object.equals(this.object)) {
-            return new Option.Some<>(Arrays.asList());
+            return new Option.Some<>(new MatchResult(object));
         } else {
             return new Option.None<>();
         }
