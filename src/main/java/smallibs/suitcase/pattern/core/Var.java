@@ -23,4 +23,8 @@ public class Var<T> implements Case<T> {
             return new Option.Some<>(new MatchResult(unapply.value().matchedObject(), t));
         }
     }
+
+    public Case<T> getValue() {
+        return value;
+    }
 }

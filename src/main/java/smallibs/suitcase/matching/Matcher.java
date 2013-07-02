@@ -55,7 +55,7 @@ public class Matcher<T, R> {
             this.function = function;
         }
 
-        protected Class<?> getType(Case aCase) {
+        private Class<?> getType(Case aCase) {
             if (aCase.getClass().isAnnotationPresent(CaseType.class)) {
                 return aCase.getClass().getAnnotation(CaseType.class).value();
             } else {
@@ -63,7 +63,7 @@ public class Matcher<T, R> {
             }
         }
 
-        protected boolean typeIsCorrect(Object object) {
+        private boolean typeIsCorrect(Object object) {
             return type == null || !Cases.typeOf(type).unapply(object).isNone();
         }
 

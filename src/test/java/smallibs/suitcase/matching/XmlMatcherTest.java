@@ -18,12 +18,13 @@
 
 package smallibs.suitcase.matching;
 
-import junit.framework.TestCase;
 import org.junit.Test;
-import smallibs.suitcase.pattern.xml.Xml;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
+import smallibs.suitcase.pattern.xml.Dom;
+import smallibs.suitcase.utils.Function;
+import smallibs.suitcase.utils.Function2;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,227 +32,567 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static smallibs.suitcase.pattern.Cases._;
-import static smallibs.suitcase.pattern.xml.Xml.*;
+import static smallibs.suitcase.pattern.Cases.var;
+import static smallibs.suitcase.pattern.xml.Dom.*;
 
 public class XmlMatcherTest {
 
-    @Test
-    public void shouldMatchAsingleElement() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    // =================================================================================================================
+    // SEQ
+    // =================================================================================================================
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+    @Test
+    public void shouldMatchEmptyTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Empty).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchEmptyTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchSeqEmptyTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(Empty)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchSeqEmptiesTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(Empty, Empty)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchSingleTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_)).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldMatchAnElement() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldMatchSingleTerm2() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag(_, _, _)).then.value(true);
+        matcher.caseOf(Seq(_, Empty)).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
+    }
+
+
+    @Test
+    public void shouldMatchSingleTerm3() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(Empty, _)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldMatchElementNamedA() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldMatchMultipleTerms() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A", _, _)).then.value(true);
+        matcher.caseOf(Seq(_, _)).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldMatchElements() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldNotMatchMultipleTerms1() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Seq(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(OptRep(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldMatchElements2() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldNotMatchMultipleTerms2() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Seq(_, _, _)).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Seq(_, OptRep(_))).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldMatchAnElementNamedAAndMayBeAContent() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldMatchSequenceWithATagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A", OptRep(_))).then.value(true);
+        matcher.caseOf(Seq(Tag(_))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementNamedB() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldNotMatchSequenceWithATagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Seq(Text(_))).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Tag("B", _)).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertFalse(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementNamed_A_with_Text() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldNotMatchSequenceWithATextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Seq(Tag(_))).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Tag("A", Text(_), _)).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementNamed_A_with_ExactText() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldMatchSequenceWithATextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A", Text("Text in A"), OptRep(_))).then.value(true);
+        matcher.caseOf(Seq(Text(_))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementNamed_A_with_ExactTextAndB() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/sample.xml");
+    public void shouldNotMatchSequenceWithATagTermAndText() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Seq(Tag(_), Text(_))).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Tag("A", Text("Text in A"), Tag("B", Text("Text in B"), Tag("C",OptRep(_)), Tag("D", OptRep(_))))).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     // =================================================================================================================
+    // TAG
+    // =================================================================================================================
 
     @Test
-    public void shouldNotMatchAnEmptyElement() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/empty.xml");
+    public void shouldMatchEmptyTagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Tag(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchEmptyNamedTagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag("A")).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementMayBeEmpty() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/empty.xml");
+    public void shouldNotMatchEmptyNamedTagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Tag("B")).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Tag("A",Opt(_))).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
     }
 
     @Test
-    public void shouldNotMatchAnElementMayBeEmpty2() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/empty.xml");
+    public void shouldNotMatchTextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
+        matcher.caseOf(Text(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
 
-        matcher.caseOf(Tag("A",OptRep(_))).then.value(true);
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchEmptyTagTerm1() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchEmptyTagTerm2() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, _)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchEmptyTagTerm3() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    // =================================================================================================================
+    // TEXT
+    // =================================================================================================================
+
+    @Test
+    public void shouldMatchSimpleTextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Text(_)).then.value(true);
         matcher.caseOf(_).then.value(false);
 
-        TestCase.assertTrue(matcher.match(rootElement));
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchSimpleSpecificTextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Text("Hello, World!")).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchSimpleSpecificTextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Text("Hello, not that World!")).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchTagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    // =================================================================================================================
+    // OPT
+    // =================================================================================================================
+
+    @Test
+    public void shouldMatchEmptyTermUsingOpt() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Opt(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagTermUsingOpt1() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Opt(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagTermUsingOpt2() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Opt(Tag("A"))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchTagTermUsingOpt() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Opt(Tag("B"))).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    // =================================================================================================================
+    // OPTREP
+    // =================================================================================================================
+
+    @Test
+    public void shouldMatchEmptyTermUsingOptRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(OptRep(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagsUsingOptRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(OptRep(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchOnlyTagsUsingOptRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(OptRep(Text(_)), OptRep(Tag(_)))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    // =================================================================================================================
+    // REP
+    // =================================================================================================================
+
+    @Test
+    public void shouldNotMatchEmptyTermUsingRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Rep(_)).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagsUsingRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Rep(_)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchOnlyTagsUsingRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(OptRep(Text(_)), Rep(Tag(_)))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    // =================================================================================================================
+    // Xml term capture
+    // =================================================================================================================
+
+    @Test
+    public void shouldCaptureEmptyTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(var.of(Empty)).then.function(new Function<XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o) {
+                return o.size() == 0;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldCaptureTagTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(var.of(Tag(_))).then.function(new Function<XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o) {
+                return o.size() == 1 && o.next().getNodeType() == Node.ELEMENT_NODE;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldCaptureTextTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(var.of(Text(_))).then.function(new Function<XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o) {
+                return o.size() == 1 && o.next().getNodeType() == Node.TEXT_NODE;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldCapturedTagsTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(var.of(Seq(Tag(_), Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o) {
+                return o.size() == 2 && o.next().getNodeType() == Node.ELEMENT_NODE && o.next().getNodeType() == Node.ELEMENT_NODE;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldCapturedTagsTermUsingOptRep() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(var.of(OptRep(Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o) {
+                return o.size() == 2 && o.next().getNodeType() == Node.ELEMENT_NODE && o.next().getNodeType() == Node.ELEMENT_NODE;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldCapturedEachTagsTerm() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Seq(var, var)).then.function(new Function2<XmlTerm, XmlTerm, Boolean>() {
+            public Boolean apply(XmlTerm o1, XmlTerm o2) {
+                return o1.size() == 1 && o1.next().getNodeType() == Node.ELEMENT_NODE &&
+                        o2.size() == 1 && o2.next().getNodeType() == Node.ELEMENT_NODE;
+            }
+        });
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
     }
 
     // =================================================================================================================
 
-    @Test
-    public void shouldNotMatchAnElementWithTwoTags() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/single.xml");
-
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A",_,_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
-    }
-
-    @Test
-    public void shouldNotMatchAnElementWithTwoTags2() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/single.xml");
-
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A",Opt(Text(_)),_,_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
-    }
+    final Matcher<XmlTerm, Integer> numberOfChars =
+            Matcher.<XmlTerm, Integer>create().
+                    caseOf(Text(var)).then.function(
+                    new Function<String, Integer>() {
+                        public Integer apply(String o) {
+                            return o.length();
+                        }
+                    }).
+                    caseOf(Tag(_, var.of(OptRep(_)))).then.function(
+                    new Function<XmlTerm, Integer>() {
+                        public Integer apply(XmlTerm o) {
+                            return numberOfChars.match(o);
+                        }
+                    }).
+                    caseOf(Seq(var, var.of(Rep(_)))).then.function(
+                    new Function2<XmlTerm, XmlTerm, Integer>() {
+                        public Integer apply(XmlTerm o1, XmlTerm o2) {
+                            return numberOfChars.match(o1) + numberOfChars.match(o2);
+                        }
+                    }).
+                    caseOf(Empty).then.value(0);
 
     @Test
-    public void shouldNotMatchAnElementWithTwoTags3() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/single.xml");
-
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A",Opt(Text(_)),OptRep(Tag(_)))).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
-    }
-
-    @Test
-    public void shouldNotMatchAnElementWithTwoTags4() throws Exception {
-        final NodeList rootElement = getElementFromSampleDocument("/single.xml");
-
-        final Matcher<NodeList, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(Tag("A",Opt(Text(_)),Rep(Tag(_)))).then.value(true);
-        matcher.caseOf(_).then.value(false);
-
-        TestCase.assertTrue(matcher.match(rootElement));
+    public void shouldComputeNumberOfChars() throws Exception {
+        final XmlTerm term = Dom.getTerm(getDocument("/simpleWithText.xml").getDocumentElement());
+        assertEquals(27, numberOfChars.match(term).intValue());
     }
 
     // =================================================================================================================
 
-    private NodeList getElementFromSampleDocument(String file) throws ParserConfigurationException, SAXException, IOException {
+    private Document getDocument(String file) throws ParserConfigurationException, SAXException, IOException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
         try (InputStream resourceAsStream = XmlMatcherTest.class.getResourceAsStream(file)) {
-            final Document document = builder.parse(resourceAsStream);
-            return Xml.toNodeList(document.getDocumentElement());
+            return builder.parse(resourceAsStream);
         }
     }
 }
