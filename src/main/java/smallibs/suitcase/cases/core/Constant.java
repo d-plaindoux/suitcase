@@ -16,10 +16,26 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.utils;
+package smallibs.suitcase.cases.core;
 
-public interface Function3<A, B, C, R> {
+import smallibs.suitcase.cases.Case;
+import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.utils.Option;
 
-    R apply(A a, B b, C c);
+public class Constant<T> implements Case<T> {
 
+    private final Object object;
+
+    public Constant(T object) {
+        this.object = object;
+    }
+
+    @Override
+    public Option<MatchResult> unapply(T object) {
+        if (object != null && object.equals(this.object)) {
+            return new Option.Some<>(new MatchResult(object));
+        } else {
+            return new Option.None<>();
+        }
+    }
 }

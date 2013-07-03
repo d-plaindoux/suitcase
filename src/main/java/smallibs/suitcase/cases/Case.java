@@ -16,10 +16,10 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.utils;
+package smallibs.suitcase.cases;
 
-public interface Function3<A, B, C, R> {
+import smallibs.suitcase.utils.Option;
 
-    R apply(A a, B b, C c);
-
+public interface Case<T> {
+    Option<MatchResult> unapply(T t);
 }

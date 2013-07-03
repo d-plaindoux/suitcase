@@ -18,8 +18,8 @@
 
 package smallibs.suitcase.utils;
 
-public interface Function4<M1, M2, M3, M4, R> {
+public interface Function4<A, B, C, D, R> {
 
-    R apply(M1 m1, M2 m2, M3 m3, M4 m4);
+    R apply(A a, B b, C c, D d);
 
 }
