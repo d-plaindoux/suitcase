@@ -46,7 +46,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchEmptyTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Empty).then.value(true);
@@ -57,7 +57,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_)).then.value(false);
@@ -68,7 +68,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSeqEmptyTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Empty)).then.value(true);
@@ -79,7 +79,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSeqEmptiesTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Empty, Empty)).then.value(true);
@@ -90,7 +90,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSingleTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_)).then.value(true);
@@ -101,7 +101,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSingleTerm2() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_, Empty)).then.value(true);
@@ -113,7 +113,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSingleTerm3() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Empty, _)).then.value(true);
@@ -124,7 +124,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchMultipleTerms() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_, _)).then.value(true);
@@ -135,7 +135,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchMultipleTerms1() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_)).then.value(false);
@@ -146,7 +146,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchMultipleTerms2() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(_, _, _)).then.value(false);
@@ -157,7 +157,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSequenceWithATagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Tag(_))).then.value(true);
@@ -168,7 +168,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchSequenceWithATagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Text(_))).then.value(false);
@@ -179,7 +179,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchSequenceWithATextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Tag(_))).then.value(false);
@@ -190,7 +190,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSequenceWithATextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Text(_))).then.value(true);
@@ -201,7 +201,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchSequenceWithATagTermAndText() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(Tag(_), Text(_))).then.value(false);
@@ -216,7 +216,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchEmptyTagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag(_)).then.value(true);
@@ -227,7 +227,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchEmptyNamedTagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag("A")).then.value(true);
@@ -238,7 +238,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyNamedTagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag("B")).then.value(false);
@@ -249,7 +249,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchTextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Text(_)).then.value(false);
@@ -260,7 +260,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyTagTerm1() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag(_)).then.value(false);
@@ -271,7 +271,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyTagTerm2() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag(_, _)).then.value(false);
@@ -282,7 +282,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyTagTerm3() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag(_)).then.value(false);
@@ -297,7 +297,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSimpleTextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Text(_)).then.value(true);
@@ -308,7 +308,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchSimpleSpecificTextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Text("Hello, World!")).then.value(true);
@@ -319,7 +319,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchSimpleSpecificTextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Text("Hello, not that World!")).then.value(false);
@@ -330,7 +330,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchTagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Tag(_)).then.value(false);
@@ -345,7 +345,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchEmptyTermUsingOpt() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Opt(_)).then.value(true);
@@ -356,7 +356,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchTagTermUsingOpt1() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Opt(_)).then.value(true);
@@ -367,7 +367,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchTagTermUsingOpt2() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Opt(Tag("A"))).then.value(true);
@@ -378,7 +378,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchTagTermUsingOpt() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Opt(Tag("B"))).then.value(false);
@@ -393,7 +393,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchEmptyTermUsingOptRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(OptRep(_)).then.value(true);
@@ -404,7 +404,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchTagsUsingOptRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(OptRep(_)).then.value(true);
@@ -415,7 +415,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchOnlyTagsUsingOptRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(OptRep(Text(_)), OptRep(Tag(_)))).then.value(true);
@@ -430,7 +430,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldNotMatchEmptyTermUsingRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Rep(_)).then.value(false);
@@ -441,7 +441,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchTagsUsingRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Rep(_)).then.value(true);
@@ -452,7 +452,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldMatchOnlyTagsUsingRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(OptRep(Text(_)), Rep(Tag(_)))).then.value(true);
@@ -467,7 +467,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCaptureEmptyTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(var.of(Empty)).then.function(new Function<XmlTerm, Boolean>() {
@@ -482,7 +482,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCaptureTagTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/empty.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(var.of(Tag(_))).then.function(new Function<XmlTerm, Boolean>() {
@@ -497,7 +497,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCaptureTextTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(var.of(Text(_))).then.function(new Function<XmlTerm, Boolean>() {
@@ -512,7 +512,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCapturedTagsTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(var.of(Seq(Tag(_), Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
@@ -527,7 +527,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCapturedTagsTermUsingOptRep() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(var.of(OptRep(Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
@@ -542,7 +542,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldCapturedEachTagsTerm() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
+        final XmlTerm term = Dom.toTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Seq(var, var)).then.function(new Function2<XmlTerm, XmlTerm, Boolean>() {
@@ -582,7 +582,7 @@ public class XmlMatcherTest {
 
     @Test
     public void shouldComputeNumberOfChars() throws Exception {
-        final XmlTerm term = Dom.getTerm(getDocument("/simpleWithText.xml").getDocumentElement());
+        final XmlTerm term = Dom.toTerm(getDocument("/simpleWithText.xml").getDocumentElement());
         assertEquals(27, numberOfChars.match(term).intValue());
     }
 

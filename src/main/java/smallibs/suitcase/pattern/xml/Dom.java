@@ -49,24 +49,31 @@ public class Dom {
         return new Opt(Seq(content));
     }
 
-    public static Case<XmlTerm> Rep(Object... content) {
-        return new OptRep(Seq(Seq(content), OptRep(content)));
-    }
-
     public static Case<XmlTerm> Seq(Object... content) {
         return new Seq(content);
     }
 
+    public static Case<XmlTerm> Rep(Object... content) {
+        final Case<XmlTerm> seq = Seq(content);
+        return Seq(seq, new OptRep(seq));
+    }
+
     public static Case<XmlTerm> Empty = new Seq();
 
-    public static XmlTerm getTerm(Node node) {
+    // =================================================================================================================
+    // Type "transformation" in order to transform a node or a node list to an xml term
+    // =================================================================================================================
+
+    public static XmlTerm toTerm(Node node) {
         return new InitialTerm(node);
     }
 
-    public static XmlTerm getTerm(NodeList list) {
+    public static XmlTerm toTerm(NodeList list) {
         return new InitialTerm(list);
     }
 
+    // =================================================================================================================
+    // General type fro Xml Case - Only used for specification purpose
     // =================================================================================================================
 
     private interface XmlCase extends Case<XmlTerm> {
@@ -109,6 +116,8 @@ public class Dom {
         abstract Option<MatchResult> unapplyNode(Node node);
     }
 
+    // =================================================================================================================
+
     private static class Tag extends NodeCase {
         private final Case<String> name;
 
@@ -127,7 +136,7 @@ public class Dom {
                 final Element element = (Element) node;
                 final Option<MatchResult> unapplyName = name.unapply(element.getTagName());
                 if (!unapplyName.isNone()) {
-                    final Option<MatchResult> unapplyContent = content.unapply(getTerm(node.getChildNodes()));
+                    final Option<MatchResult> unapplyContent = content.unapply(toTerm(node.getChildNodes()));
                     if (unapplyContent.isNone()) {
                         result = new Option.None<>();
                     } else {
@@ -311,6 +320,8 @@ public class Dom {
     }
 
     // =================================================================================================================
+    // XmlTerm specifications
+    // =================================================================================================================
 
     public static abstract class XmlTerm implements Iterator<Node> {
         protected final List<Node> nodes;
@@ -357,8 +368,6 @@ public class Dom {
         abstract XmlTerm secondary();
     }
 
-    // =================================================================================================================
-    // XmlTerm specifications
     // =================================================================================================================
 
     private static class InitialTerm extends XmlTerm {
