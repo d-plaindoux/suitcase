@@ -29,7 +29,11 @@ isZero.caseOf(_).then.value(false);
 isZero.match(0); // == true
 ```
 
-**More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki)**
+Regexp, XML, List Patterns and more ...
+---------------------------------------
+
+More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki) and in particular
+ad-hoc case is explained with practical implementations covering matching for lists, string regular expression, XML etc.
 
 Other Propositions
 ------------------
