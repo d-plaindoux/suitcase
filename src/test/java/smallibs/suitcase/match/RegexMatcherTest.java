@@ -26,7 +26,7 @@ import java.util.List;
 
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
-import static smallibs.suitcase.cases.utils.Strings.Regex;
+import static smallibs.suitcase.cases.lang.Strings.Regex;
 
 public class RegexMatcherTest {
 

@@ -16,7 +16,7 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.cases.utils;
+package smallibs.suitcase.cases.lang;
 
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;

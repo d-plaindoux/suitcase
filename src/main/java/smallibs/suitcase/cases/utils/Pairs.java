@@ -19,23 +19,23 @@
 package smallibs.suitcase.cases.utils;
 
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 import smallibs.suitcase.utils.Pair;
 
 public final class Pairs {
 
-    public static <T1, T2> Case<Pair<T1, T2>> APair(Object o1, Object o2) {
-        return new Of<>(o1, o2);
+    public static <T1, T2> Case<Pair<T1, T2>> Pair(Object o1, Object o2) {
+        return new PairCase<>(o1, o2);
     }
 
-    private static class Of<T1, T2> implements Case<Pair<T1, T2>> {
+    private static class PairCase<T1, T2> implements Case<Pair<T1, T2>> {
 
         private final Case<T1> c1;
         private final Case<T2> c2;
 
-        private Of(Object o1, Object o2) {
+        private PairCase(Object o1, Object o2) {
             this.c1 = Cases.fromObject(o1);
             this.c2 = Cases.fromObject(o2);
         }

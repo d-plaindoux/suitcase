@@ -26,7 +26,7 @@ import smallibs.suitcase.utils.Pair;
 
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
-import static smallibs.suitcase.cases.utils.Pairs.APair;
+import static smallibs.suitcase.cases.utils.Pairs.Pair;
 
 public class SimpleMatcherTest {
 
@@ -77,7 +77,7 @@ public class SimpleMatcherTest {
     public void shouldSwitchPair() throws MatchingException {
         final Matcher<Pair<Integer, String>, Pair<String, Integer>> matcher = Matcher.create();
 
-        matcher.caseOf(APair(var, var)).then.function(new Function2<Integer, String, Pair<String, Integer>>() {
+        matcher.caseOf(Pair(var, var)).then.function(new Function2<Integer, String, Pair<String, Integer>>() {
             public Pair<String, Integer> apply(Integer i, String s) {
                 return new Pair<>(s, i);
             }

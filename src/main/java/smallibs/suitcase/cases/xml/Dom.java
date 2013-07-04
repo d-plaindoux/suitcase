@@ -22,8 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.core.Var;
 import smallibs.suitcase.utils.Option;
 

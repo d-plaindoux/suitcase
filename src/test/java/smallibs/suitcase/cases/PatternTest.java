@@ -138,12 +138,12 @@ public class PatternTest {
 
     @Test
     public void shouldMatchPair() {
-        TestCase.assertFalse(Pairs.APair(_, _).unapply(new Pair<Object, Object>(1, 2)).isNone());
+        TestCase.assertFalse(Pairs.Pair(_, _).unapply(new Pair<Object, Object>(1, 2)).isNone());
     }
 
     @Test
     public void shouldMatchPairAndValues() {
-        TestCase.assertFalse(Pairs.APair(1, 2).unapply(new Pair<Object, Object>(1, 2)).isNone());
+        TestCase.assertFalse(Pairs.Pair(1, 2).unapply(new Pair<Object, Object>(1, 2)).isNone());
     }
 
     // Peano
