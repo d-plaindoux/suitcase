@@ -28,7 +28,7 @@ import smallibs.suitcase.cases.core.Var;
 import smallibs.suitcase.utils.Option;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 public final class Dom {
@@ -64,11 +64,11 @@ public final class Dom {
     // Type "transformation" in order to transform a node or a node list to an xml term
     // =================================================================================================================
 
-    public static XmlTerm toTerm(Node node) {
+    public static XmlTerm toXmlTerm(Node node) {
         return new InitialTerm(node);
     }
 
-    public static XmlTerm toTerm(NodeList list) {
+    public static XmlTerm toXmlTerm(NodeList list) {
         return new InitialTerm(list);
     }
 
@@ -136,7 +136,7 @@ public final class Dom {
                 final Element element = (Element) node;
                 final Option<MatchResult> unapplyName = name.unapply(element.getTagName());
                 if (!unapplyName.isNone()) {
-                    final Option<MatchResult> unapplyContent = content.unapply(toTerm(node.getChildNodes()));
+                    final Option<MatchResult> unapplyContent = content.unapply(toXmlTerm(node.getChildNodes()));
                     if (unapplyContent.isNone()) {
                         result = new Option.None<>();
                     } else {
@@ -323,7 +323,7 @@ public final class Dom {
     // XmlTerm specifications
     // =================================================================================================================
 
-    public static abstract class XmlTerm implements Iterator<Node> {
+    public static abstract class XmlTerm {
         protected final List<Node> nodes;
 
         {
@@ -340,32 +340,29 @@ public final class Dom {
             }
         }
 
-        protected XmlTerm(List<Node> nodes) {
+        private XmlTerm(List<Node> nodes) {
             this.nodes.addAll(nodes);
         }
 
-        @Override
-        public boolean hasNext() {
+        private boolean hasNext() {
             return !this.nodes.isEmpty();
         }
 
-        @Override
         public Node next() {
             return this.nodes.remove(0);
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("remove");
         }
 
         public int size() {
             return this.nodes.size();
         }
 
-        abstract boolean isInitial();
+        abstract protected boolean isInitial();
 
-        abstract XmlTerm secondary();
+        abstract protected XmlTerm secondary();
+
+        public final List<Node> nodes() {
+            return Collections.unmodifiableList(this.nodes);
+        }
     }
 
     // =================================================================================================================
@@ -384,11 +381,12 @@ public final class Dom {
         }
 
         @Override
-        boolean isInitial() {
+        protected boolean isInitial() {
             return true;
         }
 
-        XmlTerm secondary() {
+        @Override
+        protected XmlTerm secondary() {
             return new SecondaryTerm(nodes);
         }
     }
@@ -401,12 +399,14 @@ public final class Dom {
         }
 
         @Override
-        boolean isInitial() {
+        protected boolean isInitial() {
             return false;
         }
 
-        XmlTerm secondary() {
+        @Override
+        protected XmlTerm secondary() {
             return new SecondaryTerm(this.nodes);
         }
     }
+
 }
