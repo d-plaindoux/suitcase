@@ -74,6 +74,8 @@ public final class Beans {
 
     // =================================================================================================================
     // Bean attribute case class
+    // =================================================================================================================
+
     private static class BeanAtt implements Case<Object> {
 
         private final Case<Object> nameCase;
@@ -84,62 +86,67 @@ public final class Beans {
             this.valueCase = Cases.fromObject(value);
         }
 
-        private Option<MatchResult> getField(Object object) {
+        @Override
+        public Option<MatchResult> unapply(Object object) {
             final Field[] fields = object.getClass().getDeclaredFields();
 
             for (Field field : fields) {
-                final Option<MatchResult> unapply = nameCase.unapply(field.getName());
+                final Option<MatchResult> unapply = unapplyField(object, field);
                 if (!unapply.isNone()) {
-                    return new Option.Some<>(new MatchResult(field).with(unapply.value()));
+                    return unapply;
                 }
             }
 
             return new Option.None<>();
         }
 
-        @Override
-        public Option<MatchResult> unapply(Object o) {
-            final Option<MatchResult> option = getField(o);
-
-            if (option.isNone()) {
-                return new Option.None<>();
+        private Option<MatchResult> unapplyField(Object o, Field field) {
+            final Option<MatchResult> unapplyName = unapplyFieldName(field);
+            if (!unapplyName.isNone()) {
+                final Option<MatchResult> unapplyValue = unapplyFieldValue(o, field);
+                if (!unapplyValue.isNone()) {
+                    return new Option.Some<>(new MatchResult(field).with(unapplyName.value()).with(unapplyValue.value()));
+                }
             }
 
-            final Field field = option.value().matchedObject(Field.class);
+            return new Option.None<>();
+        }
+
+        private Option<MatchResult> unapplyFieldName(Field field) {
+            return nameCase.unapply(field.getName());
+        }
+
+        private Option<MatchResult> unapplyFieldValue(Object o, Field field) {
+            final Option<MatchResult> unapply;
 
             if (Modifier.isPublic(field.getModifiers())) {
-                try {
-                    final Object value = field.get(o);
-                    final Option<MatchResult> unapply = valueCase.unapply(value);
-                    if (!unapply.isNone()) {
-                        return new Option.Some<>(new MatchResult(o).with(option.value()).with(unapply.value()));
-                    }
-                } catch (IllegalAccessException consume) {
-                    // Ignore
-                }
+                unapply = unapplyDirectFieldValue(o, field);
             } else {
-                try {
-                    final String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-                    final Method methodDef = o.getClass().getMethod(methodName);
-                    final Object value = methodDef.invoke(o);
-                    final Option<MatchResult> unapply = valueCase.unapply(value);
-                    if (!unapply.isNone()) {
-                        return new Option.Some<>(new MatchResult(o).with(option.value()).with(unapply.value()));
-                    }
-                } catch (NoSuchMethodException e) {
-                    // Ignore
-                } catch (InvocationTargetException e) {
-                    // Ignore
-                } catch (IllegalAccessException e) {
-                    // Ignore
-                }
+                unapply = unapplyGetterFieldValue(o, field);
             }
 
-            return new Option.None<>();
+            return unapply;
         }
 
-    }
+        private Option<MatchResult> unapplyDirectFieldValue(Object o, Field field) {
+            try {
+                final Object value = field.get(o);
+                return valueCase.unapply(value);
+            } catch (IllegalAccessException consume) {
+                return new Option.None<>();
+            }
+        }
 
-    // =================================================================================================================
+        private Option<MatchResult> unapplyGetterFieldValue(Object o, Field field) {
+            try {
+                final String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                final Method methodDef = o.getClass().getMethod(methodName);
+                final Object value = methodDef.invoke(o);
+                return valueCase.unapply(value);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                return new Option.None<>();
+            }
+        }
+    }
 
 }

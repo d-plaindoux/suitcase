@@ -90,4 +90,14 @@ public class BeanMatcherTest {
 
         TestCase.assertTrue(matcher.match(new A(21)));
     }
+
+    @Test
+    public void shouldMatchABeanWithAGivenValue() {
+        final Matcher<A, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Bean(Att(_, 42))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(new A(21)));
+    }
 }
