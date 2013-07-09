@@ -74,8 +74,6 @@ public final class Beans {
 
     // =================================================================================================================
     // Bean attribute case class
-    // =================================================================================================================
-
     private static class BeanAtt implements Case<Object> {
 
         private final Case<Object> nameCase;
@@ -89,9 +87,16 @@ public final class Beans {
         @Override
         public Option<MatchResult> unapply(Object object) {
             final Field[] fields = object.getClass().getDeclaredFields();
-
             for (Field field : fields) {
                 final Option<MatchResult> unapply = unapplyField(object, field);
+                if (!unapply.isNone()) {
+                    return unapply;
+                }
+            }
+
+            final Method[] methods = object.getClass().getDeclaredMethods();
+            for (Method field : methods) {
+                final Option<MatchResult> unapply = unapplyMethod(object, field);
                 if (!unapply.isNone()) {
                     return unapply;
                 }
@@ -100,10 +105,28 @@ public final class Beans {
             return new Option.None<>();
         }
 
-        private Option<MatchResult> unapplyField(Object o, Field field) {
-            final Option<MatchResult> unapplyName = unapplyFieldName(field);
+        // =============================================================================================================
+
+        private Option<MatchResult> unapplyMethod(Object object, Method method) {
+            final String fieldName = getFieldName(method);
+
+            if (fieldName != null) {
+                final Option<MatchResult> unapplyName = unapplyName(fieldName);
+                if (!unapplyName.isNone()) {
+                    final Option<MatchResult> unapplyValue = unapplyMethodValue(object, method);
+                    if (!unapplyValue.isNone()) {
+                        return new Option.Some<>(new MatchResult(method).with(unapplyName.value()).with(unapplyValue.value()));
+                    }
+                }
+            }
+
+            return new Option.None<>();
+        }
+
+        private Option<MatchResult> unapplyField(Object object, Field field) {
+            final Option<MatchResult> unapplyName = unapplyName(field.getName());
             if (!unapplyName.isNone()) {
-                final Option<MatchResult> unapplyValue = unapplyFieldValue(o, field);
+                final Option<MatchResult> unapplyValue = unapplyFieldValue(object, field);
                 if (!unapplyValue.isNone()) {
                     return new Option.Some<>(new MatchResult(field).with(unapplyName.value()).with(unapplyValue.value()));
                 }
@@ -112,39 +135,63 @@ public final class Beans {
             return new Option.None<>();
         }
 
-        private Option<MatchResult> unapplyFieldName(Field field) {
-            return nameCase.unapply(field.getName());
+        // =============================================================================================================
+
+        private Option<MatchResult> unapplyName(String name) {
+            return nameCase.unapply(name);
         }
 
-        private Option<MatchResult> unapplyFieldValue(Object o, Field field) {
-            final Option<MatchResult> unapply;
-
-            if (Modifier.isPublic(field.getModifiers())) {
-                unapply = unapplyDirectFieldValue(o, field);
+        private Option<MatchResult> unapplyMethodValue(Object object, Method method) {
+            if (Modifier.isPublic(method.getModifiers()) && method.getParameterTypes().length == 0) {
+                try {
+                    return valueCase.unapply(method.invoke(object));
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    return new Option.None<>();
+                }
             } else {
-                unapply = unapplyGetterFieldValue(o, field);
+                return new Option.None<>();
             }
-
-            return unapply;
         }
 
-        private Option<MatchResult> unapplyDirectFieldValue(Object o, Field field) {
+        private Option<MatchResult> unapplyDirectFieldValue(Object object, Field field) {
             try {
-                final Object value = field.get(o);
-                return valueCase.unapply(value);
+                return valueCase.unapply(field.get(object));
             } catch (IllegalAccessException consume) {
                 return new Option.None<>();
             }
         }
 
-        private Option<MatchResult> unapplyGetterFieldValue(Object o, Field field) {
+        private Option<MatchResult> unapplyGetterFieldValue(Object object, Field field) {
             try {
-                final String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-                final Method methodDef = o.getClass().getMethod(methodName);
-                final Object value = methodDef.invoke(o);
-                return valueCase.unapply(value);
+                final Method methodDef = object.getClass().getMethod(getGetterName(field));
+                return valueCase.unapply(methodDef.invoke(object));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 return new Option.None<>();
+            }
+        }
+
+        private Option<MatchResult> unapplyFieldValue(Object object, Field field) {
+            final Option<MatchResult> unapply;
+
+            if (Modifier.isPublic(field.getModifiers())) {
+                unapply = unapplyDirectFieldValue(object, field);
+            } else {
+                unapply = unapplyGetterFieldValue(object, field);
+            }
+
+            return unapply;
+        }
+
+        private String getGetterName(Field field) {
+            return "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+        }
+
+        private String getFieldName(Method method) {
+            final String name = method.getName();
+            if (name.startsWith("get") && name.length() > 3) {
+                return name.substring(3, 4).toLowerCase() + name.substring(4);
+            } else {
+                return null;
             }
         }
     }

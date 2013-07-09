@@ -20,8 +20,10 @@ package smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import smallibs.suitcase.utils.Function;
 
 import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.lang.Beans.Att;
 import static smallibs.suitcase.cases.lang.Beans.Bean;
 
@@ -99,5 +101,20 @@ public class BeanMatcherTest {
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
+    }
+
+
+    @Test
+    public void shouldMatchAStringContent() {
+        final Matcher<Object, Integer> matcher = Matcher.create();
+
+        matcher.caseOf(Bean(Att("bytes", var))).then.function(new Function<byte[], Integer>() {
+            public Integer apply(byte[] bytes) {
+                return bytes.length;
+            }
+        });
+        matcher.caseOf(_).then.value(0);
+
+        TestCase.assertEquals(13, matcher.match("Hello, World!").intValue());
     }
 }
