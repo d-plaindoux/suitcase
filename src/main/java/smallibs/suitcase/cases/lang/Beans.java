@@ -32,7 +32,7 @@ import java.util.List;
 
 public final class Beans {
 
-    public static Case<Object> Bean(Object... contents) {
+    public static Case<Object> Obj(Object... contents) {
         return new Bean(contents);
     }
 
@@ -41,7 +41,7 @@ public final class Beans {
     }
 
     // =================================================================================================================
-    // Bean case class
+    // Obj case class
     // =================================================================================================================
 
     private static class Bean implements Case<Object> {
@@ -73,7 +73,7 @@ public final class Beans {
     }
 
     // =================================================================================================================
-    // Bean attribute case class
+    // Obj attribute case class
     private static class BeanAtt implements Case<Object> {
 
         private final Case<Object> nameCase;

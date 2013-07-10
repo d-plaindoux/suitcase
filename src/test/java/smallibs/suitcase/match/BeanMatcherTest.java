@@ -25,7 +25,7 @@ import smallibs.suitcase.utils.Function;
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.lang.Beans.Att;
-import static smallibs.suitcase.cases.lang.Beans.Bean;
+import static smallibs.suitcase.cases.lang.Beans.Obj;
 
 public class BeanMatcherTest {
 
@@ -47,7 +47,7 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenAttName() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("a", _))).then.value(true);
+        matcher.caseOf(Obj(Att("a", _))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(new A(42)));
@@ -57,7 +57,7 @@ public class BeanMatcherTest {
     public void shouldNotMatchABeanWithAGivenAttName() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("b", _))).then.value(false);
+        matcher.caseOf(Obj(Att("b", _))).then.value(false);
         matcher.caseOf(_).then.value(true);
 
         TestCase.assertTrue(matcher.match(new A(42)));
@@ -67,7 +67,7 @@ public class BeanMatcherTest {
     public void shouldNotMatchABeanWithAGivenAttValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("a", 19))).then.value(false);
+        matcher.caseOf(Obj(Att("a", 19))).then.value(false);
         matcher.caseOf(_).then.value(true);
 
         TestCase.assertTrue(matcher.match(new A(42)));
@@ -77,7 +77,7 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenAttValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("a", 42))).then.value(true);
+        matcher.caseOf(Obj(Att("a", 42))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(new A(42)));
@@ -87,7 +87,7 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenMethodValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("ceci", 42))).then.value(true);
+        matcher.caseOf(Obj(Att("ceci", 42))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
@@ -97,18 +97,27 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att(_, 42))).then.value(true);
+        matcher.caseOf(Obj(Att(_, 42))).then.value(true);
         matcher.caseOf(_).then.value(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
     }
 
+    @Test
+    public void shouldMatchABeanWithGivenAttributes() {
+        final Matcher<A, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Obj(Att("a", 21), Att("ceci", 42))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        TestCase.assertTrue(matcher.match(new A(21)));
+    }
 
     @Test
     public void shouldMatchAStringContent() {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Bean(Att("bytes", var))).then.function(new Function<byte[], Integer>() {
+        matcher.caseOf(Obj(Att("bytes", var))).then.function(new Function<byte[], Integer>() {
             public Integer apply(byte[] bytes) {
                 return bytes.length;
             }

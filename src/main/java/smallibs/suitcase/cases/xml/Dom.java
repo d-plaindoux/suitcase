@@ -28,13 +28,32 @@ import smallibs.suitcase.cases.core.Var;
 import smallibs.suitcase.utils.Option;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public final class Dom {
 
-    public static Case<XmlTerm> Tag(Object name, Object... content) {
-        return new Tag(name, Seq(content));
+    public static Case<XmlTerm> Tag(Object name, final Object... content) {
+        final List<Case<Element>> attributes = new ArrayList<>();
+        final List<Object> newContent = new ArrayList<Object>() {{
+            this.addAll(Arrays.asList(content));
+        }};
+
+        for (Object obj : content) {
+            if (Att.isAnAttributeCase(obj)) {
+                newContent.remove(0);
+                attributes.add((Case<Element>) obj);
+            } else {
+                break;
+            }
+        }
+
+        return new Tag(name, attributes, Seq(newContent.toArray()));
+    }
+
+    public static Case<Element> Att(Object name, Object value) {
+        return new Att(name, value);
     }
 
     public static Case<XmlTerm> Text(Object content) {
@@ -118,13 +137,51 @@ public final class Dom {
 
     // =================================================================================================================
 
+    private static class Att implements Case<Element> {
+
+        private final Case<String> nameCase;
+        private final Case<String> valueCase;
+
+        public Att(Object name, Object value) {
+            this.nameCase = Cases.fromObject(name);
+            this.valueCase = Cases.fromObject(value);
+        }
+
+        static boolean isAnAttributeCase(Object object) {
+            if (object instanceof Var) {
+                return isAnAttributeCase(((Var) object).getValue());
+            } else {
+                return object instanceof Att;
+            }
+        }
+
+        @Override
+        public Option<MatchResult> unapply(Element term) {
+            for (int i = 0; i < term.getAttributes().getLength(); i += 1) {
+                final Node node = term.getAttributes().item(i);
+                final Option<MatchResult> unapplyName = nameCase.unapply(node.getNodeName());
+                if (!unapplyName.isNone()) {
+                    final Option<MatchResult> unapplyValue = valueCase.unapply(node.getNodeValue());
+                    if (!unapplyValue.isNone()) {
+                        return new Option.Some<>(new MatchResult(node).with(unapplyName.value()).with(unapplyValue.value()));
+                    }
+                }
+            }
+
+            return new Option.None<>();
+        }
+    }
+
+    // =================================================================================================================
+
     private static class Tag extends NodeCase {
         private final Case<String> name;
-
+        private final List<Case<Element>> attributes;
         private final Case<XmlTerm> content;
 
-        public Tag(Object name, Case<XmlTerm> content) {
+        public Tag(Object name, List<Case<Element>> attributes, Case<XmlTerm> content) {
             this.name = Cases.fromObject(name);
+            this.attributes = attributes;
             this.content = content;
         }
 
@@ -135,15 +192,24 @@ public final class Dom {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 final Element element = (Element) node;
                 final Option<MatchResult> unapplyName = name.unapply(element.getTagName());
-                if (!unapplyName.isNone()) {
+                if (unapplyName.isNone()) {
+                    return unapplyName;
+                } else {
+                    for (Case<Element> attribute : attributes) {
+                        final Option<MatchResult> unapply = attribute.unapply(element);
+                        if (unapply.isNone()) {
+                            return unapply;
+                        } else {
+                            unapplyName.value().with(unapply.value());
+                        }
+                    }
+
                     final Option<MatchResult> unapplyContent = content.unapply(toXmlTerm(node.getChildNodes()));
                     if (unapplyContent.isNone()) {
-                        result = new Option.None<>();
+                        return unapplyContent;
                     } else {
                         result = new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
                     }
-                } else {
-                    result = new Option.None<>();
                 }
             } else {
                 result = new Option.None<>();
@@ -387,7 +453,7 @@ public final class Dom {
 
         @Override
         protected XmlTerm secondary() {
-            return new SecondaryTerm(nodes);
+            return new SecondaryTerm(this.nodes);
         }
     }
 

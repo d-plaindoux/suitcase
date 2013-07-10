@@ -291,6 +291,84 @@ public class XmlMatcherTest {
         assertTrue(matcher.match(term));
     }
 
+    @Test
+    public void shouldMatchTagWithAnAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att(_, _))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchTagWithNoAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att(_, _))).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagWithNamedAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att("a", _))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchTagWithNamedAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att("c", _))).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldMatchTagWithValuedAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att(_, "vA"))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
+    @Test
+    public void shouldNotMatchTagWithValuedAttribute() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att(_, "vC"))).then.value(false);
+        matcher.caseOf(_).then.value(true);
+
+        assertTrue(matcher.match(term));
+    }
+
+
+    @Test
+    public void shouldMatchTagWithAttributes() throws Exception {
+        final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
+        final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Tag(_, Att("b", _), Att("a", _))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        assertTrue(matcher.match(term));
+    }
+
     // =================================================================================================================
     // TEXT
     // =================================================================================================================
@@ -560,32 +638,36 @@ public class XmlMatcherTest {
     // Full test
     // =================================================================================================================
 
-    final Matcher<XmlTerm, Integer> numberOfChars =
-            Matcher.<XmlTerm, Integer>create().
-                    caseOf(Text(var)).then.function(
-                    new Function<String, Integer>() {
-                        public Integer apply(String o) {
-                            return o.length();
-                        }
-                    }).
-                    caseOf(Tag(_, var.of(OptRep(_)))).then.function(
-                    new Function<XmlTerm, Integer>() {
-                        public Integer apply(XmlTerm o) {
-                            return numberOfChars.match(o);
-                        }
-                    }).
-                    caseOf(Seq(var, var.of(Rep(_)))).then.function(
-                    new Function2<XmlTerm, XmlTerm, Integer>() {
-                        public Integer apply(XmlTerm o1, XmlTerm o2) {
-                            return numberOfChars.match(o1) + numberOfChars.match(o2);
-                        }
-                    }).
-                    caseOf(Empty).then.value(0);
+    private Matcher<XmlTerm, Integer> getNumberOfChars() {
+        final Matcher<XmlTerm, Integer> numberOfChars = Matcher.<XmlTerm, Integer>create();
+
+        numberOfChars.caseOf(Text(var)).then.function(
+                new Function<String, Integer>() {
+                    public Integer apply(String o) {
+                        return o.length();
+                    }
+                }).
+                caseOf(Tag(_, var.of(OptRep(_)))).then.function(
+                new Function<XmlTerm, Integer>() {
+                    public Integer apply(XmlTerm o) {
+                        return numberOfChars.match(o);
+                    }
+                }).
+                caseOf(Seq(var, var.of(Rep(_)))).then.function(
+                new Function2<XmlTerm, XmlTerm, Integer>() {
+                    public Integer apply(XmlTerm o1, XmlTerm o2) {
+                        return numberOfChars.match(o1) + numberOfChars.match(o2);
+                    }
+                }).
+                caseOf(Empty).then.value(0);
+
+        return numberOfChars;
+    }
 
     @Test
     public void shouldComputeNumberOfChars() throws Exception {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simpleWithText.xml").getDocumentElement());
-        assertEquals(27, numberOfChars.match(term).intValue());
+        assertEquals(27, getNumberOfChars().match(term).intValue());
     }
 
     // =================================================================================================================
