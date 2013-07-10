@@ -20,8 +20,8 @@ package smallibs.suitcase.match;
 
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
@@ -165,7 +165,11 @@ public class Matcher<T, R> {
     }
 
     protected R reduce(final Function<Object, R> function, final List<Object> result) {
-        return function.apply(generateParameter(result));
+        try {
+            return function.apply(generateParameter(result));
+        } catch (Exception e) {
+            throw new MatchingException(e);
+        }
     }
 
     @SuppressWarnings("unchecked") // TODO

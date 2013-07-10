@@ -32,7 +32,7 @@ public final class Functions {
     public static <R> Function<Void, R> function(final Function0<R> f) {
         return new Function<Void, R>() {
             @Override
-            public R apply(Void p) {
+            public R apply(Void p) throws Exception {
                 return f.apply();
             }
         };
@@ -41,7 +41,7 @@ public final class Functions {
     public static <A, B, R> Function<Pair<A, B>, R> function(final Function2<A, B, R> f) {
         return new Function<Pair<A, B>, R>() {
             @Override
-            public R apply(Pair<A, B> p) {
+            public R apply(Pair<A, B> p) throws Exception {
                 return f.apply(p._1, p._2);
             }
         };
@@ -50,7 +50,7 @@ public final class Functions {
     public static <A, B, C, R> Function<Pair<A, Pair<B, C>>, R> function(final Function3<A, B, C, R> f) {
         return new Function<Pair<A, Pair<B, C>>, R>() {
             @Override
-            public R apply(Pair<A, Pair<B, C>> p) {
+            public R apply(Pair<A, Pair<B, C>> p) throws Exception {
                 return f.apply(p._1, p._2._1, p._2._2);
             }
         };
@@ -59,7 +59,7 @@ public final class Functions {
     public static <A, B, C, D, R> Function<Pair<A, Pair<B, Pair<C, D>>>, R> function(final Function4<A, B, C, D, R> f) {
         return new Function<Pair<A, Pair<B, Pair<C, D>>>, R>() {
             @Override
-            public R apply(Pair<A, Pair<B, Pair<C, D>>> p) {
+            public R apply(Pair<A, Pair<B, Pair<C, D>>> p) throws Exception {
                 return f.apply(p._1, p._2._1, p._2._2._1, p._2._2._2);
             }
         };

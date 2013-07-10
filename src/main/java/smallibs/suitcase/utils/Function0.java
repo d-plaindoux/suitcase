@@ -20,6 +20,6 @@ package smallibs.suitcase.utils;
 
 public interface Function0<R> {
 
-    R apply();
+    R apply() throws Exception;
 
 }

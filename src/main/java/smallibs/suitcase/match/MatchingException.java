@@ -19,4 +19,10 @@
 package smallibs.suitcase.match;
 
 public class MatchingException extends RuntimeException {
+    public MatchingException() {
+    }
+
+    public MatchingException(Exception e) {
+        super(e);
+    }
 }
