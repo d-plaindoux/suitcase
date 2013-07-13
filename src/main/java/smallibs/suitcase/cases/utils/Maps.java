@@ -19,23 +19,60 @@
 package smallibs.suitcase.cases.utils;
 
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Maps {
-    public static <T1, T2> Case<Map<T1, T2>> Entry(T1 o1, Object o2) {
-        return new Entry<>(o1, o2);
+    public static <T1, T2> Case<Map<T1, T2>> Map(Object... entries) {
+        return new MapCase<>(entries);
     }
 
-    static class Entry<T1, T2> implements Case<Map<T1, T2>> {
+    public static <T1, T2> Case<Map<T1, T2>> Entry(T1 o1, Object o2) {
+        return new EntryCase<>(o1, o2);
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------
+    // Private case classes
+    // ------------------------------------------------------------------------------------------------------------------
+
+    private static class MapCase<T1, T2> implements Case<Map<T1, T2>> {
+
+        private final List<Case<Map<T1, T2>>> entries;
+
+        MapCase(Object... contents) {
+            this.entries = new ArrayList<>();
+            for (Object content : contents) {
+                final Case<Map<T1, T2>> aCase = Cases.fromObject(content);
+                this.entries.add(aCase);
+            }
+        }
+
+        @Override
+        public Option<MatchResult> unapply(Map<T1, T2> map) {
+            final MatchResult matchResult = new MatchResult(map);
+            for (Case<Map<T1, T2>> entry : this.entries) {
+                final Option<MatchResult> unapply = entry.unapply(map);
+                if (unapply.isNone()) {
+                    return unapply;
+                } else {
+                    matchResult.with(unapply.value());
+                }
+            }
+            return new Option.Some<>(matchResult);
+        }
+    }
+
+    private static class EntryCase<T1, T2> implements Case<Map<T1, T2>> {
 
         private final T1 key;
         private final Case<T2> valCase;
 
-        Entry(T1 key, Object o2) {
+        EntryCase(T1 key, Object o2) {
             this.key = key;
             this.valCase = Cases.fromObject(o2);
         }
@@ -49,5 +86,4 @@ public class Maps {
             }
         }
     }
-
 }
