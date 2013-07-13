@@ -24,9 +24,14 @@ import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
+import smallibs.suitcase.utils.Function1;
 import smallibs.suitcase.utils.Function2;
 import smallibs.suitcase.utils.Function3;
 import smallibs.suitcase.utils.Function4;
+import smallibs.suitcase.utils.Function5;
+import smallibs.suitcase.utils.Function6;
+import smallibs.suitcase.utils.Function7;
+import smallibs.suitcase.utils.Function8;
 import smallibs.suitcase.utils.Functions;
 import smallibs.suitcase.utils.Option;
 import smallibs.suitcase.utils.Pair;
@@ -34,7 +39,7 @@ import smallibs.suitcase.utils.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Matcher<T, R> {
+public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object>, R> {
 
     public static <T, R> Matcher<T, R> create() {
         return new Matcher<>();
@@ -93,12 +98,17 @@ public class Matcher<T, R> {
             return function(Functions.constant(c));
         }
 
+        public <A> Matcher<T, R> function(Function<A, R> callBack) {
+            rules.add(new Rule<>(aCase, callBack));
+            return Matcher.this;
+        }
+
         public Matcher<T, R> function(Function0<R> callBack) {
             rules.add(new Rule<>(aCase, Functions.<R>function(callBack)));
             return Matcher.this;
         }
 
-        public <A> Matcher<T, R> function(Function<A, R> callBack) {
+        public <A> Matcher<T, R> function(Function1<A, R> callBack) {
             rules.add(new Rule<>(aCase, callBack));
             return Matcher.this;
         }
@@ -115,6 +125,26 @@ public class Matcher<T, R> {
 
         public <A, B, C, D> Matcher<T, R> function(Function4<A, B, C, D, R> callBack) {
             rules.add(new Rule<Pair<A, Pair<B, Pair<C, D>>>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <A, B, C, D, E> Matcher<T, R> function(Function5<A, B, C, D, E, R> callBack) {
+            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, E>>>>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <A, B, C, D, E, F> Matcher<T, R> function(Function6<A, B, C, D, E, F, R> callBack) {
+            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, F>>>>>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <A, B, C, D, E, F, G> Matcher<T, R> function(Function7<A, B, C, D, E, F, G, R> callBack) {
+            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, Pair<F, G>>>>>>>(aCase, Functions.function(callBack)));
+            return Matcher.this;
+        }
+
+        public <A, B, C, D, E, F, G, H> Matcher<T, R> function(Function8<A, B, C, D, E, F, G, H, R> callBack) {
+            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, Pair<F, Pair<G, H>>>>>>>>(aCase, Functions.function(callBack)));
             return Matcher.this;
         }
     }
@@ -153,6 +183,7 @@ public class Matcher<T, R> {
 
     private Object generateParameter(List<Object> result) {
         Object parameter;
+
         if (result.isEmpty()) {
             parameter = null;
         } else {
@@ -164,7 +195,7 @@ public class Matcher<T, R> {
         return parameter;
     }
 
-    protected R reduce(final Function<Object, R> function, final List<Object> result) {
+    public R apply(final Function<Object, R> function, final List<Object> result) {
         try {
             return function.apply(generateParameter(result));
         } catch (Exception e) {
@@ -177,7 +208,7 @@ public class Matcher<T, R> {
         for (Rule rule : rules) {
             final Option<MatchResult> option = rule.match(object);
             if (!option.isNone()) {
-                return this.reduce(rule.getFunction(), option.value().bindings());
+                return this.apply(rule.getFunction(), option.value().bindings());
             }
         }
 

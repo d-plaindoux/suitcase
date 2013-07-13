@@ -61,7 +61,7 @@ public final class Dom {
     }
 
     public static Case<XmlTerm> OptRep(Object... content) {
-        return new OptRep(Seq(content));
+        return new OptionalRepeatable(Seq(content));
     }
 
     public static Case<XmlTerm> Opt(Object... content) {
@@ -74,7 +74,7 @@ public final class Dom {
 
     public static Case<XmlTerm> Rep(Object... content) {
         final Case<XmlTerm> seq = Seq(content);
-        return Seq(seq, new OptRep(seq));
+        return Seq(seq, new OptionalRepeatable(seq));
     }
 
     public static Case<XmlTerm> Empty = new Seq();
@@ -142,7 +142,7 @@ public final class Dom {
         private final Case<String> nameCase;
         private final Case<String> valueCase;
 
-        public Att(Object name, Object value) {
+        Att(Object name, Object value) {
             this.nameCase = Cases.fromObject(name);
             this.valueCase = Cases.fromObject(value);
         }
@@ -179,7 +179,7 @@ public final class Dom {
         private final List<Case<Element>> attributes;
         private final Case<XmlTerm> content;
 
-        public Tag(Object name, List<Case<Element>> attributes, Case<XmlTerm> content) {
+        Tag(Object name, List<Case<Element>> attributes, Case<XmlTerm> content) {
             this.name = Cases.fromObject(name);
             this.attributes = attributes;
             this.content = content;
@@ -187,8 +187,6 @@ public final class Dom {
 
         @Override
         Option<MatchResult> unapplyNode(Node node) {
-            final Option<MatchResult> result;
-
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 final Element element = (Element) node;
                 final Option<MatchResult> unapplyName = name.unapply(element.getTagName());
@@ -208,14 +206,12 @@ public final class Dom {
                     if (unapplyContent.isNone()) {
                         return unapplyContent;
                     } else {
-                        result = new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
+                        return new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
                     }
                 }
             } else {
-                result = new Option.None<>();
+                return new Option.None<>();
             }
-
-            return result;
         }
     }
 
@@ -225,26 +221,22 @@ public final class Dom {
 
         private final Case<String> text;
 
-        public Text(Object text) {
+        Text(Object text) {
             this.text = Cases.fromObject(text);
         }
 
         @Override
         Option<MatchResult> unapplyNode(Node node) {
-            final Option<MatchResult> result;
-
             if (node.getNodeType() == Node.TEXT_NODE) {
                 final Option<MatchResult> unapplyText = text.unapply(node.getTextContent().trim());
                 if (unapplyText.isNone()) {
-                    result = new Option.None<>();
+                    return unapplyText;
                 } else {
-                    result = new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyText.value()));
+                    return new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyText.value()));
                 }
             } else {
-                result = new Option.None<>();
+                return new Option.None<>();
             }
-
-            return result;
         }
     }
 
@@ -256,7 +248,7 @@ public final class Dom {
 
         private List<Case<XmlTerm>> content;
 
-        public Seq(Object... content) {
+        Seq(Object... content) {
             this.content = new ArrayList<>();
             for (Object object : content) {
                 final Case<XmlTerm> aCase = Cases.fromObject(object);
@@ -312,11 +304,11 @@ public final class Dom {
     // Optional and Repeatable cases
     // =================================================================================================================
 
-    private static abstract class OptionalCase implements XmlCase {
+    private static abstract class Optional implements XmlCase {
 
         protected final Case<XmlTerm> content;
 
-        public OptionalCase(Case<XmlTerm> content) {
+        Optional(Case<XmlTerm> content) {
             this.content = content;
         }
 
@@ -340,7 +332,7 @@ public final class Dom {
         protected abstract MatchResult unapplyXmlTerm(XmlTerm xmlTerm);
     }
 
-    private static class Opt extends OptionalCase {
+    private static class Opt extends Optional {
 
         private Opt(Case<XmlTerm> content) {
             super(content);
@@ -362,9 +354,9 @@ public final class Dom {
 
     // =================================================================================================================
 
-    private static class OptRep extends OptionalCase {
+    private static class OptionalRepeatable extends Optional {
 
-        private OptRep(Case<XmlTerm> content) {
+        OptionalRepeatable(Case<XmlTerm> content) {
             super(content);
         }
 
