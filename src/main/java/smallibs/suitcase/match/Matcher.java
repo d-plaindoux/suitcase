@@ -39,7 +39,7 @@ import smallibs.suitcase.utils.Pair;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object>, R> {
+public class Matcher<T, R> {
 
     public static <T, R> Matcher<T, R> create() {
         return new Matcher<>();
@@ -49,16 +49,19 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
     // Internal classes and intermediate code for DSL like approach
     // =================================================================================================================
 
-    private class Rule<M> {
+    private class Rule {
         private final Class<?> type;
         private final Case<T> aCase;
-        private final Function<M, R> function;
+        private final Function<?, Boolean> when;
+        private final Function<?, R> then;
 
-        private Rule(Case<T> aCase, Function<M, R> function) {
+        private Rule(Case<T> aCase, Function<?, Boolean> when, Function<?, R> then) {
             this.type = this.getType(aCase);
             this.aCase = aCase;
-            this.function = function;
+            this.when = when;
+            this.then = then;
         }
+
 
         private Class<?> getType(Case aCase) {
             if (aCase.getClass().isAnnotationPresent(CaseType.class)) {
@@ -80,17 +83,23 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
             }
         }
 
-        Function<M, R> getFunction() {
-            return function;
+        Function<?, Boolean> getWhen() {
+            return when;
+        }
+
+        Function<?, R> getThen() {
+            return then;
         }
     }
 
     // =================================================================================================================
 
-    public class Then {
-        private final Case<T> aCase;
+    public class Then<M> {
+        protected final Function<?, Boolean> when;
+        protected final Case<T> aCase;
 
-        public Then(Case<T> aCase) {
+        public Then(Function when, Case<T> aCase) {
+            this.when = when;
             this.aCase = aCase;
         }
 
@@ -99,63 +108,111 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
         }
 
         public <A> Matcher<T, R> function(Function<A, R> callBack) {
-            rules.add(new Rule<>(aCase, callBack));
+            rules.add(new Rule(aCase, when, callBack));
             return Matcher.this;
         }
 
         public Matcher<T, R> function(Function0<R> callBack) {
-            rules.add(new Rule<>(aCase, Functions.<R>function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.<R>function(callBack)));
             return Matcher.this;
         }
 
         public <A> Matcher<T, R> function(Function1<A, R> callBack) {
-            rules.add(new Rule<>(aCase, callBack));
+            rules.add(new Rule(aCase, when, callBack));
             return Matcher.this;
         }
 
         public <A, B> Matcher<T, R> function(Function2<A, B, R> callBack) {
-            rules.add(new Rule<Pair<A, B>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C> Matcher<T, R> function(Function3<A, B, C, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, C>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C, D> Matcher<T, R> function(Function4<A, B, C, D, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, Pair<C, D>>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C, D, E> Matcher<T, R> function(Function5<A, B, C, D, E, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, E>>>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C, D, E, F> Matcher<T, R> function(Function6<A, B, C, D, E, F, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, F>>>>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C, D, E, F, G> Matcher<T, R> function(Function7<A, B, C, D, E, F, G, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, Pair<F, G>>>>>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
 
         public <A, B, C, D, E, F, G, H> Matcher<T, R> function(Function8<A, B, C, D, E, F, G, H, R> callBack) {
-            rules.add(new Rule<Pair<A, Pair<B, Pair<C, Pair<D, Pair<E, Pair<F, Pair<G, H>>>>>>>>(aCase, Functions.function(callBack)));
+            rules.add(new Rule(aCase, when, Functions.function(callBack)));
             return Matcher.this;
         }
     }
 
-    // =================================================================================================================
-
     public class CaseOf {
         public final Then then;
 
-        public CaseOf(Case<T> aCase) {
-            this.then = new Then(aCase);
+        public CaseOf(Function<?, Boolean> when, Case<T> aCase) {
+            this.then = new Then(when, aCase);
+        }
+    }
+
+    public class When {
+        protected final Case<T> aCase;
+        public final Then then;
+
+        public When(Case<T> aCase) {
+            this.aCase = aCase;
+            this.then = new Then(null, aCase);
+        }
+
+        public <A> CaseOf when(Function<A, Boolean> callBack) {
+            return new CaseOf(callBack, this.aCase);
+        }
+
+        public CaseOf when(Function0<Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A> CaseOf when(Function1<A, Boolean> callBack) {
+            return new CaseOf(callBack, this.aCase);
+        }
+
+        public <A, B> CaseOf when(Function2<A, B, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C> CaseOf when(Function3<A, B, C, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C, D> CaseOf when(Function4<A, B, C, D, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C, D, E> CaseOf when(Function5<A, B, C, D, E, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C, D, E, F> CaseOf when(Function6<A, B, C, D, E, F, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C, D, E, F, G> CaseOf when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
+        }
+
+        public <A, B, C, D, E, F, G, H> CaseOf when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
+            return new CaseOf(Functions.function(callBack), this.aCase);
         }
     }
 
@@ -177,8 +234,8 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
     // Behaviors
     // =================================================================================================================
 
-    public CaseOf caseOf(Object object) {
-        return new CaseOf(Cases.<T>fromObject(object));
+    public When caseOf(Object object) {
+        return new When(Cases.<T>fromObject(object));
     }
 
     private Object generateParameter(List<Object> result) {
@@ -195,9 +252,9 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
         return parameter;
     }
 
-    public R apply(final Function<Object, R> function, final List<Object> result) {
+    private <M> M apply(final Function<Object, M> function, final Object result) {
         try {
-            return function.apply(generateParameter(result));
+            return function.apply(result);
         } catch (Exception e) {
             throw new MatchingException(e);
         }
@@ -208,7 +265,12 @@ public class Matcher<T, R> implements Function2<Function<Object, R>, List<Object
         for (Rule rule : rules) {
             final Option<MatchResult> option = rule.match(object);
             if (!option.isNone()) {
-                return this.apply(rule.getFunction(), option.value().bindings());
+                final Object o = generateParameter(option.value().bindings());
+                final Function<?, Boolean> when = rule.getWhen();
+                if (when == null || apply((Function<Object, Boolean>) when, o)) {
+                    final Function<?, R> then = rule.getThen();
+                    return this.apply((Function<Object, R>) then, o);
+                }
             }
         }
 
