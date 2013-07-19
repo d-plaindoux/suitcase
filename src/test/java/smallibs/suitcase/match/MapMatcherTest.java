@@ -30,7 +30,7 @@ import static smallibs.suitcase.cases.utils.Maps.Map;
 
 public class MapMatcherTest {
     @Test
-    public void shouldMatchTypedObject() throws MatchingException {
+    public void shouldMatchNamedObject() throws MatchingException {
         final Matcher<Map<String, Integer>, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Entry("hello", 42)).then.value(true);
@@ -43,7 +43,7 @@ public class MapMatcherTest {
     }
 
     @Test
-    public void shouldMatchTypedObjects() throws MatchingException {
+    public void shouldMatchNamedObjects() throws MatchingException {
         final Matcher<Map<String, Integer>, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(Map(Entry("hello", 42), Entry("world", 19))).then.value(true);

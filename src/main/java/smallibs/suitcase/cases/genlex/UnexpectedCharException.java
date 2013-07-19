@@ -16,45 +16,10 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.utils;
+package smallibs.suitcase.cases.genlex;
 
-public interface Option<T> {
-
-
-
-    T value();
-
-    boolean isNone();
-
-    public static class None<T> implements Option<T> {
-
-        @Override
-        public T value() {
-            return null;
-        }
-
-        @Override
-        public boolean isNone() {
-            return true;
-        }
+public class UnexpectedCharException extends Exception {
+    public UnexpectedCharException(int index, char c) {
+        super("char <" + c + "> at position <" + index + ">");
     }
-
-    public static class Some<T> implements Option<T> {
-        public final T value;
-
-        public Some(T value) {
-            this.value = value;
-        }
-
-        @Override
-        public T value() {
-            return this.value;
-        }
-
-        @Override
-        public boolean isNone() {
-            return false;
-        }
-    }
-
 }

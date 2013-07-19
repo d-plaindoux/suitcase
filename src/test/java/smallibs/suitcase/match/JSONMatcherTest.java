@@ -16,45 +16,17 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.utils;
+package smallibs.suitcase.match;
 
-public interface Option<T> {
+import org.junit.Test;
+import smallibs.suitcase.cases.json.JSon;
 
+public class JSONMatcherTest {
 
-
-    T value();
-
-    boolean isNone();
-
-    public static class None<T> implements Option<T> {
-
-        @Override
-        public T value() {
-            return null;
-        }
-
-        @Override
-        public boolean isNone() {
-            return true;
-        }
+    @Test
+    public void shouldMatchJSONnUsingGenLex() {
+        JSon.match(null);
     }
 
-    public static class Some<T> implements Option<T> {
-        public final T value;
-
-        public Some(T value) {
-            this.value = value;
-        }
-
-        @Override
-        public T value() {
-            return this.value;
-        }
-
-        @Override
-        public boolean isNone() {
-            return false;
-        }
-    }
 
 }
