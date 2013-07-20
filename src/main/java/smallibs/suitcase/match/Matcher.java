@@ -79,7 +79,7 @@ public class Matcher<T, R> {
             if (this.typeIsCorrect(object)) {
                 return aCase.unapply(object);
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
 

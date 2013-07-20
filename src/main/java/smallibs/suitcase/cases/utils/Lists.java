@@ -41,9 +41,9 @@ public final class Lists {
         @Override
         public Option<MatchResult> unapply(List<E> list) {
             if (list.isEmpty()) {
-                return new Option.Some<>(new MatchResult(list));
+                return Option.Some(new MatchResult(list));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
@@ -68,12 +68,12 @@ public final class Lists {
                 if (!headResult.isNone()) {
                     final Option<MatchResult> tailResult = this.caseTail.unapply(tail);
                     if (!tailResult.isNone()) {
-                        return new Option.Some<>(new MatchResult(list).with(headResult.value()).with(tailResult.value()));
+                        return Option.Some(new MatchResult(list).with(headResult.value()).with(tailResult.value()));
                     }
                 }
             }
 
-            return new Option.None<>();
+            return Option.None();
         }
 
     }

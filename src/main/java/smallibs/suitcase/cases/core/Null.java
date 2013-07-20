@@ -27,9 +27,9 @@ public class Null<T> implements Case<T> {
     @Override
     public Option<MatchResult> unapply(T object) {
         if (object == null) {
-            return new Option.Some<>(new MatchResult(object));
+            return Option.Some(new MatchResult(object));
         } else {
-            return new Option.None<>();
+            return Option.None();
         }
     }
 }

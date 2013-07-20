@@ -38,9 +38,9 @@ public final class Peano {
         @Override
         public Option<MatchResult> unapply(Integer integer) {
             if (integer == 0) {
-                return new Option.Some<>(new MatchResult(integer));
+                return Option.Some(new MatchResult(integer));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
 
@@ -60,7 +60,7 @@ public final class Peano {
             if (integer > 0) {
                 return this.value.unapply(integer - 1);
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }

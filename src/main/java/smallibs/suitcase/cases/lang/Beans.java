@@ -68,7 +68,7 @@ public final class Beans {
                 }
             }
 
-            return new Option.Some<>(new MatchResult(o).with(matchResult));
+            return Option.Some(new MatchResult(o).with(matchResult));
         }
     }
 
@@ -102,7 +102,7 @@ public final class Beans {
                 }
             }
 
-            return new Option.None<>();
+            return Option.None();
         }
 
         // =============================================================================================================
@@ -115,12 +115,12 @@ public final class Beans {
                 if (!unapplyName.isNone()) {
                     final Option<MatchResult> unapplyValue = unapplyMethodValue(object, method);
                     if (!unapplyValue.isNone()) {
-                        return new Option.Some<>(new MatchResult(method).with(unapplyName.value()).with(unapplyValue.value()));
+                        return Option.Some(new MatchResult(method).with(unapplyName.value()).with(unapplyValue.value()));
                     }
                 }
             }
 
-            return new Option.None<>();
+            return Option.None();
         }
 
         private Option<MatchResult> unapplyField(Object object, Field field) {
@@ -128,11 +128,11 @@ public final class Beans {
             if (!unapplyName.isNone()) {
                 final Option<MatchResult> unapplyValue = unapplyFieldValue(object, field);
                 if (!unapplyValue.isNone()) {
-                    return new Option.Some<>(new MatchResult(field).with(unapplyName.value()).with(unapplyValue.value()));
+                    return Option.Some(new MatchResult(field).with(unapplyName.value()).with(unapplyValue.value()));
                 }
             }
 
-            return new Option.None<>();
+            return Option.None();
         }
 
         // =============================================================================================================
@@ -146,10 +146,10 @@ public final class Beans {
                 try {
                     return valueCase.unapply(method.invoke(object));
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    return new Option.None<>();
+                    return Option.None();
                 }
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
 
@@ -157,7 +157,7 @@ public final class Beans {
             try {
                 return valueCase.unapply(field.get(object));
             } catch (IllegalAccessException consume) {
-                return new Option.None<>();
+                return Option.None();
             }
         }
 
@@ -166,7 +166,7 @@ public final class Beans {
                 final Method methodDef = object.getClass().getMethod(getGetterName(field));
                 return valueCase.unapply(methodDef.invoke(object));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                return new Option.None<>();
+                return Option.None();
             }
         }
 

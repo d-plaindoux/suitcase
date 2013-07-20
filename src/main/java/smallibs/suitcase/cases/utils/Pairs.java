@@ -46,10 +46,10 @@ public final class Pairs {
             if (!unapply1.isNone()) {
                 final Option<MatchResult> unapply2 = c2.unapply(pair._2);
                 if (!unapply2.isNone()) {
-                    return new Option.Some<>(new MatchResult(pair).with(unapply1.value()).with(unapply2.value()));
+                    return Option.Some(new MatchResult(pair).with(unapply1.value()).with(unapply2.value()));
                 }
             }
-            return new Option.None<>();
+            return Option.None();
         }
     }
 }

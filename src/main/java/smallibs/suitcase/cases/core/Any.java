@@ -26,7 +26,7 @@ public class Any<T> implements Case<T> {
 
     @Override
     public Option<MatchResult> unapply(T object) {
-        return new Option.Some<>(new MatchResult(object));
+        return Option.Some(new MatchResult(object));
     }
 
 }

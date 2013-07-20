@@ -52,6 +52,10 @@ public class TokenStream {
         public CharSequence subSequence(int start, int end) {
             return sequence.subSequence(this.index + start, this.index + end);
         }
+
+        public void rollback(int length) {
+            this.index -= length; // TODO Stupid operation ...
+        }
     }
 
     private final Lexer lexer;
@@ -67,6 +71,26 @@ public class TokenStream {
             throw new IOException();
         }
 
+        performSkip();
+
+        for (TokenRecognizer token : lexer.getRecognizers()) {
+            final Option<Token<?>> recognize = token.recognize(sequence);
+            if (!recognize.isNone()) {
+                this.sequence.commit(recognize.value().length());
+                return recognize.value();
+            }
+        }
+
+        performSkip();
+
+        throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
+    }
+
+    public void rollback(Token token) {
+        this.sequence.rollback(token.length());
+    }
+
+    private void performSkip() {
         boolean skipped;
         do {
             skipped = false;
@@ -79,16 +103,6 @@ public class TokenStream {
                 }
             }
         } while (skipped);
-
-        for (TokenRecognizer token : lexer.getRecognizers()) {
-            final Option<Token<?>> recognize = token.recognize(sequence);
-            if (!recognize.isNone()) {
-                this.sequence.commit(recognize.value().length());
-                return recognize.value();
-            }
-        }
-
-        throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
     }
 
     public boolean isEmpty() {

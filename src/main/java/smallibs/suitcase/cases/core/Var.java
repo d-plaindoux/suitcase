@@ -17,9 +17,9 @@ public class Var<T> implements Case<T> {
     public Option<MatchResult> unapply(T t) {
         final Option<MatchResult> unapply = this.value.unapply(t);
         if (unapply.isNone()) {
-            return new Option.None<>();
+            return Option.None();
         } else {
-            return new Option.Some<>(new MatchResult(unapply.value().matchedObject(), t));
+            return Option.Some(new MatchResult(unapply.value().matchedObject(), t));
         }
     }
 

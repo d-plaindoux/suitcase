@@ -73,9 +73,9 @@ public abstract class TokenRecognizer {
         @Override
         public Option<Token<?>> recognize(CharSequence sequence) {
             if (value.length() <= sequence.length() && value.contentEquals(sequence.subSequence(0, value.length()))) {
-                return new Option.Some<Token<?>>(Token.Keyword(value));
+                return new Option.SomeCase<Token<?>>(Token.Keyword(value));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
@@ -101,14 +101,14 @@ public abstract class TokenRecognizer {
             final Matcher matcher = pattern.matcher(sequence);
             if (matcher.find()) {
                 final CharSequence recognized = sequence.subSequence(matcher.start(), matcher.end());
-                return new Option.Some<Token<?>>(matched(recognized.toString()));
+                return new Option.SomeCase<Token<?>>(matched(recognized.toString()));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
 
-    private static class IdentifierRecognizer extends PatternRecognizer {
+    public static class IdentifierRecognizer extends PatternRecognizer {
         private IdentifierRecognizer(String value) {
             super(value);
         }

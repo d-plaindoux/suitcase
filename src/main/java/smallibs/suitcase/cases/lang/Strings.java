@@ -50,9 +50,9 @@ public final class Strings {
                 for (int i = 0; i <= matcher.groupCount(); i += 1) {
                     strings.add(s.substring(matcher.start(i), matcher.end(i)));
                 }
-                return new Option.Some<>(new MatchResult(strings));
+                return Option.Some(new MatchResult(strings));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }

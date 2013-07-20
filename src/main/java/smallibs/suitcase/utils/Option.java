@@ -18,15 +18,21 @@
 
 package smallibs.suitcase.utils;
 
-public interface Option<T> {
+public abstract class Option<T> {
 
+    public static <T> Option<T> None() {
+        return new NoneCase<>();
+    }
 
+    public static <T> Option<T> Some(T value) {
+        return new SomeCase<>(value);
+    }
 
-    T value();
+    abstract public T value();
 
-    boolean isNone();
+    abstract public boolean isNone();
 
-    public static class None<T> implements Option<T> {
+    public static class NoneCase<T> extends Option<T> {
 
         @Override
         public T value() {
@@ -39,10 +45,10 @@ public interface Option<T> {
         }
     }
 
-    public static class Some<T> implements Option<T> {
+    public static class SomeCase<T> extends Option<T> {
         public final T value;
 
-        public Some(T value) {
+        public SomeCase(T value) {
             this.value = value;
         }
 

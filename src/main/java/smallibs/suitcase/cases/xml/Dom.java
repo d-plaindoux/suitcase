@@ -126,7 +126,7 @@ public final class Dom {
                     nodeList.next();
                 }
             } else {
-                result = new Option.None<>();
+                result = Option.None();
             }
 
             return result;
@@ -163,12 +163,12 @@ public final class Dom {
                 if (!unapplyName.isNone()) {
                     final Option<MatchResult> unapplyValue = valueCase.unapply(node.getNodeValue());
                     if (!unapplyValue.isNone()) {
-                        return new Option.Some<>(new MatchResult(node).with(unapplyName.value()).with(unapplyValue.value()));
+                        return Option.Some(new MatchResult(node).with(unapplyName.value()).with(unapplyValue.value()));
                     }
                 }
             }
 
-            return new Option.None<>();
+            return Option.None();
         }
     }
 
@@ -206,11 +206,11 @@ public final class Dom {
                     if (unapplyContent.isNone()) {
                         return unapplyContent;
                     } else {
-                        return new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
+                        return Option.Some(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
                     }
                 }
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
@@ -232,10 +232,10 @@ public final class Dom {
                 if (unapplyText.isNone()) {
                     return unapplyText;
                 } else {
-                    return new Option.Some<>(new MatchResult(new InitialTerm(node)).with(unapplyText.value()));
+                    return Option.Some(new MatchResult(new InitialTerm(node)).with(unapplyText.value()));
                 }
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
@@ -277,7 +277,7 @@ public final class Dom {
                 } else if (secondary.hasNext()) {
                     unapply = aContent.unapply(new InitialTerm(secondary.next()));
                 } else {
-                    unapply = new Option.None<>();
+                    unapply = Option.None();
                 }
 
                 if (unapply.isNone()) {
@@ -288,13 +288,13 @@ public final class Dom {
             }
 
             if (nodeList.isInitial() && secondary.hasNext()) {
-                return new Option.None<>();
+                return Option.None();
             } else {
                 final List<Node> matched = new ArrayList<>();
                 while (nodeList.size() > secondary.size()) {
                     matched.add(nodeList.next());
                 }
-                return new Option.Some<>(new MatchResult(new InitialTerm(matched)).with(result));
+                return Option.Some(new MatchResult(new InitialTerm(matched)).with(result));
             }
 
         }
@@ -323,9 +323,9 @@ public final class Dom {
             }
 
             if (nodeList.isInitial() && nodeList.hasNext()) {
-                return new Option.None<>();
+                return Option.None();
             } else {
-                return new Option.Some<>(new MatchResult(new InitialTerm(matched)).with(matchResult));
+                return Option.Some(new MatchResult(new InitialTerm(matched)).with(matchResult));
             }
         }
 

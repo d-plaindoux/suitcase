@@ -32,7 +32,7 @@ import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
-public class GenLexStreamTest {
+public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveLACCToken() throws Exception {

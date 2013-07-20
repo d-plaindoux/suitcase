@@ -25,7 +25,7 @@ public abstract class Token<T> {
     }
 
     public static Token<String> Ident(String value) {
-        return new IdentifierToken(value);
+        return new IdentToken(value);
     }
 
     public static Token<String> String(String value) {
@@ -33,7 +33,7 @@ public abstract class Token<T> {
     }
 
     public static Token<Integer> Int(int length, int value) {
-        return new IntegerToken(length, value);
+        return new IntToken(length, value);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -62,10 +62,10 @@ public abstract class Token<T> {
         }
     }
 
-    private static class IdentifierToken extends Token<String> {
+    public static class IdentToken extends Token<String> {
         private final String value;
 
-        private IdentifierToken(String value) {
+        private IdentToken(String value) {
             this.value = value;
         }
 
@@ -98,11 +98,11 @@ public abstract class Token<T> {
         }
     }
 
-    private static class IntegerToken extends Token<Integer> {
+    private static class IntToken extends Token<Integer> {
         private final int value;
         private final int length;
 
-        private IntegerToken(int length, int value) {
+        private IntToken(int length, int value) {
             this.length = length;
             this.value = value;
         }

@@ -18,11 +18,14 @@
 
 package smallibs.suitcase.cases.genlex;
 
+import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Option;
+
+import java.io.IOException;
 
 public class Parser {
 
@@ -46,7 +49,7 @@ public class Parser {
         return null;
     }
 
-    public static Case<TokenStream> Int = null;
+    public static Case<TokenStream> Int = new IdentCase();
 
     public static Case<TokenStream> Ident = null;
 
@@ -68,7 +71,7 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream stream) {
-            return new Option.Some(new MatchResult(matcher.match(stream)));
+            return new Option.SomeCase(new MatchResult(matcher.match(stream)));
         }
 
         public static <T1, R> Matcher<T1, R> create() {
@@ -87,6 +90,26 @@ public class Parser {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class IdentCase implements Case<TokenStream> {
+
+        @Override
+        public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final Token token;
+            try {
+                token = tokenStream.nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                return Option.None();
+            }
+
+            if (token instanceof Token.IdentToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
+        }
+    }
 
 
 }

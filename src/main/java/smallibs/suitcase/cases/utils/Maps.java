@@ -63,7 +63,7 @@ public class Maps {
                     matchResult.with(unapply.value());
                 }
             }
-            return new Option.Some<>(matchResult);
+            return Option.Some(matchResult);
         }
     }
 
@@ -82,7 +82,7 @@ public class Maps {
             if (map.containsKey(this.key)) {
                 return this.valCase.unapply(map.get(this.key));
             } else {
-                return new Option.None<>();
+                return Option.None();
             }
         }
     }
