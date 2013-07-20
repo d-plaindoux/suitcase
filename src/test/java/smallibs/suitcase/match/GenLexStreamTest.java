@@ -20,6 +20,7 @@ package smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import smallibs.suitcase.cases.genlex.JavaLexer;
 import smallibs.suitcase.cases.genlex.Lexer;
 import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.cases.genlex.UnexpectedCharException;
@@ -76,7 +77,7 @@ public class GenLexStreamTest {
     }
 
     @Test
-    public void shouldHaveTwoTokensAgain() throws Exception {
+    public void shouldHaveThreeTokens() throws Exception {
         final TokenStream stream = new Lexer().keywords("++", "-").parse("-++-");
         TestCase.assertEquals("-", stream.nextToken().value());
         TestCase.assertEquals("++", stream.nextToken().value());
@@ -117,9 +118,34 @@ public class GenLexStreamTest {
         TestCase.assertEquals(0x1942, stream.nextToken().value());
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Error case when pattern matches empty
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldHaveExceptionWhenPatternMatchesEmpty() throws Exception {
+        new Lexer().skip("\\s*");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Mixin' Int, Hexa and Ident
+    // -----------------------------------------------------------------------------------------------------------------
+
     @Test
     public void shouldHaveOneHexaStringAndInt() throws Exception {
         final TokenStream stream = new Lexer(Hexa(), Int(), Ident("[a-zA-Z]+")).parse("1942Hello0x12");
+        TestCase.assertEquals(1942, stream.nextToken().value());
+        TestCase.assertEquals("Hello", stream.nextToken().value());
+        TestCase.assertEquals(0x12, stream.nextToken().value());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Mixin' Int, Hexa and Ident and Skipped spaces
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void shouldHaveOneHexaStringAndIntWithSkippedSpaces() throws Exception {
+        final TokenStream stream = new JavaLexer().parse("1942 Hello 0x12");
         TestCase.assertEquals(1942, stream.nextToken().value());
         TestCase.assertEquals("Hello", stream.nextToken().value());
         TestCase.assertEquals(0x12, stream.nextToken().value());

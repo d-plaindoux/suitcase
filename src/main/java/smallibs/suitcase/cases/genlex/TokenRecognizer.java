@@ -41,8 +41,16 @@ public abstract class TokenRecognizer {
         return new IntRecognizer();
     }
 
+    public static TokenRecognizer Int(String value) {
+        return new IntRecognizer(value);
+    }
+
     public static TokenRecognizer Hexa() {
         return new HexaRecognizer();
+    }
+
+    public static Skip Skip(String value) {
+        return new Skip(value);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -79,6 +87,11 @@ public abstract class TokenRecognizer {
 
         private PatternRecognizer(String value) {
             this.pattern = Pattern.compile("^" + value);
+
+            // Prevent empty pattern recognition
+            if (this.pattern.matcher("").matches()) {
+                throw new IllegalArgumentException();
+            }
         }
 
         protected abstract Token<?> matched(String string);
@@ -119,7 +132,11 @@ public abstract class TokenRecognizer {
 
     private static class IntRecognizer extends PatternRecognizer {
         private IntRecognizer() {
-            super("[+-]?\\d+");
+            this("[+-]?\\d+");
+        }
+
+        private IntRecognizer(String value) {
+            super(value);
         }
 
         @Override
@@ -136,6 +153,17 @@ public abstract class TokenRecognizer {
         @Override
         protected Token<?> matched(String string) {
             return Token.Int(string.length(), Integer.valueOf(string.substring(2, string.length()), 16));
+        }
+    }
+
+    public static class Skip extends PatternRecognizer {
+        private Skip(String value) {
+            super(value);
+        }
+
+        @Override
+        protected Token<?> matched(String string) {
+            return Token.String(string);
         }
     }
 }

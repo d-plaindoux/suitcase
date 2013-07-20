@@ -67,6 +67,19 @@ public class TokenStream {
             throw new IOException();
         }
 
+        boolean skipped;
+        do {
+            skipped = false;
+            for (TokenRecognizer token : lexer.getSkipped()) {
+                final Option<Token<?>> recognize = token.recognize(sequence);
+                if (!recognize.isNone()) {
+                    this.sequence.commit(recognize.value().length());
+                    skipped = true;
+                    break;
+                }
+            }
+        } while (skipped);
+
         for (TokenRecognizer token : lexer.getRecognizers()) {
             final Option<Token<?>> recognize = token.recognize(sequence);
             if (!recognize.isNone()) {
