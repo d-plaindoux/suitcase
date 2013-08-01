@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
-
 public class Lexer {
 
     private final List<TokenRecognizer> recognizers;
@@ -48,7 +46,7 @@ public class Lexer {
     }
 
     public TokenStream parse(CharSequence sequence) {
-        return new TokenStream(this, sequence);
+        return TokenStream.stream(this, sequence);
     }
 
     List<TokenRecognizer> getRecognizers() {

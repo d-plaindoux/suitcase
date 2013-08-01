@@ -44,7 +44,7 @@ public abstract class Token<T> {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static class KeywordToken extends Token<String> {
+    public static class KeywordToken extends Token<String> {
         private final String value;
 
         private KeywordToken(String value) {
@@ -98,7 +98,7 @@ public abstract class Token<T> {
         }
     }
 
-    private static class IntToken extends Token<Integer> {
+    public static class IntToken extends Token<Integer> {
         private final int value;
         private final int length;
 

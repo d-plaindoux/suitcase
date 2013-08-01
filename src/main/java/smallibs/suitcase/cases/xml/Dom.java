@@ -416,7 +416,9 @@ public final class Dom {
 
         abstract protected boolean isInitial();
 
-        abstract protected XmlTerm secondary();
+        protected XmlTerm secondary() {
+            return new SecondaryTerm(this.nodes);
+        }
 
         public final List<Node> nodes() {
             return Collections.unmodifiableList(this.nodes);
@@ -442,11 +444,6 @@ public final class Dom {
         protected boolean isInitial() {
             return true;
         }
-
-        @Override
-        protected XmlTerm secondary() {
-            return new SecondaryTerm(this.nodes);
-        }
     }
 
     // =================================================================================================================
@@ -459,11 +456,6 @@ public final class Dom {
         @Override
         protected boolean isInitial() {
             return false;
-        }
-
-        @Override
-        protected XmlTerm secondary() {
-            return new SecondaryTerm(this.nodes);
         }
     }
 

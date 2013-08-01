@@ -19,6 +19,7 @@
 package smallibs.suitcase.cases.core;
 
 import smallibs.suitcase.cases.Case;
+import smallibs.suitcase.match.Matcher;
 
 public final class Cases {
 
@@ -94,6 +95,11 @@ public final class Cases {
     public static <T> Case<T> typeOf(Class<?> type) {
         assert type != null;
         return new TypeOf<>(type);
+    }
+
+    public static <T, R> ReentrantMatcher<T, R> reentrant(Matcher<T, R> matcher) {
+        assert matcher != null;
+        return new ReentrantMatcher<>(matcher);
     }
 
 }

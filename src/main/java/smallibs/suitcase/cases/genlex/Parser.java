@@ -21,20 +21,24 @@ package smallibs.suitcase.cases.genlex;
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
+import smallibs.suitcase.cases.core.ReentrantMatcher;
+import smallibs.suitcase.cases.core.Var;
 import smallibs.suitcase.match.Matcher;
-import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Option;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Parser {
 
-    public static <T> ParserCase<T> parser(Matcher<TokenStream, T> matcher) {
-        return new ParserCase<>(matcher);
+    public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
+        return Cases.reentrant(matcher);
     }
 
     public static Case<TokenStream> Seq(Object... seq) {
-        return null;
+        return new Seq(seq);
     }
 
     public static Case<TokenStream> Opt(Object... seq) {
@@ -46,12 +50,12 @@ public class Parser {
     }
 
     public static Case<TokenStream> Kwd(Object object) {
-        return null;
+        return new Keyword(object);
     }
 
-    public static Case<TokenStream> Int = new IdentCase();
+    public static Case<TokenStream> Int = new IntCase();
 
-    public static Case<TokenStream> Ident = null;
+    public static Case<TokenStream> Ident = new IdentCase();
 
     public static Case<TokenStream> Float = null;
 
@@ -61,38 +65,129 @@ public class Parser {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    public static class ParserCase<T> extends Matcher<TokenStream, T> implements Case<TokenStream> {
+    private interface TokenStreamCase extends Case<TokenStream> {
+        // Only for specification
+    }
 
-        private final Matcher<TokenStream, T> matcher;
+    // -----------------------------------------------------------------------------------------------------------------
 
-        public ParserCase(Matcher<TokenStream, T> matcher) {
-            this.matcher = matcher;
-        }
-
-        @Override
-        public Option<MatchResult> unapply(TokenStream stream) {
-            return new Option.SomeCase(new MatchResult(matcher.match(stream)));
-        }
-
-        public static <T1, R> Matcher<T1, R> create() {
-            return Matcher.create();
-        }
+    @CaseType(TokenStream.class)
+    private static class IdentCase implements TokenStreamCase {
 
         @Override
-        public When caseOf(Object object) {
-            return matcher.caseOf(object);
-        }
+        public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final Token token;
+            try {
+                token = tokenStream.secundary().nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                return Option.None();
+            }
 
-        @SuppressWarnings("unchecked")
-        public T match(TokenStream object) throws MatchingException {
-            return matcher.match(object);
+            if (!(token instanceof Token.IdentToken)) {
+                return Option.None();
+            }
+
+            try {
+                tokenStream.nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                // Impossible
+            }
+
+            return Option.Some(new MatchResult(token));
         }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class IdentCase implements Case<TokenStream> {
+    private static class Keyword implements TokenStreamCase {
+        private final Case<String> value;
+
+        public Keyword(Object object) {
+            this.value = Cases.fromObject(object);
+        }
+
+        @Override
+        public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final Token token;
+            try {
+                token = tokenStream.secundary().nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                return Option.None();
+            }
+
+            if (!(token instanceof Token.KeywordToken)) {
+                return Option.None();
+            }
+
+            try {
+                tokenStream.nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                // Impossible
+            }
+
+            final Token.KeywordToken keyword = Token.KeywordToken.class.cast(token);
+            final Option<MatchResult> unapply = this.value.unapply(keyword.value());
+
+            if (unapply.isNone()) {
+                return unapply;
+            }
+
+            return Option.Some(new MatchResult(token).with(unapply.value()));
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class Seq implements TokenStreamCase {
+        private final List<Case<TokenStream>> cases;
+
+        public Seq(Object[] seq) {
+            this.cases = new ArrayList<>();
+            for (Object o : seq) {
+                final Case<TokenStream> aCase = Cases.fromObject(o);
+                this.cases.add(aCase);
+            }
+        }
+
+        private boolean isTokenStreamCase(Case<TokenStream> aCase) {
+            if (aCase instanceof Var) {
+                return isTokenStreamCase(((Var<TokenStream>) aCase).getValue());
+            } else {
+                return aCase instanceof TokenStreamCase;
+            }
+        }
+
+        @Override
+        public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final TokenStream secundary = tokenStream.secundary();
+            final MatchResult result = new MatchResult(null);
+
+            for (Case<TokenStream> aCase : this.cases) {
+                final Option<MatchResult> unapply;
+
+                if (isTokenStreamCase(aCase)) {
+                    unapply = aCase.unapply(secundary);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+
+                if (unapply.isNone()) {
+                    return unapply;
+                }
+
+                result.with(unapply.value());
+            }
+
+            return Option.Some(result);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class IntCase implements TokenStreamCase {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
@@ -103,13 +198,11 @@ public class Parser {
                 return Option.None();
             }
 
-            if (token instanceof Token.IdentToken) {
+            if (token instanceof Token.IntToken) {
                 return Option.Some(new MatchResult(token));
             } else {
                 return Option.None();
             }
         }
     }
-
-
 }

@@ -36,7 +36,15 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
-import static smallibs.suitcase.cases.xml.Dom.*;
+import static smallibs.suitcase.cases.xml.Dom.Att;
+import static smallibs.suitcase.cases.xml.Dom.Empty;
+import static smallibs.suitcase.cases.xml.Dom.Opt;
+import static smallibs.suitcase.cases.xml.Dom.OptRep;
+import static smallibs.suitcase.cases.xml.Dom.Rep;
+import static smallibs.suitcase.cases.xml.Dom.Seq;
+import static smallibs.suitcase.cases.xml.Dom.Tag;
+import static smallibs.suitcase.cases.xml.Dom.Text;
+import static smallibs.suitcase.cases.xml.Dom.XmlTerm;
 
 public class XmlMatcherTest {
 
@@ -635,7 +643,7 @@ public class XmlMatcherTest {
     }
 
     // =================================================================================================================
-    // Full test
+    // Complex example #1
     // =================================================================================================================
 
     private Matcher<XmlTerm, Integer> getNumberOfChars() {

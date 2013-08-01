@@ -1,6 +1,6 @@
 package smallibs.suitcase.cases.json;
 
-import smallibs.suitcase.cases.genlex.Parser;
+import smallibs.suitcase.cases.core.ReentrantMatcher;
 import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.match.Matcher;
 
@@ -15,7 +15,7 @@ import static smallibs.suitcase.cases.genlex.Parser.parser;
 
 public final class JSon {
 
-    static final Parser.ParserCase<Boolean> main, value, object, array, members, member, values;
+    static final ReentrantMatcher<TokenStream, Boolean> main, value, object, array, members, member, values;
 
     static {
         // Parser entries creation

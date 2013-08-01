@@ -22,48 +22,25 @@ import smallibs.suitcase.utils.Option;
 
 import java.io.IOException;
 
-public class TokenStream {
+public abstract class TokenStream {
 
-    private final class AnalysedCharSequence implements CharSequence {
-
-        private final CharSequence sequence;
-        private int index = 0;
-
-        private AnalysedCharSequence(CharSequence sequence) {
-            this.sequence = sequence;
-            this.index = 0;
-        }
-
-        void commit(int offset) {
-            this.index += offset;
-        }
-
-        @Override
-        public int length() {
-            return sequence.length() - index;
-        }
-
-        @Override
-        public char charAt(int index) {
-            return sequence.charAt(this.index + index);
-        }
-
-        @Override
-        public CharSequence subSequence(int start, int end) {
-            return sequence.subSequence(this.index + start, this.index + end);
-        }
-
-        public void rollback(int length) {
-            this.index -= length; // TODO Stupid operation ...
-        }
+    public static TokenStream stream(Lexer lexer, CharSequence sequence) {
+        return new InitialTokenStream(lexer, sequence);
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     private final Lexer lexer;
     private final AnalysedCharSequence sequence;
 
-    public TokenStream(Lexer lexer, CharSequence sequence) {
+    protected TokenStream(Lexer lexer, CharSequence sequence) {
         this.lexer = lexer;
         this.sequence = new AnalysedCharSequence(sequence);
+    }
+
+    protected TokenStream(TokenStream tokenStream) {
+        this.lexer = tokenStream.lexer;
+        this.sequence = tokenStream.sequence.clone();
     }
 
     public Token nextToken() throws IOException, UnexpectedCharException {
@@ -86,10 +63,6 @@ public class TokenStream {
         throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
     }
 
-    public void rollback(Token token) {
-        this.sequence.rollback(token.length());
-    }
-
     private void performSkip() {
         boolean skipped;
         do {
@@ -108,4 +81,74 @@ public class TokenStream {
     public boolean isEmpty() {
         return sequence.length() == 0;
     }
+
+    public TokenStream secundary() {
+        return new SecundaryTokenStream(this);
+    }
+
+    abstract public boolean isInitial();
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private static class InitialTokenStream extends TokenStream {
+
+        public InitialTokenStream(Lexer lexer, CharSequence sequence) {
+            super(lexer, sequence);
+        }
+
+        @Override
+        public boolean isInitial() {
+            return true;
+        }
+    }
+
+    private static class SecundaryTokenStream extends TokenStream {
+        SecundaryTokenStream(TokenStream tokenStream) {
+            super(tokenStream);
+        }
+
+        @Override
+        public boolean isInitial() {
+            return false;
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private final class AnalysedCharSequence implements CharSequence {
+
+        private final CharSequence sequence;
+        private int index = 0;
+
+        private AnalysedCharSequence(CharSequence sequence) {
+            this.sequence = sequence;
+            this.index = 0;
+        }
+
+        AnalysedCharSequence commit(int offset) {
+            this.index += offset;
+            return this;
+        }
+
+        @Override
+        public int length() {
+            return sequence.length() - index;
+        }
+
+        @Override
+        public char charAt(int index) {
+            return sequence.charAt(this.index + index);
+        }
+
+        @Override
+        public CharSequence subSequence(int start, int end) {
+            return sequence.subSequence(this.index + start, this.index + end);
+        }
+
+        public AnalysedCharSequence clone() {
+            return new AnalysedCharSequence(this.sequence).commit(this.index);
+        }
+    }
+
+
 }
