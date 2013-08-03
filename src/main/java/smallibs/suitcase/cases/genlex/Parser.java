@@ -34,7 +34,7 @@ import java.util.List;
 public class Parser {
 
     public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
-        return Cases.reentrant(matcher);
+        return new ReentrantParser<>(matcher);
     }
 
     public static Case<TokenStream> Seq(Object... seq) {
@@ -61,8 +61,6 @@ public class Parser {
 
     public static Case<TokenStream> String = null;
 
-    public static Case<TokenStream> Char = null;
-
     // -----------------------------------------------------------------------------------------------------------------
 
     private interface TokenStreamCase extends Case<TokenStream> {
@@ -72,7 +70,7 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class IdentCase implements TokenStreamCase {
+    private static abstract class AtomCase implements TokenStreamCase {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
@@ -83,7 +81,8 @@ public class Parser {
                 return Option.None();
             }
 
-            if (!(token instanceof Token.IdentToken)) {
+            final Option<MatchResult> resultOption = this.unapplyToken(token);
+            if (resultOption.isNone()) {
                 return Option.None();
             }
 
@@ -93,14 +92,30 @@ public class Parser {
                 // Impossible
             }
 
-            return Option.Some(new MatchResult(token));
+            return Option.Some(new MatchResult(token).with(resultOption.value()));
+        }
+
+        abstract Option<MatchResult> unapplyToken(Token token);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class IdentCase extends AtomCase {
+        @Override
+        Option<MatchResult> unapplyToken(Token token) {
+            if (token instanceof Token.IdentToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
         }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class Keyword implements TokenStreamCase {
+    private static class Keyword extends AtomCase {
         private final Case<String> value;
 
         public Keyword(Object object) {
@@ -108,32 +123,16 @@ public class Parser {
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final Token token;
-            try {
-                token = tokenStream.secundary().nextToken();
-            } catch (IOException | UnexpectedCharException e) {
-                return Option.None();
+        Option<MatchResult> unapplyToken(Token token) {
+            if (token instanceof Token.KeywordToken) {
+                final Token.KeywordToken keyword = Token.KeywordToken.class.cast(token);
+                final Option<MatchResult> unapply = this.value.unapply(keyword.value());
+                if (unapply.isSome()) {
+                    return Option.Some(new MatchResult(token).with(unapply.value()));
+                }
             }
 
-            if (!(token instanceof Token.KeywordToken)) {
-                return Option.None();
-            }
-
-            try {
-                tokenStream.nextToken();
-            } catch (IOException | UnexpectedCharException e) {
-                // Impossible
-            }
-
-            final Token.KeywordToken keyword = Token.KeywordToken.class.cast(token);
-            final Option<MatchResult> unapply = this.value.unapply(keyword.value());
-
-            if (unapply.isNone()) {
-                return unapply;
-            }
-
-            return Option.Some(new MatchResult(token).with(unapply.value()));
+            return Option.None();
         }
     }
 
@@ -141,19 +140,19 @@ public class Parser {
 
     @CaseType(TokenStream.class)
     private static class Seq implements TokenStreamCase {
-        private final List<Case<TokenStream>> cases;
+        private final List<Case<?>> cases;
 
         public Seq(Object[] seq) {
             this.cases = new ArrayList<>();
             for (Object o : seq) {
-                final Case<TokenStream> aCase = Cases.fromObject(o);
+                final Case<?> aCase = Cases.fromObject(o);
                 this.cases.add(aCase);
             }
         }
 
-        private boolean isTokenStreamCase(Case<TokenStream> aCase) {
+        private boolean isTokenStreamCase(Case<?> aCase) {
             if (aCase instanceof Var) {
-                return isTokenStreamCase(((Var<TokenStream>) aCase).getValue());
+                return isTokenStreamCase(((Var<?>) aCase).getValue());
             } else {
                 return aCase instanceof TokenStreamCase;
             }
@@ -163,24 +162,32 @@ public class Parser {
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             final TokenStream secundary = tokenStream.secundary();
             final MatchResult result = new MatchResult(null);
+            final List<Object> values = new ArrayList<>();
 
-            for (Case<TokenStream> aCase : this.cases) {
+            for (Case<?> aCase : this.cases) {
                 final Option<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
-                    unapply = aCase.unapply(secundary);
+                    final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
+                    unapply = streamCase.unapply(secundary);
                 } else {
-                    throw new IllegalArgumentException();
+                    try {
+                        final Case<Token> tokenCase = (Case<Token>) aCase;
+                        unapply = tokenCase.unapply(secundary.nextToken());
+                    } catch (IOException | UnexpectedCharException e) {
+                        return Option.None();
+                    }
                 }
 
                 if (unapply.isNone()) {
                     return unapply;
+                } else {
+                    values.add(unapply.value().matchedObject());
+                    result.with(unapply.value());
                 }
-
-                result.with(unapply.value());
             }
 
-            return Option.Some(result);
+            return Option.Some(new MatchResult(values).with(result));
         }
     }
 
@@ -203,6 +210,15 @@ public class Parser {
             } else {
                 return Option.None();
             }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class ReentrantParser<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
+        public ReentrantParser(Matcher<TokenStream, R> matcher) {
+            super(matcher);
         }
     }
 }

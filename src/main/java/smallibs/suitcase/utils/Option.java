@@ -32,6 +32,10 @@ public abstract class Option<T> {
 
     abstract public boolean isNone();
 
+    public boolean isSome() {
+        return !isNone();
+    }
+
     public static class NoneCase<T> extends Option<T> {
 
         @Override

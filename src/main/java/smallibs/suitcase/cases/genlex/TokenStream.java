@@ -28,6 +28,10 @@ public abstract class TokenStream {
         return new InitialTokenStream(lexer, sequence);
     }
 
+    public static TokenStream stream(TokenStream stream, Token token) {
+        return new InitialTokenStream(stream.lexer, token.toString());
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     private final Lexer lexer;
@@ -87,6 +91,7 @@ public abstract class TokenStream {
     }
 
     abstract public boolean isInitial();
+
 
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -149,6 +154,4 @@ public abstract class TokenStream {
             return new AnalysedCharSequence(this.sequence).commit(this.index);
         }
     }
-
-
 }

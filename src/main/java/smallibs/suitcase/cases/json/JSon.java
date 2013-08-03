@@ -36,7 +36,7 @@ public final class JSon {
         array.caseOf(Seq(Kwd("["), Opt(values), Kwd("]"))).then.value(true);
 
         members.caseOf(Seq(member, Opt(Kwd(","), members))).then.value(true);
-        member.caseOf(Seq(String, Opt(Kwd(":"), value))).then.value(true);
+        member.caseOf(Seq(String, Kwd(":"), value)).then.value(true);
 
         value.caseOf(Alt(main, String, Int, Float, Kwd("null|true|false"))).then.value(true);
         values.caseOf(Seq(value, Opt(Kwd(","), values))).then.value(true);
