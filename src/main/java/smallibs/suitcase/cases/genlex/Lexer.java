@@ -59,7 +59,7 @@ public class Lexer {
 
     public Lexer keywords(String... keywords) {
         for (String keyword : keywords) {
-            this.recognizers.add(TokenRecognizer.Keyword(keyword));
+            this.recognizers.add(0, TokenRecognizer.Keyword(keyword));
         }
         return this;
     }

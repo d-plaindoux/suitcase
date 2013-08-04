@@ -47,6 +47,10 @@ public abstract class TokenStream {
         this.sequence = tokenStream.sequence.clone();
     }
 
+    public void synchronizeWith(TokenStream stream) {
+        this.sequence.commit(stream.sequence.index - this.sequence.index);
+    }
+
     public Token nextToken() throws IOException, UnexpectedCharException {
         if (sequence.length() == 0) {
             throw new IOException();
@@ -91,7 +95,6 @@ public abstract class TokenStream {
     }
 
     abstract public boolean isInitial();
-
 
     // -----------------------------------------------------------------------------------------------------------------
 

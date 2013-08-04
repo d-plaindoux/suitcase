@@ -18,15 +18,72 @@
 
 package smallibs.suitcase.match;
 
+import junit.framework.TestCase;
 import org.junit.Test;
+import smallibs.suitcase.cases.genlex.JavaLexer;
+import smallibs.suitcase.cases.genlex.Lexer;
+import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.cases.json.JSon;
 
 public class JSONMatcherTest {
 
     @Test
-    public void shouldMatchJSONnUsingGenLex() {
-        JSon.match(null);
+    public void shouldMatchEmptyObject() {
+        TestCase.assertTrue(JSon.match(JSon.stream("{}")));
     }
 
+    @Test
+    public void shouldMatchEmptyArray() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[]")));
+    }
 
+    @Test
+    public void shouldMatchArrayWithAnEmptyObject() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[{}]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithNull() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[null]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithTrue() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[true]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithFalse() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[false]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithInt() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[123]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithString() {
+        TestCase.assertTrue(JSon.match(JSon.stream("[\"toto\"]")));
+    }
+
+    @Test
+    public void shouldMatchArrayWithQuotedString() {
+        TestCase.assertTrue(JSon.match(JSon.stream("['toto']")));
+    }
+
+    @Test
+    public void shouldMatchObjectWithBooleanNamedAttribute() {
+        TestCase.assertTrue(JSon.match(JSon.stream("{'toto':true}")));
+    }
+
+    @Test
+    public void shouldMatchObjectWithTwoBooleanNamedAttribute2() {
+        TestCase.assertTrue(JSon.match(JSon.stream("{'toto':true,'titi':null}")));
+    }
+
+    @Test
+    public void shouldMatchObjectWithEncapsulatedObject() {
+        TestCase.assertTrue(JSon.match(JSon.stream("{ 'toto' : { 'titi' : null } }")));
+    }
 }

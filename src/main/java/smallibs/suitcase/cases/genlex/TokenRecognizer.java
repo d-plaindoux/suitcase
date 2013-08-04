@@ -37,6 +37,10 @@ public abstract class TokenRecognizer {
         return new StringRecognizer();
     }
 
+    public static TokenRecognizer QuotedString() {
+        return new QuotedStringRecognizer();
+    }
+
     public static TokenRecognizer Int() {
         return new IntRecognizer();
     }
@@ -126,7 +130,18 @@ public abstract class TokenRecognizer {
 
         @Override
         protected Token<?> matched(String string) {
-            return Token.Ident(string.substring(1, string.length() - 1));
+            return Token.String(string.length(), string.substring(1, string.length() - 1));
+        }
+    }
+
+    private static class QuotedStringRecognizer extends PatternRecognizer {
+        private QuotedStringRecognizer() {
+            super("'[^']*'");
+        }
+
+        @Override
+        protected Token<?> matched(String string) {
+            return Token.String(string.length(), string.substring(1, string.length() - 1));
         }
     }
 
@@ -163,7 +178,7 @@ public abstract class TokenRecognizer {
 
         @Override
         protected Token<?> matched(String string) {
-            return Token.String(string);
+            return Token.String(string.length(), string);
         }
     }
 }

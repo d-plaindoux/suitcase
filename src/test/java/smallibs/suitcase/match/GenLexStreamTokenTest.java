@@ -30,6 +30,7 @@ import java.io.IOException;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Hexa;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
 public class GenLexStreamTokenTest {
@@ -103,6 +104,12 @@ public class GenLexStreamTokenTest {
     @Test
     public void shouldHaveOneString() throws Exception {
         final TokenStream stream = new Lexer(String()).parse("\"World!\"");
+        TestCase.assertEquals("World!", stream.nextToken().value());
+    }
+
+    @Test
+    public void shouldHaveOneQuotedString() throws Exception {
+        final TokenStream stream = new Lexer(QuotedString()).parse("'World!'");
         TestCase.assertEquals("World!", stream.nextToken().value());
     }
 

@@ -14,9 +14,11 @@ import java.util.List;
 
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
+import static smallibs.suitcase.cases.genlex.Parser.Alt;
 import static smallibs.suitcase.cases.genlex.Parser.Ident;
 import static smallibs.suitcase.cases.genlex.Parser.Int;
 import static smallibs.suitcase.cases.genlex.Parser.Kwd;
+import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
 
 public class GenLexParserTest {
@@ -202,7 +204,7 @@ public class GenLexParserTest {
     }
 
     @Test
-    public void shouldParseSequenceWithReentantParser() {
+    public void shouldParseSequenceWithReentrantParser() {
         final Matcher<TokenStream, Boolean> parser = Matcher.create();
         final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
 
@@ -216,6 +218,62 @@ public class GenLexParserTest {
 
         final Lexer lexer = givenALexer();
         final TokenStream stream = lexer.parse("{Hello");
+
+        TestCase.assertTrue(matcher.match(stream));
+    }
+
+    @Test
+    public void shouldParseSequenceWithAlt() {
+        final Matcher<TokenStream, Boolean> parser = Matcher.create();
+        final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
+
+        matcher.caseOf(Alt(Kwd(_), Ident)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        final Lexer lexer = givenALexer();
+        final TokenStream stream = lexer.parse("{");
+
+        TestCase.assertTrue(matcher.match(stream));
+    }
+
+    @Test
+    public void shouldParseSequenceWithAlt2() {
+        final Matcher<TokenStream, Boolean> parser = Matcher.create();
+        final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
+
+        matcher.caseOf(Alt(Kwd(_), Ident)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        final Lexer lexer = givenALexer();
+        final TokenStream stream = lexer.parse("Hello");
+
+        TestCase.assertTrue(matcher.match(stream));
+    }
+
+    @Test
+    public void shouldParseSequenceWithOpt() {
+        final Matcher<TokenStream, Boolean> parser = Matcher.create();
+        final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
+
+        matcher.caseOf(Opt(Kwd(_))).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        final Lexer lexer = givenALexer();
+        final TokenStream stream = lexer.parse("Hello");
+
+        TestCase.assertTrue(matcher.match(stream));
+    }
+
+    @Test
+    public void shouldParseSequenceWithOptAndIdent() {
+        final Matcher<TokenStream, Boolean> parser = Matcher.create();
+        final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
+
+        matcher.caseOf(Seq(Opt(Kwd(_)), Ident)).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        final Lexer lexer = givenALexer();
+        final TokenStream stream = lexer.parse("Hello");
 
         TestCase.assertTrue(matcher.match(stream));
     }

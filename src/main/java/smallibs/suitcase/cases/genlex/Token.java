@@ -28,8 +28,8 @@ public abstract class Token<T> {
         return new IdentToken(value);
     }
 
-    public static Token<String> String(String value) {
-        return new StringToken(value);
+    public static Token<String> String(int length, String value) {
+        return new StringToken(length, value);
     }
 
     public static Token<Integer> Int(int length, int value) {
@@ -80,16 +80,18 @@ public abstract class Token<T> {
         }
     }
 
-    private static class StringToken extends Token<String> {
+    public static class StringToken extends Token<String> {
+        private final int length;
         private final String value;
 
-        private StringToken(String value) {
+        private StringToken(int length, String value) {
+            this.length = length;
             this.value = value;
         }
 
         @Override
         public int length() {
-            return this.value.length();
+            return this.length;
         }
 
         @Override
