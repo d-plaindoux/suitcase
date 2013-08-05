@@ -47,9 +47,9 @@ public final class JSon {
 
     static {
         jsonLexer = new Lexer();
-        jsonLexer.skip("\\s+");
-        jsonLexer.recognizers(Int());
+        jsonLexer.skip("[ \n\r\f\t]+");
         jsonLexer.recognizers(Float());
+        jsonLexer.recognizers(Int());
         jsonLexer.recognizers(String());
         jsonLexer.recognizers(QuotedString());
         jsonLexer.keywords("[", "]", "{", "}", ":", ",");
@@ -96,5 +96,11 @@ public final class JSon {
 
     public static Boolean match(TokenStream stream) {
         return main.match(stream);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public static void main(String[] args) {
+
     }
 }

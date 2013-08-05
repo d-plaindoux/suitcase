@@ -61,7 +61,7 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldMatchArrayWithString() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[\"toto\"]")));
+        TestCase.assertTrue(JSon.match(JSon.stream("['toto']")));
     }
 
     @Test
@@ -82,5 +82,27 @@ public class JSONMatcherTest {
     @Test
     public void shouldMatchObjectWithEncapsulatedObject() {
         TestCase.assertTrue(JSon.match(JSon.stream("{ 'toto' : { 'titi' : null } }")));
+    }
+
+    @Test
+    public void shouldMatchJSONObject() {
+        final String jsonValue = "{\n" +
+                "  'users':[\n" +
+                "    {\n" +
+                "      'name': 'Bob',\n" +
+                "      'age': 31.0,\n" +
+                "      'french': true,\n" +
+                "      'email': 'bob@gmail.com'\n" +
+                "    },\n" +
+                "    {\n" +
+                "      'name': 'Kiki',\n" +
+                "      'age':  25.0,\n" +
+                "      'french': false,\n" +
+                "      'email': null\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        TestCase.assertTrue(JSon.match(JSon.stream(jsonValue)));
     }
 }
