@@ -20,8 +20,8 @@ package smallibs.suitcase.cases.utils;
 
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 
 import java.util.LinkedList;

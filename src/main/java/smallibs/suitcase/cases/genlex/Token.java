@@ -36,6 +36,10 @@ public abstract class Token<T> {
         return new IntToken(length, value);
     }
 
+    public static Token<Float> Float(int length, Float value) {
+        return new FloatToken(length, value);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     public abstract T value();
@@ -101,8 +105,8 @@ public abstract class Token<T> {
     }
 
     public static class IntToken extends Token<Integer> {
-        private final int value;
         private final int length;
+        private final int value;
 
         private IntToken(int length, int value) {
             this.length = length;
@@ -120,4 +124,23 @@ public abstract class Token<T> {
         }
     }
 
+    public static class FloatToken extends Token<Float> {
+        private final int length;
+        private final float value;
+
+        private FloatToken(int length, float value) {
+            this.length = length;
+            this.value = value;
+        }
+
+        @Override
+        public int length() {
+            return this.length;
+        }
+
+        @Override
+        public Float value() {
+            return this.value;
+        }
+    }
 }

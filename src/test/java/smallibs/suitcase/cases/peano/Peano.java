@@ -20,8 +20,8 @@ package smallibs.suitcase.cases.peano;
 
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.MatchResult;
+import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 
 public final class Peano {

@@ -20,9 +20,6 @@ package smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import smallibs.suitcase.cases.genlex.JavaLexer;
-import smallibs.suitcase.cases.genlex.Lexer;
-import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.cases.json.JSon;
 
 public class JSONMatcherTest {

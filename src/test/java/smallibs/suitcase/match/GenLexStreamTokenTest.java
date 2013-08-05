@@ -27,6 +27,7 @@ import smallibs.suitcase.cases.genlex.UnexpectedCharException;
 
 import java.io.IOException;
 
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.Float;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Hexa;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
@@ -113,6 +114,10 @@ public class GenLexStreamTokenTest {
         TestCase.assertEquals("World!", stream.nextToken().value());
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // Int
+    // -----------------------------------------------------------------------------------------------------------------
+
     @Test
     public void shouldHaveOneInteger() throws Exception {
         final TokenStream stream = new Lexer(Int()).parse("1942");
@@ -120,10 +125,33 @@ public class GenLexStreamTokenTest {
     }
 
     @Test
+    public void shouldHaveOneInteger2() throws Exception {
+        final TokenStream stream = new Lexer(Int()).parse("-1942");
+        TestCase.assertEquals(-1942, stream.nextToken().value());
+    }
+
+    @Test
     public void shouldHaveOneHexa() throws Exception {
         final TokenStream stream = new Lexer(Hexa()).parse("0x1942");
         TestCase.assertEquals(0x1942, stream.nextToken().value());
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Float
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Test
+    public void shouldHaveOneFloat() throws Exception {
+        final TokenStream stream = new Lexer(Float()).parse("1942.43");
+        TestCase.assertEquals(1942.43f, stream.nextToken().value());
+    }
+
+    @Test
+    public void shouldHaveOneFloat2() throws Exception {
+        final TokenStream stream = new Lexer(Float()).parse("42e2");
+        TestCase.assertEquals(42e2f, stream.nextToken().value());
+    }
+
 
     // -----------------------------------------------------------------------------------------------------------------
     // Error case when pattern matches empty

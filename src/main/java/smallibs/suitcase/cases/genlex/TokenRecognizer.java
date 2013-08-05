@@ -45,8 +45,8 @@ public abstract class TokenRecognizer {
         return new IntRecognizer();
     }
 
-    public static TokenRecognizer Int(String value) {
-        return new IntRecognizer(value);
+    public static TokenRecognizer Float() {
+        return new FloatRecognizer();
     }
 
     public static TokenRecognizer Hexa() {
@@ -147,7 +147,7 @@ public abstract class TokenRecognizer {
 
     private static class IntRecognizer extends PatternRecognizer {
         private IntRecognizer() {
-            this("[+-]?\\d+");
+            super("[+-]?\\d+");
         }
 
         private IntRecognizer(String value) {
@@ -170,6 +170,18 @@ public abstract class TokenRecognizer {
             return Token.Int(string.length(), Integer.valueOf(string.substring(2, string.length()), 16));
         }
     }
+
+    private static class FloatRecognizer extends PatternRecognizer {
+        private FloatRecognizer() {
+            super("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+        }
+
+        @Override
+        protected Token<?> matched(String string) {
+            return Token.Float(string.length(), Float.valueOf(string));
+        }
+    }
+
 
     public static class Skip extends PatternRecognizer {
         private Skip(String value) {

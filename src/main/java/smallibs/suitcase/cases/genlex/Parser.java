@@ -57,7 +57,7 @@ public class Parser {
 
     public static Case<TokenStream> Ident = new IdentCase();
 
-    public static Case<TokenStream> Float = null;
+    public static Case<TokenStream> Float = new FloatCase();
 
     public static Case<TokenStream> String = new StringCase();
 
@@ -289,6 +289,28 @@ public class Parser {
             }
 
             if (token instanceof Token.StringToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class FloatCase implements TokenStreamCase {
+
+        @Override
+        public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final Token token;
+            try {
+                token = tokenStream.nextToken();
+            } catch (IOException | UnexpectedCharException e) {
+                return Option.None();
+            }
+
+            if (token instanceof Token.FloatToken) {
                 return Option.Some(new MatchResult(token));
             } else {
                 return Option.None();

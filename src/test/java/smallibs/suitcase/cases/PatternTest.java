@@ -29,8 +29,6 @@ import java.util.Arrays;
 
 import static smallibs.suitcase.cases.core.Cases._;
 import static smallibs.suitcase.cases.core.Cases.var;
-import static smallibs.suitcase.cases.peano.Peano.Succ;
-import static smallibs.suitcase.cases.peano.Peano.Zero;
 
 public class PatternTest {
 
