@@ -277,4 +277,18 @@ public class GenLexParserTest {
 
         TestCase.assertTrue(matcher.match(stream));
     }
+
+    @Test
+    public void shouldNotParsePartialSequence() {
+        final Matcher<TokenStream, Boolean> parser = Matcher.create();
+        final Matcher<TokenStream, Boolean> matcher = Parser.parser(parser);
+
+        matcher.caseOf(Ident).then.value(true);
+        matcher.caseOf(_).then.value(false);
+
+        final Lexer lexer = givenALexer();
+        final TokenStream stream = lexer.parse("Hello World");
+
+        TestCase.assertFalse(matcher.match(stream));
+    }
 }

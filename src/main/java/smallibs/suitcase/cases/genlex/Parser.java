@@ -75,7 +75,15 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+    private static Option<MatchResult> matchFully(TokenStream tokenStream, Option<MatchResult> result) {
+        if (tokenStream.isInitial() && !tokenStream.isEmpty()) {
+            return Option.None();
+        }
+
+        return result;
+    }
+
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static abstract class AtomCase implements TokenStreamCase {
@@ -97,13 +105,13 @@ public class Parser {
 
             tokenStream.synchronizeWith(secundary);
 
-            return Option.Some(new MatchResult(token).with(resultOption.value()));
+            return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
         }
 
         abstract Option<MatchResult> unapplyToken(Token token);
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class IdentCase extends AtomCase {
@@ -117,7 +125,7 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class Keyword extends AtomCase {
@@ -141,7 +149,7 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class Seq implements TokenStreamCase {
@@ -159,17 +167,18 @@ public class Parser {
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             final MatchResult result = new MatchResult(null);
             final List<Object> values = new ArrayList<>();
+            final TokenStream secundary = tokenStream.secundary();
 
             for (Case<?> aCase : this.cases) {
                 final Option<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
                     final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
-                    unapply = streamCase.unapply(tokenStream);
+                    unapply = streamCase.unapply(secundary);
                 } else {
                     try {
                         final Case<Token> tokenCase = (Case<Token>) aCase;
-                        unapply = tokenCase.unapply(tokenStream.nextToken());
+                        unapply = tokenCase.unapply(secundary.nextToken());
                     } catch (IOException | UnexpectedCharException e) {
                         return Option.None();
                     }
@@ -183,11 +192,13 @@ public class Parser {
                 }
             }
 
-            return Option.Some(new MatchResult(values).with(result));
+            tokenStream.synchronizeWith(secundary);
+
+            return matchFully(tokenStream, Option.Some(new MatchResult(values).with(result)));
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class Alt implements TokenStreamCase {
@@ -221,14 +232,14 @@ public class Parser {
 
                 if (unapply.isSome()) {
                     tokenStream.synchronizeWith(secundary);
-                    return unapply;
+                    return matchFully(tokenStream, unapply);
                 }
             }
 
             return Option.None();
         }
     }
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class Opt implements TokenStreamCase {
@@ -245,14 +256,14 @@ public class Parser {
 
             if (unapply.isSome()) {
                 tokenStream.synchronizeWith(secundary);
-                return unapply;
+                return matchFully(tokenStream, unapply);
             } else {
                 return Option.Some(new MatchResult(null));
             }
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class IntCase implements TokenStreamCase {
@@ -274,7 +285,7 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class StringCase implements TokenStreamCase {
@@ -296,7 +307,7 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class FloatCase implements TokenStreamCase {
@@ -318,7 +329,7 @@ public class Parser {
         }
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
     private static class ReentrantParser<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
