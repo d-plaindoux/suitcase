@@ -72,7 +72,7 @@ public final class JSon {
     static private final Match<Boolean> validator;
 
     static {
-        validator = JSon.with(new JSonValidator());
+        validator = JSon.withHandler(new JSonValidator());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ public final class JSon {
         return validator.match(stream);
     }
 
-    public static <R, MS, M, VS, V> Match<R> with(final JSonHandler<R, MS, M, VS, V> handler) {
+    public static <R, MS, M, VS, V> Match<R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
         final Matcher<TokenStream, R> main, object, array;
         final Matcher<TokenStream, Object> members, remainingMembers, member, values, remainingValues, value;
 

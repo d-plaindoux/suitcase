@@ -21,9 +21,9 @@ package smallibs.suitcase.match;
 import com.google.gson.JsonObject;
 import junit.framework.TestCase;
 import org.junit.Test;
+import smallibs.suitcase.cases.json.GSonBuilder;
 import smallibs.suitcase.cases.json.JSon;
-import smallibs.suitcase.cases.json.JSonToGSon;
-import smallibs.suitcase.cases.json.JSonToPOJO;
+import smallibs.suitcase.cases.json.POJOBuilder;
 
 import java.util.HashMap;
 
@@ -131,7 +131,7 @@ public class JSONMatcherTest {
                 "  ]\n" +
                 "}";
 
-        final Object json = JSon.with(new JSonToPOJO()).match(JSon.stream(jsonValue));
+        final Object json = JSon.withHandler(new POJOBuilder()).match(JSon.stream(jsonValue));
 
         TestCase.assertNotNull(json);
         TestCase.assertEquals(HashMap.class, json.getClass());
@@ -156,7 +156,7 @@ public class JSONMatcherTest {
                 "  ]\n" +
                 "}";
 
-        final Object json = JSon.with(new JSonToGSon()).match(JSon.stream(jsonValue));
+        final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
 
         TestCase.assertNotNull(json);
         TestCase.assertEquals(JsonObject.class, json.getClass());

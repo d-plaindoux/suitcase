@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JSonToPOJO implements JSonHandler<Object, Map<String, Object>, Pair<String, Object>, List<Object>, Object> {
+public class POJOBuilder implements JSonHandler<Object, Map<String, Object>, Pair<String, Object>, List<Object>, Object> {
     @Override
     public Object anObject(Option<Map<String, Object>> members) {
         if (members.isNone()) {

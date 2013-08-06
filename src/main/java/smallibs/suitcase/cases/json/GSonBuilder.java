@@ -26,7 +26,7 @@ import com.google.gson.JsonPrimitive;
 import smallibs.suitcase.utils.Option;
 import smallibs.suitcase.utils.Pair;
 
-public class JSonToGSon implements JSonHandler<JsonElement, JsonObject, Pair<String, JsonElement>, JsonArray, JsonElement> {
+public class GSonBuilder implements JSonHandler<JsonElement, JsonObject, Pair<String, JsonElement>, JsonArray, JsonElement> {
     @Override
     public JsonElement anObject(Option<JsonObject> members) {
         if (members.isNone()) {
