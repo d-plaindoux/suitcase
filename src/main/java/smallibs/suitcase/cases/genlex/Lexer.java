@@ -27,10 +27,9 @@ public class Lexer {
     private final List<TokenRecognizer> recognizers;
     private final List<TokenRecognizer> skipped;
 
-    public Lexer(TokenRecognizer... recognizers) {
+    public Lexer() {
         this.recognizers = new ArrayList<>();
         this.skipped = new ArrayList<>();
-        this.recognizers(recognizers);
     }
 
     public Lexer skip(String... skipped) {

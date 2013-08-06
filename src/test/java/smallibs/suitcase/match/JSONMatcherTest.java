@@ -26,62 +26,63 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldMatchEmptyObject() {
-        TestCase.assertTrue(JSon.match(JSon.stream("{}")));
+        final Boolean match = JSon.validate(JSon.stream("{}"));
+        TestCase.assertTrue(match);
     }
 
     @Test
     public void shouldMatchEmptyArray() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[]")));
     }
 
     @Test
     public void shouldMatchArrayWithAnEmptyObject() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[{}]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[{}]")));
     }
 
     @Test
     public void shouldMatchArrayWithNull() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[null]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[null]")));
     }
 
     @Test
     public void shouldMatchArrayWithTrue() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[true]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[true]")));
     }
 
     @Test
     public void shouldMatchArrayWithFalse() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[false]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[false]")));
     }
 
     @Test
     public void shouldMatchArrayWithInt() {
-        TestCase.assertTrue(JSon.match(JSon.stream("[123]")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[123]")));
     }
 
     @Test
     public void shouldMatchArrayWithString() {
-        TestCase.assertTrue(JSon.match(JSon.stream("['toto']")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("['toto']")));
     }
 
     @Test
     public void shouldMatchArrayWithQuotedString() {
-        TestCase.assertTrue(JSon.match(JSon.stream("['toto']")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("['toto']")));
     }
 
     @Test
     public void shouldMatchObjectWithBooleanNamedAttribute() {
-        TestCase.assertTrue(JSon.match(JSon.stream("{'toto':true}")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("{'toto':true}")));
     }
 
     @Test
     public void shouldMatchObjectWithTwoBooleanNamedAttribute2() {
-        TestCase.assertTrue(JSon.match(JSon.stream("{'toto':true,'titi':null}")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("{'toto':true,'titi':null}")));
     }
 
     @Test
     public void shouldMatchObjectWithEncapsulatedObject() {
-        TestCase.assertTrue(JSon.match(JSon.stream("{ 'toto' : { 'titi' : null } }")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("{ 'toto' : { 'titi' : null } }")));
     }
 
     @Test
@@ -103,6 +104,6 @@ public class JSONMatcherTest {
                 "  ]\n" +
                 "}";
 
-        TestCase.assertTrue(JSon.match(JSon.stream(jsonValue)));
+        TestCase.assertTrue(JSon.validate(JSon.stream(jsonValue)));
     }
 }

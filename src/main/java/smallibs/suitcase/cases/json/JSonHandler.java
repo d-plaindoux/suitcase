@@ -16,27 +16,31 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package smallibs.suitcase.cases.genlex;
+package smallibs.suitcase.cases.json;
 
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Hexa;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
+import smallibs.suitcase.utils.Option;
 
-public class JavaLexer extends Lexer {
+public interface JSonHandler<R, MS, M, VS, V> {
 
-    public JavaLexer() {
-        super();
-        // Hexadecimal Number
-        this.recognizers(Hexa());
-        // Number
-        this.recognizers(Int());
-        // String
-        this.recognizers(String());
-        // Identifier
-        this.recognizers(Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*"));
-        // Skip spaces
-        this.skip("\\s+");
-    }
+    R anObject(Option<MS> members);
 
+    R anArray(Option<VS> values);
+
+    MS someMembers(M o1, Option<MS> o2);
+
+    M aMember(String o1, V o2);
+
+    VS someValues(V o1, Option<VS> o2);
+
+    V anInteger(int i);
+
+    V aString(String s);
+
+    V aFloat(float f);
+
+    V aNull();
+
+    V aBoolean(boolean b);
+
+    V aValue(R o);
 }

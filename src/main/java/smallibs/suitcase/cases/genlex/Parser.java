@@ -42,7 +42,11 @@ public class Parser {
     }
 
     public static Case<TokenStream> Opt(Object... seq) {
-        return new Opt(new Seq(seq));
+        if (seq.length == 1) {
+            return new Opt(seq[0]);
+        } else {
+            return new Opt(new Seq(seq));
+        }
     }
 
     public static Case<TokenStream> Alt(Object... alternatives) {
@@ -256,9 +260,10 @@ public class Parser {
 
             if (unapply.isSome()) {
                 tokenStream.synchronizeWith(secundary);
-                return matchFully(tokenStream, unapply);
+                final Option<Object> returnedObject = Option.Some(unapply.value().matchedObject());
+                return matchFully(tokenStream, Option.Some(new MatchResult(returnedObject).with(unapply.value())));
             } else {
-                return Option.Some(new MatchResult(null));
+                return Option.Some(new MatchResult(Option.None()));
             }
         }
     }
