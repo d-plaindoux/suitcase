@@ -80,7 +80,7 @@ public class Parser {
     }
 
     private static Option<MatchResult> matchFully(TokenStream tokenStream, Option<MatchResult> result) {
-        if (tokenStream.isInitial() && !tokenStream.isEmpty()) {
+        if (result.isSome() && tokenStream.isInitial() && !tokenStream.isEmpty()) {
             return Option.None();
         }
 
@@ -94,10 +94,9 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final TokenStream secundary = tokenStream.secundary();
             final Token token;
             try {
-                token = secundary.nextToken();
+                token = tokenStream.nextToken();
             } catch (IOException | UnexpectedCharException e) {
                 return Option.None();
             }
@@ -106,8 +105,6 @@ public class Parser {
             if (resultOption.isNone()) {
                 return Option.None();
             }
-
-            tokenStream.synchronizeWith(secundary);
 
             return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
         }
@@ -263,6 +260,7 @@ public class Parser {
                 final Option<Object> returnedObject = Option.Some(unapply.value().matchedObject());
                 return matchFully(tokenStream, Option.Some(new MatchResult(returnedObject).with(unapply.value())));
             } else {
+                // Simulate in order to collect variables
                 return Option.Some(new MatchResult(Option.None()));
             }
         }

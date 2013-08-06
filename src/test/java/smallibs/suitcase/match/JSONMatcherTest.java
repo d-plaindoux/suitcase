@@ -18,10 +18,12 @@
 
 package smallibs.suitcase.match;
 
+import com.google.gson.JsonObject;
 import junit.framework.TestCase;
 import org.junit.Test;
 import smallibs.suitcase.cases.json.JSon;
-import smallibs.suitcase.cases.json.JSonObject;
+import smallibs.suitcase.cases.json.JSonToGSon;
+import smallibs.suitcase.cases.json.JSonToPOJO;
 
 import java.util.HashMap;
 
@@ -110,7 +112,6 @@ public class JSONMatcherTest {
         TestCase.assertTrue(JSon.validate(JSon.stream(jsonValue)));
     }
 
-
     @Test
     public void shouldBuildJSONObject() {
         final String jsonValue = "{\n" +
@@ -130,9 +131,34 @@ public class JSONMatcherTest {
                 "  ]\n" +
                 "}";
 
-        final Object json = JSon.with(new JSonObject()).match(JSon.stream(jsonValue));
+        final Object json = JSon.with(new JSonToPOJO()).match(JSon.stream(jsonValue));
 
         TestCase.assertNotNull(json);
         TestCase.assertEquals(HashMap.class, json.getClass());
+    }
+
+    @Test
+    public void shouldBuildGSONObject() {
+        final String jsonValue = "{\n" +
+                "  'users':[\n" +
+                "    {\n" +
+                "      'name': 'Bob',\n" +
+                "      'age': 31.0,\n" +
+                "      'french': true,\n" +
+                "      'email': 'bob@gmail.com'\n" +
+                "    },\n" +
+                "    {\n" +
+                "      'name': 'Kiki',\n" +
+                "      'age':  25.0,\n" +
+                "      'french': false,\n" +
+                "      'email': null\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        final Object json = JSon.with(new JSonToGSon()).match(JSon.stream(jsonValue));
+
+        TestCase.assertNotNull(json);
+        TestCase.assertEquals(JsonObject.class, json.getClass());
     }
 }
