@@ -21,6 +21,9 @@ package smallibs.suitcase.match;
 import junit.framework.TestCase;
 import org.junit.Test;
 import smallibs.suitcase.cases.json.JSon;
+import smallibs.suitcase.cases.json.JSonObject;
+
+import java.util.HashMap;
 
 public class JSONMatcherTest {
 
@@ -105,5 +108,31 @@ public class JSONMatcherTest {
                 "}";
 
         TestCase.assertTrue(JSon.validate(JSon.stream(jsonValue)));
+    }
+
+
+    @Test
+    public void shouldBuildJSONObject() {
+        final String jsonValue = "{\n" +
+                "  'users':[\n" +
+                "    {\n" +
+                "      'name': 'Bob',\n" +
+                "      'age': 31.0,\n" +
+                "      'french': true,\n" +
+                "      'email': 'bob@gmail.com'\n" +
+                "    },\n" +
+                "    {\n" +
+                "      'name': 'Kiki',\n" +
+                "      'age':  25.0,\n" +
+                "      'french': false,\n" +
+                "      'email': null\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        final Object json = JSon.with(new JSonObject()).match(JSon.stream(jsonValue));
+
+        TestCase.assertNotNull(json);
+        TestCase.assertEquals(HashMap.class, json.getClass());
     }
 }

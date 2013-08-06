@@ -85,17 +85,17 @@ public final class JSon {
 
     public static <R, MS, M, VS, V> Match<R> with(final JSonHandler<R, MS, M, VS, V> handler) {
         final Matcher<TokenStream, R> main, object, array;
-        final Matcher<TokenStream, Object> members, otherMembers, member, values, otherValues, value;
+        final Matcher<TokenStream, Object> members, remainingMembers, member, values, remainingValues, value;
 
         main = parser(Matcher.<TokenStream, R>create());
         object = parser(Matcher.<TokenStream, R>create());
         array = parser(Matcher.<TokenStream, R>create());
 
         members = parser(Matcher.<TokenStream, Object>create());
-        otherMembers = parser(Matcher.<TokenStream, Object>create());
+        remainingMembers = parser(Matcher.<TokenStream, Object>create());
         member = parser(Matcher.<TokenStream, Object>create());
         values = parser(Matcher.<TokenStream, Object>create());
-        otherValues = parser(Matcher.<TokenStream, Object>create());
+        remainingValues = parser(Matcher.<TokenStream, Object>create());
         value = parser(Matcher.<TokenStream, Object>create());
 
         // Parse rules definition
@@ -121,13 +121,13 @@ public final class JSon {
             }
         });
 
-        members.caseOf(Seq(var.of(member), var.of(Opt(otherMembers)))).then.function(new Function2<M, Option<MS>, MS>() {
+        members.caseOf(Seq(var.of(member), var.of(Opt(remainingMembers)))).then.function(new Function2<M, Option<MS>, MS>() {
             @Override
             public MS apply(M o1, Option<MS> o2) throws Exception {
                 return handler.someMembers(o1, o2);
             }
         });
-        otherMembers.caseOf(Seq(Kwd(","), var.of(members))).then.function(new Function<MS, MS>() {
+        remainingMembers.caseOf(Seq(Kwd(","), var.of(members))).then.function(new Function<MS, MS>() {
             @Override
             public MS apply(MS o) throws Exception {
                 return o;
@@ -142,13 +142,13 @@ public final class JSon {
             }
         });
 
-        values.caseOf(Seq(var.of(value), var.of(Opt(otherValues)))).then.function(new Function2<V, Option<VS>, VS>() {
+        values.caseOf(Seq(var.of(value), var.of(Opt(remainingValues)))).then.function(new Function2<V, Option<VS>, VS>() {
             @Override
             public VS apply(V o1, Option<VS> o2) throws Exception {
                 return handler.someValues(o1, o2);
             }
         });
-        otherValues.caseOf(Seq(Kwd(","), var.of(values))).then.function(new Function<VS, VS>() {
+        remainingValues.caseOf(Seq(Kwd(","), var.of(values))).then.function(new Function<VS, VS>() {
             @Override
             public VS apply(VS o) throws Exception {
                 return o;
@@ -161,7 +161,6 @@ public final class JSon {
                 return handler.aValue(o);
             }
         });
-
         value.caseOf(var.of(Alt(String, Int, Float))).then.function(new Function<Token, V>() {
             @Override
             public V apply(Token o) throws Exception {
@@ -179,10 +178,9 @@ public final class JSon {
                 throw new IllegalArgumentException();
             }
         });
-
-        value.caseOf(var.of(Kwd(Regex("null|true|false")))).then.function(new Function<Token, Object>() {
+        value.caseOf(var.of(Kwd(Regex("null|true|false")))).then.function(new Function<Token.KeywordToken, Object>() {
             @Override
-            public Object apply(Token o) throws Exception {
+            public Object apply(Token.KeywordToken o) throws Exception {
                 final Object value = o.value();
                 if (value.equals("null")) {
                     return handler.aNull();
