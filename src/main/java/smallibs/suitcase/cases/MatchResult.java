@@ -46,10 +46,6 @@ public class MatchResult {
         return bindings;
     }
 
-    public <T> T matchedObject(Class<T> type) {
-        return (T) returnedObject;
-    }
-
     public Object matchedObject() {
         return returnedObject;
     }

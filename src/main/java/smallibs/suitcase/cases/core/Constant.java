@@ -22,6 +22,9 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Constant<T> implements Case<T> {
 
     private final Object object;
@@ -37,5 +40,10 @@ public class Constant<T> implements Case<T> {
         } else {
             return Option.None();
         }
+    }
+
+    @Override
+    public List<Class> variableTypes() {
+        return new ArrayList<>();
     }
 }

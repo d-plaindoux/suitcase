@@ -24,6 +24,9 @@ import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Peano {
 
     public static Case<Integer> Zero = new Zero();
@@ -44,6 +47,10 @@ public final class Peano {
             }
         }
 
+        @Override
+        public List<Class> variableTypes() {
+            return new ArrayList<>();
+        }
     }
 
     @CaseType(Integer.class)
@@ -62,6 +69,11 @@ public final class Peano {
             } else {
                 return Option.None();
             }
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            return value.variableTypes();
         }
     }
 

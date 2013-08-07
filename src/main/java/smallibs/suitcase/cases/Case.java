@@ -20,6 +20,10 @@ package smallibs.suitcase.cases;
 
 import smallibs.suitcase.utils.Option;
 
+import java.util.List;
+
 public interface Case<T> {
     Option<MatchResult> unapply(T t);
+
+    List<Class> variableTypes();
 }

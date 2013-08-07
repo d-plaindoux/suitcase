@@ -55,5 +55,10 @@ public final class Strings {
                 return Option.None();
             }
         }
+
+        @Override
+        public List<Class> variableTypes() {
+            return new ArrayList<>();
+        }
     }
 }

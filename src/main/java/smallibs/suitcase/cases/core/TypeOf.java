@@ -22,6 +22,9 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TypeOf<T> implements Case<T> {
     private final Class<?> type;
 
@@ -36,5 +39,10 @@ public class TypeOf<T> implements Case<T> {
         } else {
             return Option.None();
         }
+    }
+
+    @Override
+    public List<Class> variableTypes() {
+        return new ArrayList<>();
     }
 }

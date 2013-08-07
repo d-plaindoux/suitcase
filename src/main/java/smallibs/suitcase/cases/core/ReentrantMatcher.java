@@ -24,6 +24,9 @@ import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
 
     private final Matcher<E, T> matcher;
@@ -39,6 +42,11 @@ public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
         } catch (MatchingException e) {
             return Option.None();
         }
+    }
+
+    @Override
+    public List<Class> variableTypes() {
+        return new ArrayList<>();
     }
 
     @Override

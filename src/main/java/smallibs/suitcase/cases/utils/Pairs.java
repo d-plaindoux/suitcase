@@ -24,6 +24,8 @@ import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 import smallibs.suitcase.utils.Pair;
 
+import java.util.List;
+
 public final class Pairs {
 
     public static <T1, T2> Case<Pair<T1, T2>> Pair(Object o1, Object o2) {
@@ -50,6 +52,13 @@ public final class Pairs {
                 }
             }
             return Option.None();
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = c1.variableTypes();
+            classes.addAll(c2.variableTypes());
+            return classes;
         }
     }
 }

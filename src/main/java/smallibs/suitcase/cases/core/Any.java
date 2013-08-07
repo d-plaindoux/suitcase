@@ -22,6 +22,9 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Any<T> implements Case<T> {
 
     @Override
@@ -29,4 +32,8 @@ public class Any<T> implements Case<T> {
         return Option.Some(new MatchResult(object));
     }
 
+    @Override
+    public List<Class> variableTypes() {
+        return new ArrayList<>();
+    }
 }

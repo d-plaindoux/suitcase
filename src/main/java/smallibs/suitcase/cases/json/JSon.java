@@ -23,6 +23,7 @@ import smallibs.suitcase.cases.genlex.Token;
 import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
+import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
 import smallibs.suitcase.utils.Option;
 
@@ -84,17 +85,14 @@ public final class JSon {
 
     public static <R, MS, M, VS, V> Match<R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
         final Matcher<TokenStream, R> main, object, array;
-        final Matcher<TokenStream, Object> members, remainingMembers, member, values, remainingValues, value;
+        final Matcher<TokenStream, Object> members, member, values, value;
 
         main = parser(Matcher.<TokenStream, R>create());
         object = parser(Matcher.<TokenStream, R>create());
         array = parser(Matcher.<TokenStream, R>create());
-
         members = parser(Matcher.<TokenStream, Object>create());
-        remainingMembers = parser(Matcher.<TokenStream, Object>create());
         member = parser(Matcher.<TokenStream, Object>create());
         values = parser(Matcher.<TokenStream, Object>create());
-        remainingValues = parser(Matcher.<TokenStream, Object>create());
         value = parser(Matcher.<TokenStream, Object>create());
 
         // Parse rules definition
@@ -120,19 +118,12 @@ public final class JSon {
             }
         });
 
-        members.caseOf(Seq(var.of(member), var.of(Opt(remainingMembers)))).then.function(new Function2<M, Option<MS>, MS>() {
+        members.caseOf(Seq(var.of(member), Opt(Seq(Kwd(","), var.of(members))))).then.function(new Function2<M, Option<MS>, MS>() {
             @Override
             public MS apply(M o1, Option<MS> o2) throws Exception {
                 return handler.someMembers(o1, o2);
             }
         });
-        remainingMembers.caseOf(Seq(Kwd(","), var.of(members))).then.function(new Function<MS, MS>() {
-            @Override
-            public MS apply(MS o) throws Exception {
-                return o;
-            }
-        });
-
 
         member.caseOf(Seq(var.of(String), Kwd(":"), var.of(value))).then.function(new Function2<Token.StringToken, V, M>() {
             @Override
@@ -141,16 +132,10 @@ public final class JSon {
             }
         });
 
-        values.caseOf(Seq(var.of(value), var.of(Opt(remainingValues)))).then.function(new Function2<V, Option<VS>, VS>() {
+        values.caseOf(Seq(var.of(value), Opt(Seq(Kwd(","), var.of(values))))).then.function(new Function2<V, Option<VS>, VS>() {
             @Override
             public VS apply(V o1, Option<VS> o2) throws Exception {
                 return handler.someValues(o1, o2);
-            }
-        });
-        remainingValues.caseOf(Seq(Kwd(","), var.of(values))).then.function(new Function<VS, VS>() {
-            @Override
-            public VS apply(VS o) throws Exception {
-                return o;
             }
         });
 
@@ -178,21 +163,21 @@ public final class JSon {
                 return handler.aFloat(o.value());
             }
         });
-        value.caseOf(var.of(Kwd("null"))).then.function(new Function<Token.KeywordToken, Object>() {
+        value.caseOf(Kwd("null")).then.function(new Function0<Object>() {
             @Override
-            public Object apply(Token.KeywordToken o) throws Exception {
+            public Object apply() throws Exception {
                 return handler.aNull();
             }
         });
-        value.caseOf(var.of(Kwd("true"))).then.function(new Function<Token.KeywordToken, Object>() {
+        value.caseOf(Kwd("true")).then.function(new Function0<Object>() {
             @Override
-            public Object apply(Token.KeywordToken o) throws Exception {
+            public Object apply() throws Exception {
                 return handler.aBoolean(true);
             }
         });
-        value.caseOf(var.of(Kwd("false"))).then.function(new Function<Token.KeywordToken, Object>() {
+        value.caseOf(Kwd("false")).then.function(new Function0<Object>() {
             @Override
-            public Object apply(Token.KeywordToken o) throws Exception {
+            public Object apply() throws Exception {
                 return handler.aBoolean(false);
             }
         });

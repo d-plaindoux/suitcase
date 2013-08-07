@@ -70,6 +70,18 @@ public final class Beans {
 
             return Option.Some(new MatchResult(o).with(matchResult));
         }
+
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = new ArrayList<>();
+
+            for (Case<?> aCase : this.contentCases) {
+                classes.addAll(aCase.variableTypes());
+            }
+
+            return classes;
+        }
     }
 
     // =================================================================================================================
@@ -193,6 +205,13 @@ public final class Beans {
             } else {
                 return null;
             }
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = nameCase.variableTypes();
+            classes.addAll(valueCase.variableTypes());
+            return classes;
         }
     }
 

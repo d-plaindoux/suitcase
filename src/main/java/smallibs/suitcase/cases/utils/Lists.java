@@ -24,6 +24,7 @@ import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.utils.Option;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,6 +46,11 @@ public final class Lists {
             } else {
                 return Option.None();
             }
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            return new ArrayList<>();
         }
     }
 
@@ -76,5 +82,11 @@ public final class Lists {
             return Option.None();
         }
 
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = caseHead.variableTypes();
+            classes.addAll(caseTail.variableTypes());
+            return classes;
+        }
     }
 }

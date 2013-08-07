@@ -4,13 +4,20 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.utils.Option;
 
+import java.util.List;
+
 public class Var<T> implements Case<T> {
 
-
+    private final Class<?> aClass;
     private final Case<T> value;
 
-    public Var(Object value) {
+    public Var(Class<?> aClass, Object value) {
+        this.aClass = aClass;
         this.value = Cases.fromObject(value);
+    }
+
+    public Var(Object value) {
+        this(value.getClass(), value);
     }
 
     @Override
@@ -25,5 +32,12 @@ public class Var<T> implements Case<T> {
 
     public Case<T> getValue() {
         return value;
+    }
+
+    @Override
+    public List<Class> variableTypes() {
+        final List<Class> classes = value.variableTypes();
+        classes.add(0, this.aClass);
+        return classes;
     }
 }

@@ -259,7 +259,7 @@ public class GenLexParserTest {
         matcher.caseOf(_).then.value(false);
 
         final Lexer lexer = givenALexer();
-        final TokenStream stream = lexer.parse("Hello");
+        final TokenStream stream = lexer.parse("");
 
         TestCase.assertTrue(matcher.match(stream));
     }

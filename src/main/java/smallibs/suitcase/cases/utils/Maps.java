@@ -65,6 +65,17 @@ public class Maps {
             }
             return Option.Some(matchResult);
         }
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = new ArrayList<>();
+
+            for (Case<?> aCase : this.entries) {
+                classes.addAll(aCase.variableTypes());
+            }
+
+            return classes;
+        }
     }
 
     private static class EntryCase<T1, T2> implements Case<Map<T1, T2>> {
@@ -84,6 +95,11 @@ public class Maps {
             } else {
                 return Option.None();
             }
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            return valCase.variableTypes();
         }
     }
 }

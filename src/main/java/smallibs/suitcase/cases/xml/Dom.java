@@ -170,6 +170,13 @@ public final class Dom {
 
             return Option.None();
         }
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = nameCase.variableTypes();
+            classes.addAll(valueCase.variableTypes());
+            return classes;
+        }
     }
 
     // =================================================================================================================
@@ -213,6 +220,21 @@ public final class Dom {
                 return Option.None();
             }
         }
+
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = name.variableTypes();
+
+            for (Case<Element> attribute : attributes) {
+                classes.addAll(attribute.variableTypes());
+            }
+
+            classes.addAll(content.variableTypes());
+
+            return classes;
+        }
+
     }
 
     // =================================================================================================================
@@ -237,6 +259,11 @@ public final class Dom {
             } else {
                 return Option.None();
             }
+        }
+
+        @Override
+        public List<Class> variableTypes() {
+            return text.variableTypes();
         }
     }
 
@@ -298,6 +325,18 @@ public final class Dom {
             }
 
         }
+
+
+        @Override
+        public List<Class> variableTypes() {
+            final List<Class> classes = new ArrayList<>();
+
+            for (Case<?> aCase : this.content) {
+                classes.addAll(aCase.variableTypes());
+            }
+
+            return classes;
+        }
     }
 
     // =================================================================================================================
@@ -330,6 +369,11 @@ public final class Dom {
         }
 
         protected abstract MatchResult unapplyXmlTerm(XmlTerm xmlTerm);
+
+        @Override
+        public List<Class> variableTypes() {
+            return content.variableTypes();
+        }
     }
 
     private static class Opt extends Optional {
