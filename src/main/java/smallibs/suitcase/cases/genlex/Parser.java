@@ -94,9 +94,11 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
+            final TokenStream secundary = tokenStream.secundary();
+
             final Token token;
             try {
-                token = tokenStream.nextToken();
+                token = secundary.nextToken();
             } catch (IOException | UnexpectedCharException e) {
                 return Option.None();
             }
@@ -105,6 +107,8 @@ public class Parser {
             if (resultOption.isNone()) {
                 return Option.None();
             }
+
+            tokenStream.synchronizeWith(secundary);
 
             return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
         }
@@ -269,17 +273,9 @@ public class Parser {
 // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class IntCase implements TokenStreamCase {
-
+    private static class IntCase extends AtomCase {
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final Token token;
-            try {
-                token = tokenStream.nextToken();
-            } catch (IOException | UnexpectedCharException e) {
-                return Option.None();
-            }
-
+        Option<MatchResult> unapplyToken(Token token) {
             if (token instanceof Token.IntToken) {
                 return Option.Some(new MatchResult(token));
             } else {
@@ -291,17 +287,9 @@ public class Parser {
 // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class StringCase implements TokenStreamCase {
-
+    private static class StringCase extends AtomCase {
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final Token token;
-            try {
-                token = tokenStream.nextToken();
-            } catch (IOException | UnexpectedCharException e) {
-                return Option.None();
-            }
-
+        Option<MatchResult> unapplyToken(Token token) {
             if (token instanceof Token.StringToken) {
                 return Option.Some(new MatchResult(token));
             } else {
@@ -313,17 +301,9 @@ public class Parser {
 // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class FloatCase implements TokenStreamCase {
-
+    private static class FloatCase extends AtomCase {
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final Token token;
-            try {
-                token = tokenStream.nextToken();
-            } catch (IOException | UnexpectedCharException e) {
-                return Option.None();
-            }
-
+        Option<MatchResult> unapplyToken(Token token) {
             if (token instanceof Token.FloatToken) {
                 return Option.Some(new MatchResult(token));
             } else {

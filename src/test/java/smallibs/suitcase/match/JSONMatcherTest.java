@@ -92,44 +92,14 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldMatchJSONObject() {
-        final String jsonValue = "{\n" +
-                "  'users':[\n" +
-                "    {\n" +
-                "      'name': 'Bob',\n" +
-                "      'age': 31.0,\n" +
-                "      'french': true,\n" +
-                "      'email': 'bob@gmail.com'\n" +
-                "    },\n" +
-                "    {\n" +
-                "      'name': 'Kiki',\n" +
-                "      'age':  25.0,\n" +
-                "      'french': false,\n" +
-                "      'email': null\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+        final String jsonValue = getJsonSample();
 
         TestCase.assertTrue(JSon.validate(JSon.stream(jsonValue)));
     }
 
     @Test
     public void shouldBuildJSONObject() {
-        final String jsonValue = "{\n" +
-                "  'users':[\n" +
-                "    {\n" +
-                "      'name': 'Bob',\n" +
-                "      'age': 31.0,\n" +
-                "      'french': true,\n" +
-                "      'email': 'bob@gmail.com'\n" +
-                "    },\n" +
-                "    {\n" +
-                "      'name': 'Kiki',\n" +
-                "      'age':  25.0,\n" +
-                "      'french': false,\n" +
-                "      'email': null\n" +
-                "    }\n" +
-                "  ]\n" +
-                "}";
+        final String jsonValue = getJsonSample();
 
         final Object json = JSon.withHandler(new POJOBuilder()).match(JSon.stream(jsonValue));
 
@@ -139,7 +109,18 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldBuildGSONObject() {
-        final String jsonValue = "{\n" +
+        final String jsonValue = getJsonSample();
+
+        final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
+
+        TestCase.assertNotNull(json);
+        TestCase.assertEquals(JsonObject.class, json.getClass());
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private String getJsonSample() {
+        return "{\n" +
                 "  'users':[\n" +
                 "    {\n" +
                 "      'name': 'Bob',\n" +
@@ -155,10 +136,5 @@ public class JSONMatcherTest {
                 "    }\n" +
                 "  ]\n" +
                 "}";
-
-        final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
-
-        TestCase.assertNotNull(json);
-        TestCase.assertEquals(JsonObject.class, json.getClass());
     }
 }

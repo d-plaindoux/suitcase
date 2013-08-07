@@ -39,7 +39,6 @@ import static smallibs.suitcase.cases.genlex.TokenRecognizer.Float;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
-import static smallibs.suitcase.cases.lang.Strings.Regex;
 
 public final class JSon {
 
@@ -161,38 +160,40 @@ public final class JSon {
                 return handler.aValue(o);
             }
         });
-        value.caseOf(var.of(Alt(String, Int, Float))).then.function(new Function<Token, V>() {
+        value.caseOf(var.of(String)).then.function(new Function<Token.StringToken, V>() {
             @Override
-            public V apply(Token o) throws Exception {
-                final Object value = o.value();
-                if (value instanceof String) {
-                    return handler.aString((String) value);
-                }
-                if (value instanceof Integer) {
-                    return handler.anInteger((Integer) value);
-                }
-                if (value instanceof Float) {
-                    return handler.aFloat((Float) value);
-                }
-
-                throw new IllegalArgumentException();
+            public V apply(Token.StringToken o) throws Exception {
+                return handler.aString(o.value());
             }
         });
-        value.caseOf(var.of(Kwd(Regex("null|true|false")))).then.function(new Function<Token.KeywordToken, Object>() {
+        value.caseOf(var.of(Int)).then.function(new Function<Token.IntToken, V>() {
+            @Override
+            public V apply(Token.IntToken o) throws Exception {
+                return handler.anInteger(o.value());
+            }
+        });
+        value.caseOf(var.of(Float)).then.function(new Function<Token.FloatToken, V>() {
+            @Override
+            public V apply(Token.FloatToken o) throws Exception {
+                return handler.aFloat(o.value());
+            }
+        });
+        value.caseOf(var.of(Kwd("null"))).then.function(new Function<Token.KeywordToken, Object>() {
             @Override
             public Object apply(Token.KeywordToken o) throws Exception {
-                final Object value = o.value();
-                if (value.equals("null")) {
-                    return handler.aNull();
-                }
-                if (value.equals("false")) {
-                    return handler.aBoolean(false);
-                }
-                if (value.equals("true")) {
-                    return handler.aBoolean(true);
-                }
-
-                throw new IllegalArgumentException();
+                return handler.aNull();
+            }
+        });
+        value.caseOf(var.of(Kwd("true"))).then.function(new Function<Token.KeywordToken, Object>() {
+            @Override
+            public Object apply(Token.KeywordToken o) throws Exception {
+                return handler.aBoolean(true);
+            }
+        });
+        value.caseOf(var.of(Kwd("false"))).then.function(new Function<Token.KeywordToken, Object>() {
+            @Override
+            public Object apply(Token.KeywordToken o) throws Exception {
+                return handler.aBoolean(false);
             }
         });
 
