@@ -44,7 +44,7 @@ public abstract class TokenStream {
     }
 
     public void synchronizeWith(TokenStream stream) {
-        this.sequence.commit(stream.sequence.getIndex() - this.sequence.getIndex());
+        this.sequence.commit(stream.sequence.index - this.sequence.index);
     }
 
     public Token nextToken() throws IOException, UnexpectedCharException {
@@ -64,7 +64,7 @@ public abstract class TokenStream {
 
         performSkip();
 
-        throw new UnexpectedCharException(sequence.getIndex(), sequence.charAt(0));
+        throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
     }
 
     public boolean isEmpty() {
@@ -133,10 +133,6 @@ public abstract class TokenStream {
         AnalysedCharSequence commit(int offset) {
             this.index += offset;
             return this;
-        }
-
-        int getIndex() {
-            return index;
         }
 
         @Override

@@ -19,7 +19,6 @@
 package smallibs.suitcase.cases.json;
 
 import smallibs.suitcase.cases.genlex.Lexer;
-import smallibs.suitcase.cases.genlex.Token;
 import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
@@ -121,10 +120,10 @@ public final class JSon {
             }
         });
 
-        member.caseOf(Seq(var.of(String), Kwd(":"), var.of(value))).then.function(new Function2<Token.StringToken, V, M>() {
+        member.caseOf(Seq(String(var), Kwd(":"), var.of(value))).then.function(new Function2<String, V, M>() {
             @Override
-            public M apply(Token.StringToken o1, V o2) throws Exception {
-                return handler.aMember(o1.value(), o2);
+            public M apply(String o1, V o2) throws Exception {
+                return handler.aMember(o1, o2);
             }
         });
 
@@ -141,22 +140,22 @@ public final class JSon {
                 return handler.aValue(o);
             }
         });
-        value.caseOf(var.of(String)).then.function(new Function<Token.StringToken, V>() {
+        value.caseOf(String(var)).then.function(new Function<String, V>() {
             @Override
-            public V apply(Token.StringToken o) throws Exception {
-                return handler.aString(o.value());
+            public V apply(String o) throws Exception {
+                return handler.aString(o);
             }
         });
-        value.caseOf(var.of(Int)).then.function(new Function<Token.IntToken, V>() {
+        value.caseOf(Int(var)).then.function(new Function<Integer, V>() {
             @Override
-            public V apply(Token.IntToken o) throws Exception {
-                return handler.anInteger(o.value());
+            public V apply(Integer o) throws Exception {
+                return handler.anInteger(o);
             }
         });
-        value.caseOf(var.of(Float)).then.function(new Function<Token.FloatToken, V>() {
+        value.caseOf(Float(var)).then.function(new Function<Float, V>() {
             @Override
-            public V apply(Token.FloatToken o) throws Exception {
-                return handler.aFloat(o.value());
+            public V apply(Float o) throws Exception {
+                return handler.aFloat(o);
             }
         });
         value.caseOf(Kwd("null")).then.function(new Function0<Object>() {

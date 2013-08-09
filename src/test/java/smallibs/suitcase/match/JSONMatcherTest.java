@@ -67,7 +67,7 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldMatchArrayWithString() {
-        TestCase.assertTrue(JSon.validate(JSon.stream("['toto']")));
+        TestCase.assertTrue(JSon.validate(JSon.stream("[\"toto\"]")));
     }
 
     @Test
