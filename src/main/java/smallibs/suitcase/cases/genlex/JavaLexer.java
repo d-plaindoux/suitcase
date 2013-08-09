@@ -28,13 +28,13 @@ public class JavaLexer extends Lexer {
     public JavaLexer() {
         super();
         // Hexadecimal Number
-        this.recognizers(Hexa());
+        this.recognizers(TokenRecognizer.Hexa());
         // Number
-        this.recognizers(Int());
+        this.recognizers(TokenRecognizer.Int());
         // String
-        this.recognizers(String());
+        this.recognizers(TokenRecognizer.String());
         // Identifier
-        this.recognizers(Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*"));
+        this.recognizers(TokenRecognizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*"));
         // Skip spaces
         this.skip("\\s+");
     }

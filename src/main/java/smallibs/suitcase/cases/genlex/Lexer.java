@@ -18,6 +18,8 @@
 
 package smallibs.suitcase.cases.genlex;
 
+import smallibs.suitcase.cases.genlex.TokenStream;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +50,7 @@ public class Lexer {
         return TokenStream.stream(this, sequence);
     }
 
-    List<TokenRecognizer> getRecognizers() {
+    public List<TokenRecognizer> getRecognizers() {
         return recognizers;
     }
 

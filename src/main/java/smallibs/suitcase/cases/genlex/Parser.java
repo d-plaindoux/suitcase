@@ -24,6 +24,9 @@ import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.core.ReentrantMatcher;
 import smallibs.suitcase.cases.core.Var;
+import smallibs.suitcase.cases.genlex.Token;
+import smallibs.suitcase.cases.genlex.TokenStream;
+import smallibs.suitcase.cases.genlex.UnexpectedCharException;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Option;
 
@@ -34,27 +37,27 @@ import java.util.List;
 public class Parser {
 
     public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
-        return new ReentrantParser<>(matcher);
+        return new ReentrantParserCase<>(matcher);
     }
 
     public static Case<TokenStream> Seq(Object... seq) {
-        return new Seq(seq);
+        return new SeqCase(seq);
     }
 
     public static Case<TokenStream> Opt(Object... seq) {
         if (seq.length == 1) {
-            return new Opt(seq[0]);
+            return new OptCase(seq[0]);
         } else {
-            return new Opt(new Seq(seq));
+            return new OptCase(new SeqCase(seq));
         }
     }
 
     public static Case<TokenStream> Alt(Object... alternatives) {
-        return new Alt(alternatives);
+        return new AltCase(alternatives);
     }
 
     public static Case<TokenStream> Kwd(Object object) {
-        return new Keyword(object);
+        return new KeywordCase(object);
     }
 
     public static Case<TokenStream> Int = new IntCase();
@@ -139,10 +142,10 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class Keyword extends AtomCase {
+    private static class KeywordCase extends AtomCase {
         private final Case<String> value;
 
-        public Keyword(Object object) {
+        public KeywordCase(Object object) {
             this.value = Cases.fromObject(object);
         }
 
@@ -168,10 +171,61 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class Seq implements TokenStreamCase {
+    private static class IntCase extends AtomCase {
+        @Override
+        Option<MatchResult> unapplyToken(Token token) {
+            if (token instanceof Token.IntToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class StringCase extends AtomCase {
+        @Override
+        Option<MatchResult> unapplyToken(Token token) {
+            if (token instanceof Token.StringToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class FloatCase extends AtomCase {
+        @Override
+        Option<MatchResult> unapplyToken(Token token) {
+            if (token instanceof Token.FloatToken) {
+                return Option.Some(new MatchResult(token));
+            } else {
+                return Option.None();
+            }
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class ReentrantParserCase<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
+        public ReentrantParserCase(Matcher<TokenStream, R> matcher) {
+            super(matcher);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @CaseType(TokenStream.class)
+    private static class SeqCase implements TokenStreamCase {
         private final List<Case<?>> cases;
 
-        public Seq(Object[] seq) {
+        public SeqCase(Object[] seq) {
             this.cases = new ArrayList<>();
             for (Object o : seq) {
                 final Case<?> aCase = Cases.fromObject(o);
@@ -228,10 +282,10 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class Alt implements TokenStreamCase {
+    private static class AltCase implements TokenStreamCase {
         private final List<Case<?>> cases;
 
-        public Alt(Object[] alternatives) {
+        public AltCase(Object[] alternatives) {
             this.cases = new ArrayList<>();
             for (Object o : alternatives) {
                 final Case<?> aCase = Cases.fromObject(o);
@@ -285,10 +339,10 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class Opt implements TokenStreamCase {
+    private static class OptCase implements TokenStreamCase {
         private final Case<TokenStream> aCase;
 
-        public Opt(Object object) {
+        public OptCase(Object object) {
             this.aCase = Cases.fromObject(object);
         }
 
@@ -321,57 +375,6 @@ public class Parser {
         @Override
         public List<Class> variableTypes() {
             return aCase.variableTypes();
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    @CaseType(TokenStream.class)
-    private static class IntCase extends AtomCase {
-        @Override
-        Option<MatchResult> unapplyToken(Token token) {
-            if (token instanceof Token.IntToken) {
-                return Option.Some(new MatchResult(token));
-            } else {
-                return Option.None();
-            }
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    @CaseType(TokenStream.class)
-    private static class StringCase extends AtomCase {
-        @Override
-        Option<MatchResult> unapplyToken(Token token) {
-            if (token instanceof Token.StringToken) {
-                return Option.Some(new MatchResult(token));
-            } else {
-                return Option.None();
-            }
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    @CaseType(TokenStream.class)
-    private static class FloatCase extends AtomCase {
-        @Override
-        Option<MatchResult> unapplyToken(Token token) {
-            if (token instanceof Token.FloatToken) {
-                return Option.Some(new MatchResult(token));
-            } else {
-                return Option.None();
-            }
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    @CaseType(TokenStream.class)
-    private static class ReentrantParser<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
-        public ReentrantParser(Matcher<TokenStream, R> matcher) {
-            super(matcher);
         }
     }
 }

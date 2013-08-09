@@ -28,10 +28,6 @@ public abstract class TokenStream {
         return new InitialTokenStream(lexer, sequence);
     }
 
-    public static TokenStream stream(TokenStream stream, Token token) {
-        return new InitialTokenStream(stream.lexer, token.toString());
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
 
     private final Lexer lexer;
@@ -48,7 +44,7 @@ public abstract class TokenStream {
     }
 
     public void synchronizeWith(TokenStream stream) {
-        this.sequence.commit(stream.sequence.index - this.sequence.index);
+        this.sequence.commit(stream.sequence.getIndex() - this.sequence.getIndex());
     }
 
     public Token nextToken() throws IOException, UnexpectedCharException {
@@ -68,8 +64,18 @@ public abstract class TokenStream {
 
         performSkip();
 
-        throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
+        throw new UnexpectedCharException(sequence.getIndex(), sequence.charAt(0));
     }
+
+    public boolean isEmpty() {
+        return sequence.length() == 0;
+    }
+
+    public TokenStream secundary() {
+        return new SecundaryTokenStream(this);
+    }
+
+    abstract public boolean isInitial();
 
     private void performSkip() {
         boolean skipped;
@@ -86,31 +92,10 @@ public abstract class TokenStream {
         } while (skipped);
     }
 
-    public boolean isEmpty() {
-        return sequence.length() == 0;
-    }
-
-    public TokenStream secundary() {
-        return new SecundaryTokenStream(this);
-    }
-
-    abstract public boolean isInitial();
-
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static class InitialTokenStream extends TokenStream {
+    static class SecundaryTokenStream extends TokenStream {
 
-        public InitialTokenStream(Lexer lexer, CharSequence sequence) {
-            super(lexer, sequence);
-        }
-
-        @Override
-        public boolean isInitial() {
-            return true;
-        }
-    }
-
-    private static class SecundaryTokenStream extends TokenStream {
         SecundaryTokenStream(TokenStream tokenStream) {
             super(tokenStream);
         }
@@ -121,14 +106,26 @@ public abstract class TokenStream {
         }
     }
 
+    static class InitialTokenStream extends TokenStream {
+
+        InitialTokenStream(Lexer lexer, CharSequence sequence) {
+            super(lexer, sequence);
+        }
+
+        @Override
+        public boolean isInitial() {
+            return true;
+        }
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
-    private final class AnalysedCharSequence implements CharSequence {
+    static final class AnalysedCharSequence implements CharSequence {
 
         private final CharSequence sequence;
         private int index = 0;
 
-        private AnalysedCharSequence(CharSequence sequence) {
+        AnalysedCharSequence(CharSequence sequence) {
             this.sequence = sequence;
             this.index = 0;
         }
@@ -136,6 +133,10 @@ public abstract class TokenStream {
         AnalysedCharSequence commit(int offset) {
             this.index += offset;
             return this;
+        }
+
+        int getIndex() {
+            return index;
         }
 
         @Override

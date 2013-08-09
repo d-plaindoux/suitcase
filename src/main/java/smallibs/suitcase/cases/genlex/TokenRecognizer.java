@@ -18,6 +18,7 @@
 
 package smallibs.suitcase.cases.genlex;
 
+import smallibs.suitcase.cases.genlex.Token;
 import smallibs.suitcase.utils.Option;
 
 import java.util.regex.Matcher;

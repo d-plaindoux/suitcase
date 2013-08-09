@@ -43,10 +43,6 @@ import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
 public final class JSon {
 
-    public interface Match<R> {
-        R match(TokenStream stream);
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     // JSON lexer definition
     // -----------------------------------------------------------------------------------------------------------------
@@ -69,7 +65,7 @@ public final class JSon {
     // JSON validation parser
     // -----------------------------------------------------------------------------------------------------------------
 
-    static private final Match<Boolean> validator;
+    static private final Matcher<TokenStream, Boolean> validator;
 
     static {
         validator = JSon.withHandler(new JSonValidator());
@@ -83,7 +79,7 @@ public final class JSon {
         return validator.match(stream);
     }
 
-    public static <R, MS, M, VS, V> Match<R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
+    public static <R, MS, M, VS, V> Matcher<TokenStream, R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
         final Matcher<TokenStream, R> main, object, array;
         final Matcher<TokenStream, Object> members, member, values, value;
 
@@ -182,12 +178,7 @@ public final class JSon {
             }
         });
 
-        return new Match<R>() {
-            @Override
-            public R match(TokenStream stream) {
-                return main.match(stream);
-            }
-        };
+        return main;
     }
 
 }
