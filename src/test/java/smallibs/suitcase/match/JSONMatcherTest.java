@@ -20,11 +20,15 @@ package smallibs.suitcase.match;
 
 import com.google.gson.JsonObject;
 import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import smallibs.suitcase.cases.json.GSonBuilder;
 import smallibs.suitcase.cases.json.JSon;
 import smallibs.suitcase.cases.json.POJOBuilder;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 
 public class JSONMatcherTest {
@@ -112,6 +116,24 @@ public class JSONMatcherTest {
         final String jsonValue = getJsonSample();
 
         final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
+
+        TestCase.assertNotNull(json);
+        TestCase.assertEquals(JsonObject.class, json.getClass());
+    }
+
+    @Test
+    public void shouldBuildBigGSONObject() throws IOException {
+        final String jsonValue;
+
+        try (InputStream inputStream = JSONMatcherTest.class.getResource("/sample.json").openStream();
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            IOUtils.copy(inputStream, outputStream);
+            jsonValue = outputStream.toString();
+        }
+
+        final long t0 = System.currentTimeMillis();
+        final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
+        System.out.println("<INFO> Parse JSON in " + (System.currentTimeMillis() - t0) + "ms");
 
         TestCase.assertNotNull(json);
         TestCase.assertEquals(JsonObject.class, json.getClass());
