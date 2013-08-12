@@ -30,7 +30,7 @@ public abstract class TokenStream {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    private final Lexer lexer;
+    private Lexer lexer;
     private final AnalysedCharSequence sequence;
 
     protected TokenStream(Lexer lexer, CharSequence sequence) {
@@ -90,6 +90,12 @@ public abstract class TokenStream {
                 }
             }
         } while (skipped);
+    }
+
+    public Lexer setLexer(Lexer lexer) {
+        Lexer replacedLexer = this.lexer;
+        this.lexer = lexer;
+        return replacedLexer;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

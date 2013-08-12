@@ -36,7 +36,11 @@ import static smallibs.suitcase.cases.core.Cases.fromObject;
 public class Parser {
 
     public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
-        return new ReentrantParserCase<>(matcher);
+        return new ReentrantParser<>(matcher);
+    }
+
+    public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher, Lexer lexer) {
+        return new ReentrantParser<>(matcher, lexer);
     }
 
     public static Case<TokenStream> Seq(Object... seq) {
@@ -109,7 +113,7 @@ public class Parser {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static abstract class PrimitiveCase<T> implements TokenStreamCase {
+    public static abstract class PrimitiveCase<T> implements TokenStreamCase {
         private final Class<? extends Token<T>> type;
         private final Case<T> value;
 
@@ -198,9 +202,31 @@ public class Parser {
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
-    private static class ReentrantParserCase<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
-        public ReentrantParserCase(Matcher<TokenStream, R> matcher) {
+    private static class ReentrantParser<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
+        private final Option<Lexer> lexer;
+
+        public ReentrantParser(Matcher<TokenStream, R> matcher) {
             super(matcher);
+            this.lexer = Option.None();
+        }
+
+        public ReentrantParser(Matcher<TokenStream, R> matcher, Lexer lexer) {
+            super(matcher);
+            this.lexer = Option.Some(lexer);
+        }
+
+        @Override
+        public Option<MatchResult> unapply(TokenStream stream) {
+            if (lexer.isNone()) {
+                return super.unapply(stream);
+            } else {
+                final Lexer lexer = stream.setLexer(this.lexer.value());
+                try {
+                    return super.unapply(stream);
+                } finally {
+                    stream.setLexer(lexer);
+                }
+            }
         }
     }
 

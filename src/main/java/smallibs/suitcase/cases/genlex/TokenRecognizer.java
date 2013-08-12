@@ -18,7 +18,6 @@
 
 package smallibs.suitcase.cases.genlex;
 
-import smallibs.suitcase.cases.genlex.Token;
 import smallibs.suitcase.utils.Option;
 
 import java.util.regex.Matcher;
@@ -87,10 +86,10 @@ public abstract class TokenRecognizer {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static abstract class PatternRecognizer extends TokenRecognizer {
+    public static abstract class PatternRecognizer extends TokenRecognizer {
         private final Pattern pattern;
 
-        private PatternRecognizer(String value) {
+        protected PatternRecognizer(String value) {
             this.pattern = Pattern.compile("^" + value);
 
             // Prevent empty pattern recognition

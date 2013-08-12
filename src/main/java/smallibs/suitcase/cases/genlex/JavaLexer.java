@@ -25,6 +25,8 @@ import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
 public class JavaLexer extends Lexer {
 
+    public static final TokenRecognizer IDENT = TokenRecognizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+
     public JavaLexer() {
         super();
         // Hexadecimal Number
@@ -34,7 +36,7 @@ public class JavaLexer extends Lexer {
         // String
         this.recognizers(TokenRecognizer.String());
         // Identifier
-        this.recognizers(TokenRecognizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*"));
+        this.recognizers(IDENT);
         // Skip spaces
         this.skip("\\s+");
     }
