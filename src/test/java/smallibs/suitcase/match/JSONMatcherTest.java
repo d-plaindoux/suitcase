@@ -91,7 +91,7 @@ public class JSONMatcherTest {
 
     @Test
     public void shouldMatchObjectWithEncapsulatedObject() {
-        TestCase.assertTrue(JSon.validate(JSon.stream("{ 'toto' : { 'titi' : null } }")));
+        TestCase.assertTrue(JSon.validate(JSon.stream(" { 'toto' : { 'titi' : null } } ")));
     }
 
     @Test
@@ -133,7 +133,7 @@ public class JSONMatcherTest {
 
         final long t0 = System.currentTimeMillis();
         final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
-        System.out.println("<INFO> Parse JSON in " + (System.currentTimeMillis() - t0) + "ms");
+        // System.out.println("<INFO> Parse JSON in " + (System.currentTimeMillis() - t0) + "ms");
 
         TestCase.assertNotNull(json);
         TestCase.assertEquals(JsonObject.class, json.getClass());

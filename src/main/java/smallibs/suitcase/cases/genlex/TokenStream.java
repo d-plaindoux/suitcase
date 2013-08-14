@@ -62,12 +62,13 @@ public abstract class TokenStream {
             }
         }
 
-        performSkip();
-
         throw new UnexpectedCharException(sequence.index, sequence.charAt(0));
     }
 
     public boolean isEmpty() {
+
+        performSkip(); // TODO check if this is the right place
+
         return sequence.length() == 0;
     }
 

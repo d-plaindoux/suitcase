@@ -11,14 +11,14 @@ import static smallibs.suitcase.cases.core.Cases._;
 
 public class XmlGenLex {
 
-    public static Token<String> CDataToken(String value) {
-        return new CDataToken(value);
+    public static Token<String> TextToken(String value) {
+        return new TextToken(value);
     }
 
-    private static class CDataToken extends Token<String> {
+    private static class TextToken extends Token<String> {
         private final String value;
 
-        public CDataToken(String value) {
+        public TextToken(String value) {
             super();
             this.value = value;
         }
@@ -34,32 +34,32 @@ public class XmlGenLex {
         }
     }
 
-    public static CDataRecognizer CDataRecognizer(String value) {
-        return new CDataRecognizer(value);
+    public static TextRecognizer TextRecognizer(String value) {
+        return new TextRecognizer(value);
     }
 
 
-    private static class CDataRecognizer extends TokenRecognizer.PatternRecognizer {
-        public CDataRecognizer(String value) {
+    private static class TextRecognizer extends TokenRecognizer.PatternRecognizer {
+        public TextRecognizer(String value) {
             super(value);
         }
 
         @Override
         protected Token<?> matched(String string) {
-            return CDataToken(string);
+            return TextToken(string);
         }
     }
 
-    public static Case<TokenStream> CData = CData(_);
+    public static Case<TokenStream> Text = Text(_);
 
-    public static Case<TokenStream> CData(Object aCase) {
-        return new CDataCase(aCase);
+    public static Case<TokenStream> Text(Object aCase) {
+        return new TextCase(aCase);
     }
 
     @CaseType(TokenStream.class)
-    private static class CDataCase extends Parser.PrimitiveCase<String> {
-        public CDataCase(Object object) {
-            super(CDataToken.class, object);
+    private static class TextCase extends Parser.PrimitiveCase<String> {
+        public TextCase(Object object) {
+            super(TextToken.class, object);
         }
     }
 }

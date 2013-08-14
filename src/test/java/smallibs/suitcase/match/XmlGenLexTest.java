@@ -55,13 +55,31 @@ public class XmlGenLexTest {
     }
 
     @Test
-    public void shouldMatchTagWithCData() {
+    public void shouldMatchTagWithText() {
         final Boolean match = Xml.validate(Xml.stream("<a>Hello World!</a>"));
+        TestCase.assertTrue(match);
+    }
+
+    @Test
+    public void shouldMatchTagWithTextAndElement() {
+        final Boolean match = Xml.validate(Xml.stream("<a>Hello <toto/>!</a>"));
         TestCase.assertTrue(match);
     }
 
     @Test(expected = MatchingException.class)
     public void shouldNotdMatchSimpleTag2() {
         Xml.validate(Xml.stream("<a></b>"));
+    }
+
+    @Test
+    public void shouldMatchTagWithComment() {
+        final Boolean match = Xml.validate(Xml.stream("<a><!-- Hello World! --></a>"));
+        TestCase.assertTrue(match);
+    }
+
+    @Test
+    public void shouldMatchTagWithCData() {
+        final Boolean match = Xml.validate(Xml.stream("<a><![CDATA[ Hello <world/>! ]]></a>"));
+        TestCase.assertTrue(match);
     }
 }
