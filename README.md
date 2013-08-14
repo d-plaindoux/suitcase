@@ -32,13 +32,13 @@ isZero.match(0); // == true
 Regexp, XML, List Patterns and more ...
 ---------------------------------------
 
-More information and descriptions are given in the [Wiki](./wiki) and in particular ad-hoc case is explained with
+More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki) and in particular ad-hoc case is explained with
 practical implementations covering matching for lists, string regular expression, XML etc.
 
 See also:
 
-* [Core Pattern Matching](./wiki#core-pattern-matching)
-* [Generic Parser](./wiki#generic-parser)
+* [Core Pattern Matching](https://github.com/d-plaindoux/suitcase/wiki#core-pattern-matching)
+* [Generic Parser](https://github.com/d-plaindoux/suitcase/wiki#generic-parser)
 
 Other Propositions
 ------------------
