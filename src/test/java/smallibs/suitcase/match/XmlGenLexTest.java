@@ -82,4 +82,10 @@ public class XmlGenLexTest {
         final Boolean match = Xml.validate(Xml.stream("<a><![CDATA[ Hello <world/>! ]]></a>"));
         TestCase.assertTrue(match);
     }
+
+    @Test
+    public void shouldMatchTagWithPreAndPostComment() {
+        final Boolean match = Xml.validate(Xml.stream("<!-- Hello --><a> simple text </a><!-- world -->"));
+        TestCase.assertTrue(match);
+    }
 }

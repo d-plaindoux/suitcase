@@ -38,11 +38,6 @@ public class XmlValidator implements XmlHandler<Boolean, Boolean, Boolean, Boole
     }
 
     @Override
-    public Boolean aComment(String comment) {
-        return true;
-    }
-
-    @Override
     public Boolean someAttributes(Boolean attribute, Option<Boolean> attributes) {
         return attribute && (attributes.isNone() || attributes.value());
     }

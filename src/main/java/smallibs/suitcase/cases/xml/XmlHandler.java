@@ -28,8 +28,6 @@ public interface XmlHandler<ES, E, AS, A> {
 
     E aText(String cdata);
 
-    E aComment(String comment);
-
     AS someAttributes(A attribute, Option<AS> attributes);
 
     A anAttribute(String name, String value);
