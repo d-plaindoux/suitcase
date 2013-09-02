@@ -20,11 +20,12 @@ import static smallibs.suitcase.cases.genlex.Parser.Int;
 import static smallibs.suitcase.cases.genlex.Parser.Kwd;
 import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
 
 public class GenLexParserTest {
 
     private Lexer givenALexer() {
-        return new JavaLexer().keywords("(", ")", "{", "}");
+        return new JavaLexer().recognizers(Keyword("("), Keyword(")"), Keyword("{"), Keyword("}"));
     }
 
     @Test

@@ -37,6 +37,7 @@ import static smallibs.suitcase.cases.genlex.Parser.String;
 import static smallibs.suitcase.cases.genlex.Parser.parser;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Float;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
 import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
@@ -51,8 +52,8 @@ public final class JSon {
     static {
         jsonLexer = new Lexer();
         jsonLexer.skip("\\s+");
-        jsonLexer.keywords("[", "]", "{", "}", ":", ",");
-        jsonLexer.keywords("null", "true", "false");
+        jsonLexer.recognizers(Keyword("["), Keyword("]"), Keyword("{"), Keyword("}"), Keyword(":"), Keyword(","));
+        jsonLexer.recognizers(Keyword("null"), Keyword("true"), Keyword("false"));
         jsonLexer.recognizers(Float(), Int(), String(), QuotedString());
     }
 

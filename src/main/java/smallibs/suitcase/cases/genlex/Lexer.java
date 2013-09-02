@@ -57,11 +57,4 @@ public class Lexer {
     public List<TokenRecognizer> getSkipped() {
         return skipped;
     }
-
-    public Lexer keywords(String... keywords) {
-        for (String keyword : keywords) {
-            this.recognizers.add(0, TokenRecognizer.Keyword(keyword));
-        }
-        return this;
-    }
 }

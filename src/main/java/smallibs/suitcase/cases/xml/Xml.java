@@ -38,6 +38,8 @@ import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
 import static smallibs.suitcase.cases.genlex.Parser.String;
 import static smallibs.suitcase.cases.genlex.Parser.parser;
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
+import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
 import static smallibs.suitcase.cases.xml.XmlGenLex.Text;
 import static smallibs.suitcase.cases.xml.XmlGenLex.TextRecognizer;
 
@@ -52,15 +54,15 @@ public final class Xml {
     static {
         elementLexer = new Lexer();
         elementLexer.skip("\\s+");
-        elementLexer.keywords("<", ">", "</", "/>", "=");
-        elementLexer.recognizers(TokenRecognizer.String(), TokenRecognizer.QuotedString(), JavaLexer.IDENT);
+        elementLexer.recognizers(Keyword("</"), Keyword("/>"), Keyword("<"), Keyword(">"), Keyword("="));
+        elementLexer.recognizers(TokenRecognizer.String(), QuotedString(), JavaLexer.IDENT);
     }
 
     static private final Lexer commentLexer;
 
     static {
         commentLexer = new Lexer();
-        commentLexer.keywords("<!--", "-->");
+        commentLexer.recognizers(Keyword("<!--"), Keyword("-->"));
         commentLexer.recognizers(TextRecognizer(".*?(?=--)"));
     }
 
@@ -75,7 +77,7 @@ public final class Xml {
 
     static {
         cdataLexer = new Lexer();
-        cdataLexer.keywords("<![CDATA[", "]]>");
+        cdataLexer.recognizers(Keyword("<![CDATA["), Keyword("]]>"));
         cdataLexer.recognizers(TextRecognizer(".*?(?=]]>)"));
     }
 
