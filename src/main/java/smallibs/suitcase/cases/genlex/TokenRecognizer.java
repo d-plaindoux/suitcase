@@ -57,6 +57,18 @@ public abstract class TokenRecognizer {
         return new Skip(value);
     }
 
+    public static GenericRecognizer Generic(String kind, TokenRecognizer value) {
+        return new GenericRecognizer(kind, value);
+    }
+
+    public static TokenRecognizer pattern(String value) {
+        return new IdentifierRecognizer(value);
+    }
+
+    public static TokenRecognizer value(String value) {
+        return new KeywordRecognizer(value);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // Public abstract methods
     // -----------------------------------------------------------------------------------------------------------------
@@ -112,8 +124,31 @@ public abstract class TokenRecognizer {
         }
     }
 
-    public static class IdentifierRecognizer extends PatternRecognizer {
-        private IdentifierRecognizer(String value) {
+    public static class GenericRecognizer extends TokenRecognizer {
+        private final String kind;
+        private final TokenRecognizer value;
+
+        public GenericRecognizer(String kind, TokenRecognizer value) {
+            this.kind = kind;
+            this.value = value;
+        }
+
+        @Override
+        public Option<Token<?>> recognize(CharSequence sequence) {
+            final Option<Token<?>> option = value.recognize(sequence);
+            if (option.isSome()) {
+                final Token<?> value = option.value();
+                final Token<?> generic = Token.Generic(kind, value.length(), value.value());
+                return (Option<Token<?>>) Option.Some(generic); // ???
+            } else {
+                return Option.None();
+            }
+
+        }
+    }
+
+    private static class IdentifierRecognizer extends PatternRecognizer {
+        public IdentifierRecognizer(String value) {
             super(value);
         }
 
@@ -181,7 +216,6 @@ public abstract class TokenRecognizer {
             return Token.Float(string.length(), Float.valueOf(string));
         }
     }
-
 
     public static class Skip extends PatternRecognizer {
         private Skip(String value) {

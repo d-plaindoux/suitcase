@@ -88,6 +88,11 @@ public class Parser {
     public static Case<TokenStream> String(Object aCase) {
         return new StringCase(aCase);
     }
+
+    public static Case<TokenStream> A(String kind, Object aCase) {
+        return new GenericCase(kind, aCase);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     @CaseType(TokenStream.class)
@@ -117,8 +122,8 @@ public class Parser {
         private final Class<? extends Token<T>> type;
         private final Case<T> value;
 
-        public PrimitiveCase(Class<? extends Token<T>> type, Object object) {
-            this.type = type;
+        public PrimitiveCase(Class<? extends Token> type, Object object) {
+            this.type = (Class<? extends Token<T>>) type; // TODO -- fix this cast
             this.value = fromObject(object);
         }
 
@@ -143,7 +148,7 @@ public class Parser {
             return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
         }
 
-        private Option<MatchResult> unapplyToken(Token token) {
+        protected Option<MatchResult> unapplyToken(Token token) {
             if (this.type.isAssignableFrom(token.getClass())) {
                 final Token<T> castedToken = type.cast(token);
                 final Option<MatchResult> unapply = this.value.unapply(castedToken.value());
@@ -184,11 +189,30 @@ public class Parser {
         }
     }
 
-
     @CaseType(TokenStream.class)
     private static class StringCase extends PrimitiveCase<String> {
         public StringCase(Object object) {
             super(Token.StringToken.class, object);
+        }
+    }
+
+    @CaseType(TokenStream.class)
+    private static class GenericCase<T> extends PrimitiveCase<T> {
+        private final String kind;
+
+        public GenericCase(String kind, Object object) {
+            super(Token.GenericToken.class, object);
+            this.kind = kind;
+        }
+
+        @Override
+        protected Option<MatchResult> unapplyToken(Token token) {
+            if (Token.GenericToken.class.isAssignableFrom(token.getClass()) &&
+                    Token.GenericToken.class.cast(token).kind().equals(this.kind)) {
+                return super.unapplyToken(token);
+            }
+
+            return Option.None();
         }
     }
 

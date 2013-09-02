@@ -103,8 +103,8 @@ public class GSonBuilder implements JSonHandler<JsonElement, JsonObject, Pair<St
     }
 
     @Override
-    public JsonElement aValue(JsonElement o) {
-        return o;
+    public JsonElement aValue(JsonElement element) {
+        return element;
 
     }
 }

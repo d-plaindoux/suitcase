@@ -20,6 +20,8 @@ package smallibs.suitcase.utils;
 
 public abstract class Option<T> {
 
+    public enum Kind {None, Some}
+
     public static <T> Option<T> None() {
         return new NoneCase<>();
     }
@@ -28,13 +30,28 @@ public abstract class Option<T> {
         return new SomeCase<>(value);
     }
 
-    abstract public T value();
+    final public boolean isNone() {
+        switch (this.kind()) {
+            case None:
+                return true;
+            case Some:
+                return false;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
 
-    abstract public boolean isNone();
-
-    public boolean isSome() {
+    final public boolean isSome() {
         return !isNone();
     }
+
+    abstract public Kind kind();
+
+    abstract public T value();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Implementations
+    // -----------------------------------------------------------------------------------------------------------------
 
     public static class NoneCase<T> extends Option<T> {
 
@@ -44,10 +61,12 @@ public abstract class Option<T> {
         }
 
         @Override
-        public boolean isNone() {
-            return true;
+        public Kind kind() {
+            return Kind.None;
         }
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
 
     public static class SomeCase<T> extends Option<T> {
         public final T value;
@@ -62,8 +81,8 @@ public abstract class Option<T> {
         }
 
         @Override
-        public boolean isNone() {
-            return false;
+        public Kind kind() {
+            return Kind.Some;
         }
     }
 

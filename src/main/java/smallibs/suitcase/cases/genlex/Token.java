@@ -40,6 +40,10 @@ public abstract class Token<T> {
         return new FloatToken(length, value);
     }
 
+    public static <T> Token<T> Generic(String kind, int length, T value) {
+        return new GenericToken<>(kind, length, value);
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     public abstract T value();
@@ -62,6 +66,32 @@ public abstract class Token<T> {
 
         @Override
         public String value() {
+            return this.value;
+        }
+    }
+
+    public static class GenericToken<T> extends Token<T> {
+        private final String kind;
+        private final int length;
+        private final T value;
+
+        public GenericToken(String kind, int length, T value) {
+            this.kind = kind;
+            this.length = length;
+            this.value = value;
+        }
+
+        @Override
+        public int length() {
+            return this.length;
+        }
+
+        public String kind() {
+            return kind;
+        }
+
+        @Override
+        public T value() {
             return this.value;
         }
     }
