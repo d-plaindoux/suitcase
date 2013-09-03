@@ -39,7 +39,7 @@ public class Lexer {
         return this;
     }
 
-    public Lexer recognizers(Tokenizer... recognizers) {
+    public Lexer tokenizers(Tokenizer... recognizers) {
         this.recognizers.addAll(Arrays.asList(recognizers));
         return this;
     }
@@ -48,7 +48,7 @@ public class Lexer {
         return TokenStream.stream(this, sequence);
     }
 
-    public List<Tokenizer> getRecognizers() {
+    public List<Tokenizer> getTokenizers() {
         return recognizers;
     }
 

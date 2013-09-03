@@ -39,31 +39,31 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveLACCToken() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("{");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("{"), Kwd("}")).parse("{");
         TestCase.assertEquals("{", stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveRACCToken() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("}");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("{"), Kwd("}")).parse("}");
         TestCase.assertEquals("}", stream.nextToken().value());
     }
 
     @Test(expected = IOException.class)
     public void shouldHaveIOExceptionWhenEmptySequence() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("{"), Kwd("}")).parse("");
         stream.nextToken();
     }
 
     @Test(expected = UnexpectedCharException.class)
     public void shouldHaveUnexpectedCharException() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("|");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("{"), Kwd("}")).parse("|");
         stream.nextToken();
     }
 
     @Test
     public void shouldHaveTwoTokens() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("{}");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("{"), Kwd("}")).parse("{}");
         TestCase.assertEquals("{", stream.nextToken().value());
         TestCase.assertEquals("}", stream.nextToken().value());
     }
@@ -71,7 +71,7 @@ public class GenLexStreamTokenTest {
     @Test
     public void shouldHaveASetOfTokensBasedOnBrainF_ck() throws Exception {
         final String sequence = ",[.[-],]";
-        final TokenStream stream = new Lexer().recognizers(Kwd("["), Kwd("]"), Kwd("+"), Kwd("-"), Kwd("."), Kwd(",")).parse(sequence);
+        final TokenStream stream = new Lexer().tokenizers(Kwd("["), Kwd("]"), Kwd("+"), Kwd("-"), Kwd("."), Kwd(",")).parse(sequence);
         int i = 0;
         while (!stream.isEmpty()) {
             TestCase.assertEquals(String.valueOf(sequence.charAt(i)), stream.nextToken().value());
@@ -81,7 +81,7 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveThreeTokens() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Kwd("++"), Kwd("-")).parse("-++-");
+        final TokenStream stream = new Lexer().tokenizers(Kwd("++"), Kwd("-")).parse("-++-");
         TestCase.assertEquals("-", stream.nextToken().value());
         TestCase.assertEquals("++", stream.nextToken().value());
         TestCase.assertEquals("-", stream.nextToken().value());
@@ -93,25 +93,25 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveOneIdentifier() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Ident("[a-z]+")).parse("hello world");
+        final TokenStream stream = new Lexer().tokenizers(Ident("[a-z]+")).parse("hello world");
         TestCase.assertEquals("hello", stream.nextToken().value());
     }
 
     @Test(expected = UnexpectedCharException.class)
     public void shouldNotHaveOneIdentifier() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Ident("[a-z]+")).parse("123 hello");
+        final TokenStream stream = new Lexer().tokenizers(Ident("[a-z]+")).parse("123 hello");
         stream.nextToken().value();
     }
 
     @Test
     public void shouldHaveOneString() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(String()).parse("\"World!\"");
+        final TokenStream stream = new Lexer().tokenizers(String()).parse("\"World!\"");
         TestCase.assertEquals("World!", stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveOneQuotedString() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(QuotedString()).parse("'World!'");
+        final TokenStream stream = new Lexer().tokenizers(QuotedString()).parse("'World!'");
         TestCase.assertEquals("World!", stream.nextToken().value());
     }
 
@@ -121,19 +121,19 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveOneInteger() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Int()).parse("1942");
+        final TokenStream stream = new Lexer().tokenizers(Int()).parse("1942");
         TestCase.assertEquals(1942, stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveOneInteger2() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Int()).parse("-1942");
+        final TokenStream stream = new Lexer().tokenizers(Int()).parse("-1942");
         TestCase.assertEquals(-1942, stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveOneHexa() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Hexa()).parse("0x1942");
+        final TokenStream stream = new Lexer().tokenizers(Hexa()).parse("0x1942");
         TestCase.assertEquals(0x1942, stream.nextToken().value());
     }
 
@@ -143,13 +143,13 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveOneFloat() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Float()).parse("1942.43");
+        final TokenStream stream = new Lexer().tokenizers(Float()).parse("1942.43");
         TestCase.assertEquals(1942.43f, stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveOneFloat2() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Float()).parse("42e2");
+        final TokenStream stream = new Lexer().tokenizers(Float()).parse("42e2");
         TestCase.assertEquals(42e2f, stream.nextToken().value());
     }
 
@@ -169,7 +169,7 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveOneHexaStringAndInt() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Hexa(), Int(), Ident("[a-zA-Z]+")).parse("1942Hello0x12");
+        final TokenStream stream = new Lexer().tokenizers(Hexa(), Int(), Ident("[a-zA-Z]+")).parse("1942Hello0x12");
         TestCase.assertEquals(1942, stream.nextToken().value());
         TestCase.assertEquals("Hello", stream.nextToken().value());
         TestCase.assertEquals(0x12, stream.nextToken().value());

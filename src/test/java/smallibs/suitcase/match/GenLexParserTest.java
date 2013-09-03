@@ -25,7 +25,7 @@ import static smallibs.suitcase.cases.genlex.Parser.Seq;
 public class GenLexParserTest {
 
     private Lexer givenALexer() {
-        return new JavaLexer().recognizers(Tokenizer.Kwd("("), Tokenizer.Kwd(")"), Tokenizer.Kwd("{"), Tokenizer.Kwd("}"));
+        return new JavaLexer().tokenizers(Tokenizer.Kwd("("), Tokenizer.Kwd(")"), Tokenizer.Kwd("{"), Tokenizer.Kwd("}"));
     }
 
     @Test

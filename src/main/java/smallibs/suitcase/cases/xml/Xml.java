@@ -52,31 +52,31 @@ public final class Xml {
     static {
         elementLexer = new Lexer();
         elementLexer.skip("\\s+");
-        elementLexer.recognizers(Tokenizer.Kwd("</"), Tokenizer.Kwd("/>"), Tokenizer.Kwd("<"), Tokenizer.Kwd(">"), Tokenizer.Kwd("="));
-        elementLexer.recognizers(Tokenizer.String(), Tokenizer.QuotedString(), JavaLexer.IDENT);
+        elementLexer.tokenizers(Tokenizer.Kwd("</"), Tokenizer.Kwd("/>"), Tokenizer.Kwd("<"), Tokenizer.Kwd(">"), Tokenizer.Kwd("="));
+        elementLexer.tokenizers(Tokenizer.String(), Tokenizer.QuotedString(), JavaLexer.IDENT);
     }
 
     static private final Lexer commentLexer;
 
     static {
         commentLexer = new Lexer();
-        commentLexer.recognizers(Tokenizer.Kwd("<!--"), Tokenizer.Kwd("-->"));
-        commentLexer.recognizers(TextTokenizer(".*?(?=--)"));
+        commentLexer.tokenizers(Tokenizer.Kwd("<!--"), Tokenizer.Kwd("-->"));
+        commentLexer.tokenizers(TextTokenizer(".*?(?=--)"));
     }
 
     static private final Lexer textLexer;
 
     static {
         textLexer = new Lexer();
-        textLexer.recognizers(TextTokenizer("[^<]+"));
+        textLexer.tokenizers(TextTokenizer("[^<]+"));
     }
 
     static private final Lexer cdataLexer;
 
     static {
         cdataLexer = new Lexer();
-        cdataLexer.recognizers(Tokenizer.Kwd("<![CDATA["), Tokenizer.Kwd("]]>"));
-        cdataLexer.recognizers(TextTokenizer(".*?(?=]]>)"));
+        cdataLexer.tokenizers(Tokenizer.Kwd("<![CDATA["), Tokenizer.Kwd("]]>"));
+        cdataLexer.tokenizers(TextTokenizer(".*?(?=]]>)"));
     }
 
     public static TokenStream stream(CharSequence sequence) {
