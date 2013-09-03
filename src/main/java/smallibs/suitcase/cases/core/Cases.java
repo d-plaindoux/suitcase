@@ -97,9 +97,4 @@ public final class Cases {
         return new TypeOf<>(type);
     }
 
-    public static <T, R> ReentrantMatcher<T, R> reentrant(Matcher<T, R> matcher) {
-        assert matcher != null;
-        return new ReentrantMatcher<>(matcher);
-    }
-
 }
