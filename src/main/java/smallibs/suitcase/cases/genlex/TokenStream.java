@@ -54,7 +54,7 @@ public abstract class TokenStream {
 
         performSkip();
 
-        for (TokenRecognizer token : lexer.getRecognizers()) {
+        for (Tokenizer token : lexer.getRecognizers()) {
             final Option<Token<?>> recognize = token.recognize(sequence);
             if (!recognize.isNone()) {
                 this.sequence.commit(recognize.value().length());
@@ -82,7 +82,7 @@ public abstract class TokenStream {
         boolean skipped;
         do {
             skipped = false;
-            for (TokenRecognizer token : lexer.getSkipped()) {
+            for (Tokenizer token : lexer.getSkipped()) {
                 final Option<Token<?>> recognize = token.recognize(sequence);
                 if (!recognize.isNone()) {
                     this.sequence.commit(recognize.value().length());

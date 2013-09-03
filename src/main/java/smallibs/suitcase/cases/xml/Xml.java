@@ -20,8 +20,8 @@ package smallibs.suitcase.cases.xml;
 
 import smallibs.suitcase.cases.genlex.JavaLexer;
 import smallibs.suitcase.cases.genlex.Lexer;
-import smallibs.suitcase.cases.genlex.TokenRecognizer;
 import smallibs.suitcase.cases.genlex.TokenStream;
+import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Function;
@@ -38,10 +38,8 @@ import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
 import static smallibs.suitcase.cases.genlex.Parser.String;
 import static smallibs.suitcase.cases.genlex.Parser.parser;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
 import static smallibs.suitcase.cases.xml.XmlGenLex.Text;
-import static smallibs.suitcase.cases.xml.XmlGenLex.TextRecognizer;
+import static smallibs.suitcase.cases.xml.XmlGenLex.TextTokenizer;
 
 public final class Xml {
 
@@ -54,31 +52,31 @@ public final class Xml {
     static {
         elementLexer = new Lexer();
         elementLexer.skip("\\s+");
-        elementLexer.recognizers(Keyword("</"), Keyword("/>"), Keyword("<"), Keyword(">"), Keyword("="));
-        elementLexer.recognizers(TokenRecognizer.String(), QuotedString(), JavaLexer.IDENT);
+        elementLexer.recognizers(Tokenizer.Kwd("</"), Tokenizer.Kwd("/>"), Tokenizer.Kwd("<"), Tokenizer.Kwd(">"), Tokenizer.Kwd("="));
+        elementLexer.recognizers(Tokenizer.String(), Tokenizer.QuotedString(), JavaLexer.IDENT);
     }
 
     static private final Lexer commentLexer;
 
     static {
         commentLexer = new Lexer();
-        commentLexer.recognizers(Keyword("<!--"), Keyword("-->"));
-        commentLexer.recognizers(TextRecognizer(".*?(?=--)"));
+        commentLexer.recognizers(Tokenizer.Kwd("<!--"), Tokenizer.Kwd("-->"));
+        commentLexer.recognizers(TextTokenizer(".*?(?=--)"));
     }
 
     static private final Lexer textLexer;
 
     static {
         textLexer = new Lexer();
-        textLexer.recognizers(TextRecognizer("[^<]+"));
+        textLexer.recognizers(TextTokenizer("[^<]+"));
     }
 
     static private final Lexer cdataLexer;
 
     static {
         cdataLexer = new Lexer();
-        cdataLexer.recognizers(Keyword("<![CDATA["), Keyword("]]>"));
-        cdataLexer.recognizers(TextRecognizer(".*?(?=]]>)"));
+        cdataLexer.recognizers(Tokenizer.Kwd("<![CDATA["), Tokenizer.Kwd("]]>"));
+        cdataLexer.recognizers(TextTokenizer(".*?(?=]]>)"));
     }
 
     public static TokenStream stream(CharSequence sequence) {

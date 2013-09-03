@@ -27,43 +27,43 @@ import smallibs.suitcase.cases.genlex.UnexpectedCharException;
 
 import java.io.IOException;
 
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Float;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Hexa;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
+import static smallibs.suitcase.cases.genlex.Tokenizer.Float;
+import static smallibs.suitcase.cases.genlex.Tokenizer.Hexa;
+import static smallibs.suitcase.cases.genlex.Tokenizer.Ident;
+import static smallibs.suitcase.cases.genlex.Tokenizer.Int;
+import static smallibs.suitcase.cases.genlex.Tokenizer.Kwd;
+import static smallibs.suitcase.cases.genlex.Tokenizer.QuotedString;
+import static smallibs.suitcase.cases.genlex.Tokenizer.String;
 
 public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveLACCToken() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("{"), Keyword("}")).parse("{");
+        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("{");
         TestCase.assertEquals("{", stream.nextToken().value());
     }
 
     @Test
     public void shouldHaveRACCToken() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("{"), Keyword("}")).parse("}");
+        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("}");
         TestCase.assertEquals("}", stream.nextToken().value());
     }
 
     @Test(expected = IOException.class)
     public void shouldHaveIOExceptionWhenEmptySequence() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("{"), Keyword("}")).parse("");
+        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("");
         stream.nextToken();
     }
 
     @Test(expected = UnexpectedCharException.class)
     public void shouldHaveUnexpectedCharException() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("{"), Keyword("}")).parse("|");
+        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("|");
         stream.nextToken();
     }
 
     @Test
     public void shouldHaveTwoTokens() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("{"),Keyword("}")).parse("{}");
+        final TokenStream stream = new Lexer().recognizers(Kwd("{"), Kwd("}")).parse("{}");
         TestCase.assertEquals("{", stream.nextToken().value());
         TestCase.assertEquals("}", stream.nextToken().value());
     }
@@ -71,7 +71,7 @@ public class GenLexStreamTokenTest {
     @Test
     public void shouldHaveASetOfTokensBasedOnBrainF_ck() throws Exception {
         final String sequence = ",[.[-],]";
-        final TokenStream stream = new Lexer().recognizers(Keyword("["), Keyword("]"), Keyword("+"), Keyword("-"), Keyword("."), Keyword(",")).parse(sequence);
+        final TokenStream stream = new Lexer().recognizers(Kwd("["), Kwd("]"), Kwd("+"), Kwd("-"), Kwd("."), Kwd(",")).parse(sequence);
         int i = 0;
         while (!stream.isEmpty()) {
             TestCase.assertEquals(String.valueOf(sequence.charAt(i)), stream.nextToken().value());
@@ -81,7 +81,7 @@ public class GenLexStreamTokenTest {
 
     @Test
     public void shouldHaveThreeTokens() throws Exception {
-        final TokenStream stream = new Lexer().recognizers(Keyword("++"), Keyword("-")).parse("-++-");
+        final TokenStream stream = new Lexer().recognizers(Kwd("++"), Kwd("-")).parse("-++-");
         TestCase.assertEquals("-", stream.nextToken().value());
         TestCase.assertEquals("++", stream.nextToken().value());
         TestCase.assertEquals("-", stream.nextToken().value());

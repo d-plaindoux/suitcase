@@ -8,6 +8,7 @@ import smallibs.suitcase.cases.genlex.Lexer;
 import smallibs.suitcase.cases.genlex.Parser;
 import smallibs.suitcase.cases.genlex.Token;
 import smallibs.suitcase.cases.genlex.TokenStream;
+import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.utils.Function;
 
 import java.util.List;
@@ -20,12 +21,11 @@ import static smallibs.suitcase.cases.genlex.Parser.Int;
 import static smallibs.suitcase.cases.genlex.Parser.Kwd;
 import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
 
 public class GenLexParserTest {
 
     private Lexer givenALexer() {
-        return new JavaLexer().recognizers(Keyword("("), Keyword(")"), Keyword("{"), Keyword("}"));
+        return new JavaLexer().recognizers(Tokenizer.Kwd("("), Tokenizer.Kwd(")"), Tokenizer.Kwd("{"), Tokenizer.Kwd("}"));
     }
 
     @Test

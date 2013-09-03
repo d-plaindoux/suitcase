@@ -18,23 +18,18 @@
 
 package smallibs.suitcase.cases.genlex;
 
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Hexa;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Ident;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
-
 public class JavaLexer extends Lexer {
 
-    public static final TokenRecognizer IDENT = TokenRecognizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+    public static final Tokenizer IDENT = Tokenizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     public JavaLexer() {
         super();
         // Hexadecimal Number
-        this.recognizers(TokenRecognizer.Hexa());
+        this.recognizers(Tokenizer.Hexa());
         // Number
-        this.recognizers(TokenRecognizer.Int());
+        this.recognizers(Tokenizer.Int());
         // String
-        this.recognizers(TokenRecognizer.String());
+        this.recognizers(Tokenizer.String());
         // Identifier
         this.recognizers(IDENT);
         // Skip spaces

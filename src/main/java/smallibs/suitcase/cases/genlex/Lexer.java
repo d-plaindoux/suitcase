@@ -18,16 +18,14 @@
 
 package smallibs.suitcase.cases.genlex;
 
-import smallibs.suitcase.cases.genlex.TokenStream;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Lexer {
 
-    private final List<TokenRecognizer> recognizers;
-    private final List<TokenRecognizer> skipped;
+    private final List<Tokenizer> recognizers;
+    private final List<Tokenizer> skipped;
 
     public Lexer() {
         this.recognizers = new ArrayList<>();
@@ -36,12 +34,12 @@ public class Lexer {
 
     public Lexer skip(String... skipped) {
         for (String value : skipped) {
-            this.skipped.add(TokenRecognizer.Skip(value));
+            this.skipped.add(Tokenizer.Skip(value));
         }
         return this;
     }
 
-    public Lexer recognizers(TokenRecognizer... recognizers) {
+    public Lexer recognizers(Tokenizer... recognizers) {
         this.recognizers.addAll(Arrays.asList(recognizers));
         return this;
     }
@@ -50,11 +48,11 @@ public class Lexer {
         return TokenStream.stream(this, sequence);
     }
 
-    public List<TokenRecognizer> getRecognizers() {
+    public List<Tokenizer> getRecognizers() {
         return recognizers;
     }
 
-    public List<TokenRecognizer> getSkipped() {
+    public List<Tokenizer> getSkipped() {
         return skipped;
     }
 }

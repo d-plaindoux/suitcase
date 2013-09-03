@@ -23,33 +23,33 @@ import smallibs.suitcase.utils.Option;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class TokenRecognizer {
+public abstract class Tokenizer {
 
-    public static TokenRecognizer Keyword(String value) {
+    public static Tokenizer Kwd(String value) {
         return new KeywordRecognizer(value);
     }
 
-    public static TokenRecognizer Ident(String value) {
+    public static Tokenizer Ident(String value) {
         return new IdentifierRecognizer(value);
     }
 
-    public static TokenRecognizer String() {
+    public static Tokenizer String() {
         return new StringRecognizer();
     }
 
-    public static TokenRecognizer QuotedString() {
+    public static Tokenizer QuotedString() {
         return new QuotedStringRecognizer();
     }
 
-    public static TokenRecognizer Int() {
+    public static Tokenizer Int() {
         return new IntRecognizer();
     }
 
-    public static TokenRecognizer Float() {
+    public static Tokenizer Float() {
         return new FloatRecognizer();
     }
 
-    public static TokenRecognizer Hexa() {
+    public static Tokenizer Hexa() {
         return new HexaRecognizer();
     }
 
@@ -57,15 +57,15 @@ public abstract class TokenRecognizer {
         return new Skip(value);
     }
 
-    public static GenericRecognizer Generic(String kind, TokenRecognizer value) {
+    public static GenericRecognizer Generic(String kind, Tokenizer value) {
         return new GenericRecognizer(kind, value);
     }
 
-    public static TokenRecognizer pattern(String value) {
+    public static Tokenizer pattern(String value) {
         return new IdentifierRecognizer(value);
     }
 
-    public static TokenRecognizer value(String value) {
+    public static Tokenizer value(String value) {
         return new KeywordRecognizer(value);
     }
 
@@ -79,7 +79,7 @@ public abstract class TokenRecognizer {
     // Private classes
     // -----------------------------------------------------------------------------------------------------------------
 
-    private static class KeywordRecognizer extends TokenRecognizer {
+    private static class KeywordRecognizer extends Tokenizer {
         private final String value;
 
         private KeywordRecognizer(String value) {
@@ -98,7 +98,7 @@ public abstract class TokenRecognizer {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    public static abstract class PatternRecognizer extends TokenRecognizer {
+    public static abstract class PatternRecognizer extends Tokenizer {
         private final Pattern pattern;
 
         protected PatternRecognizer(String value) {
@@ -124,11 +124,11 @@ public abstract class TokenRecognizer {
         }
     }
 
-    public static class GenericRecognizer extends TokenRecognizer {
+    public static class GenericRecognizer extends Tokenizer {
         private final String kind;
-        private final TokenRecognizer value;
+        private final Tokenizer value;
 
-        public GenericRecognizer(String kind, TokenRecognizer value) {
+        public GenericRecognizer(String kind, Tokenizer value) {
             this.kind = kind;
             this.value = value;
         }

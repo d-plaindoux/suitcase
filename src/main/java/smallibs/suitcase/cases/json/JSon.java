@@ -20,6 +20,7 @@ package smallibs.suitcase.cases.json;
 
 import smallibs.suitcase.cases.genlex.Lexer;
 import smallibs.suitcase.cases.genlex.TokenStream;
+import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
@@ -35,11 +36,6 @@ import static smallibs.suitcase.cases.genlex.Parser.Opt;
 import static smallibs.suitcase.cases.genlex.Parser.Seq;
 import static smallibs.suitcase.cases.genlex.Parser.String;
 import static smallibs.suitcase.cases.genlex.Parser.parser;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Float;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Int;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.Keyword;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.QuotedString;
-import static smallibs.suitcase.cases.genlex.TokenRecognizer.String;
 
 public final class JSon {
 
@@ -52,9 +48,9 @@ public final class JSon {
     static {
         jsonLexer = new Lexer();
         jsonLexer.skip("\\s+");
-        jsonLexer.recognizers(Keyword("["), Keyword("]"), Keyword("{"), Keyword("}"), Keyword(":"), Keyword(","));
-        jsonLexer.recognizers(Keyword("null"), Keyword("true"), Keyword("false"));
-        jsonLexer.recognizers(Float(), Int(), String(), QuotedString());
+        jsonLexer.recognizers(Tokenizer.Kwd("["), Tokenizer.Kwd("]"), Tokenizer.Kwd("{"), Tokenizer.Kwd("}"), Tokenizer.Kwd(":"), Tokenizer.Kwd(","));
+        jsonLexer.recognizers(Tokenizer.Kwd("null"), Tokenizer.Kwd("true"), Tokenizer.Kwd("false"));
+        jsonLexer.recognizers(Tokenizer.Float(), Tokenizer.Int(), Tokenizer.String(), Tokenizer.QuotedString());
     }
 
     public static TokenStream stream(CharSequence sequence) {
