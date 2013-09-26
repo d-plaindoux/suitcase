@@ -160,7 +160,7 @@ public abstract class Tokenizer {
 
     private static class StringRecognizer extends PatternRecognizer {
         private StringRecognizer() {
-            super("\"[^\"]*\"");
+            super("\"(\\\\.|[^\"])*\"");
         }
 
         @Override
@@ -171,7 +171,7 @@ public abstract class Tokenizer {
 
     private static class QuotedStringRecognizer extends PatternRecognizer {
         private QuotedStringRecognizer() {
-            super("'[^']*'");
+            super("'(\\.|[^'])*'");
         }
 
         @Override

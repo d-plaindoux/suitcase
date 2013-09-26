@@ -109,10 +109,22 @@ public class GenLexStreamTokenTest {
         TestCase.assertEquals("World!", stream.nextToken().value());
     }
 
+    // @Test
+    public void shouldHaveAnotherString() throws Exception {
+        final TokenStream stream = new Lexer().tokenizers(QuotedString()).parse("\"\\\"World!\\\"\"");
+        TestCase.assertEquals("\"World!\"", stream.nextToken().value());
+    }
+
     @Test
     public void shouldHaveOneQuotedString() throws Exception {
         final TokenStream stream = new Lexer().tokenizers(QuotedString()).parse("'World!'");
         TestCase.assertEquals("World!", stream.nextToken().value());
+    }
+
+    @Test
+    public void shouldHaveAnotherQuotedString() throws Exception {
+        final TokenStream stream = new Lexer().tokenizers(QuotedString()).parse("'\"World!\"'");
+        TestCase.assertEquals("\"World!\"", stream.nextToken().value());
     }
 
     // -----------------------------------------------------------------------------------------------------------------
