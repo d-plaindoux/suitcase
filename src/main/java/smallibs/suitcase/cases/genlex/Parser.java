@@ -122,7 +122,7 @@ public class Parser {
         private final Class<? extends Token<T>> type;
         private final Case<T> value;
 
-        public PrimitiveCase(Class<? extends Token> type, Object object) {
+        public PrimitiveCase(Class<?> type, Object object) {
             this.type = (Class<? extends Token<T>>) type; // TODO -- fix this cast
             this.value = fromObject(object);
         }
