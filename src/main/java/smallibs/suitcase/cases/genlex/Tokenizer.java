@@ -89,7 +89,7 @@ public abstract class Tokenizer {
         @Override
         public Option<Token<?>> recognize(CharSequence sequence) {
             if (value.length() <= sequence.length() && value.contentEquals(sequence.subSequence(0, value.length()))) {
-                return new Option.SomeCase<Token<?>>(Token.Keyword(value));
+                return new Option.SomeCase<>(Token.Keyword(value));
             } else {
                 return Option.None();
             }
@@ -117,7 +117,7 @@ public abstract class Tokenizer {
             final Matcher matcher = pattern.matcher(sequence);
             if (matcher.find()) {
                 final CharSequence recognized = sequence.subSequence(matcher.start(), matcher.end());
-                return new Option.SomeCase<Token<?>>(matched(recognized.toString()));
+                return new Option.SomeCase<>(matched(recognized.toString()));
             } else {
                 return Option.None();
             }

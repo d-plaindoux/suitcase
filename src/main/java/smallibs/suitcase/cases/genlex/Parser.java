@@ -89,7 +89,7 @@ public class Parser {
         return new StringCase(aCase);
     }
 
-    public static Case<TokenStream> A(String kind, Object aCase) {
+    public static GenericCase A(String kind, Object aCase) {
         return new GenericCase(kind, aCase);
     }
 
