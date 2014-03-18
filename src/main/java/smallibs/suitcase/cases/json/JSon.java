@@ -23,19 +23,13 @@ import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
-import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
 import smallibs.suitcase.utils.Option;
 
 import static smallibs.suitcase.cases.core.Cases.var;
-import static smallibs.suitcase.cases.genlex.Parser.Alt;
+import static smallibs.suitcase.cases.genlex.Parser.*;
 import static smallibs.suitcase.cases.genlex.Parser.Float;
-import static smallibs.suitcase.cases.genlex.Parser.Int;
-import static smallibs.suitcase.cases.genlex.Parser.Kwd;
-import static smallibs.suitcase.cases.genlex.Parser.Opt;
-import static smallibs.suitcase.cases.genlex.Parser.Seq;
 import static smallibs.suitcase.cases.genlex.Parser.String;
-import static smallibs.suitcase.cases.genlex.Parser.parser;
 
 public final class JSon {
 
@@ -131,48 +125,13 @@ public final class JSon {
             }
         });
 
-        value.caseOf(var.of(main)).then.function(new Function<R, V>() {
-            @Override
-            public V apply(R o) throws Exception {
-                return handler.aValue(o);
-            }
-        });
-        value.caseOf(String(var)).then.function(new Function<String, V>() {
-            @Override
-            public V apply(String o) throws Exception {
-                return handler.aString(o);
-            }
-        });
-        value.caseOf(Int(var)).then.function(new Function<Integer, V>() {
-            @Override
-            public V apply(Integer o) throws Exception {
-                return handler.anInteger(o);
-            }
-        });
-        value.caseOf(Float(var)).then.function(new Function<Float, V>() {
-            @Override
-            public V apply(Float o) throws Exception {
-                return handler.aFloat(o);
-            }
-        });
-        value.caseOf(Kwd("null")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aNull();
-            }
-        });
-        value.caseOf(Kwd("true")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aBoolean(true);
-            }
-        });
-        value.caseOf(Kwd("false")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aBoolean(false);
-            }
-        });
+        value.caseOf(var.of(main)).then.function(o -> handler.aValue((R) o));
+        value.caseOf(String(var)).then.function(o -> handler.aString((String) o));
+        value.caseOf(Int(var)).then.function(o -> handler.anInteger((Integer) o));
+        value.caseOf(Float(var)).then.function(o -> handler.aFloat((Float) o));
+        value.caseOf(Kwd("null")).then.function(() -> handler.aNull());
+        value.caseOf(Kwd("true")).then.function(() -> handler.aBoolean(true));
+        value.caseOf(Kwd("false")).then.function(() -> handler.aBoolean(false));
 
         return main;
     }

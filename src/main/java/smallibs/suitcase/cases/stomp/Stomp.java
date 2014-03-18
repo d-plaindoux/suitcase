@@ -68,12 +68,12 @@ public final class Stomp {
     public static boolean validate(TokenStream stream) {
         final Matcher<TokenStream, Boolean> main, frame, command, header, headers, content;
 
-        main = parser(new Matcher<TokenStream, Boolean>(), stompLexer);
-        frame = parser(new Matcher<TokenStream, Boolean>(), stompLexer);
-        command = parser(new Matcher<TokenStream, Boolean>(), stompLexer);
-        headers = parser(new Matcher<TokenStream, Boolean>(), stompHeader);
-        header = parser(new Matcher<TokenStream, Boolean>(), stompHeader);
-        content = parser(new Matcher<TokenStream, Boolean>(), stompContent);
+        main = parser(new Matcher<>(), stompLexer);
+        frame = parser(new Matcher<>(), stompLexer);
+        command = parser(new Matcher<>(), stompLexer);
+        headers = parser(new Matcher<>(), stompHeader);
+        header = parser(new Matcher<>(), stompHeader);
+        content = parser(new Matcher<>(), stompContent);
 
         main.caseOf(Seq(frame, Opt(main))).then.value(true);
         main.caseOf(Seq(Ident(Regex(EOL)), Opt(main))).then.value(true);
