@@ -3,6 +3,8 @@ SuitCase
 
 SuitCase is a convenient Java library dedicated to object manipulation using `pattern matching` mechanism.
 
+[![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase)
+
 Quick Overview
 --------------
 
