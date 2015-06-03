@@ -30,7 +30,7 @@ public class Null<T> implements Case<T> {
     @Override
     public Option<MatchResult> unapply(T object) {
         if (object == null) {
-            return Option.Some(new MatchResult(object));
+            return Option.Some(new MatchResult(null));
         } else {
             return Option.None();
         }

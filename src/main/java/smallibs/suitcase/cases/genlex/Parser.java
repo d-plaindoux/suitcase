@@ -35,6 +35,12 @@ import static smallibs.suitcase.cases.core.Cases.fromObject;
 
 public class Parser {
 
+    public static Case<TokenStream> Kwd = Kwd(_);
+    public static Case<TokenStream> Ident = Ident(_);
+    public static Case<TokenStream> Int = Int(_);
+    public static Case<TokenStream> Float = Float(_);
+    public static Case<TokenStream> String = String(_);
+
     public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
         return new ReentrantParser<>(matcher);
     }
@@ -59,31 +65,21 @@ public class Parser {
         return new AltCase(alternatives);
     }
 
-    public static Case<TokenStream> Kwd = Kwd(_);
-
     public static Case<TokenStream> Kwd(Object object) {
         return new KeywordCase(object);
     }
-
-    public static Case<TokenStream> Ident = Ident(_);
 
     public static Case<TokenStream> Ident(Object aCase) {
         return new IdentCase(aCase);
     }
 
-    public static Case<TokenStream> Int = Int(_);
-
     public static Case<TokenStream> Int(Object aCase) {
         return new IntCase(aCase);
     }
 
-    public static Case<TokenStream> Float = Float(_);
-
     public static Case<TokenStream> Float(Object aCase) {
         return new FloatCase(aCase);
     }
-
-    public static Case<TokenStream> String = String(_);
 
     public static Case<TokenStream> String(Object aCase) {
         return new StringCase(aCase);
@@ -94,11 +90,6 @@ public class Parser {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-
-    @CaseType(TokenStream.class)
-    private interface TokenStreamCase extends Case<TokenStream> {
-        // Only for specification
-    }
 
     private static boolean isTokenStreamCase(Case<?> aCase) {
         if (aCase instanceof Var) {
@@ -116,6 +107,11 @@ public class Parser {
         return result;
     }
 
+    @CaseType(TokenStream.class)
+    private interface TokenStreamCase extends Case<TokenStream> {
+        // Only for specification
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
 
     public static abstract class PrimitiveCase<T> implements TokenStreamCase {
@@ -129,7 +125,7 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final TokenStream secundary = tokenStream.secundary();
+            final TokenStream secundary = tokenStream.secondary();
 
             final Token token;
             try {
@@ -272,7 +268,7 @@ public class Parser {
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             final MatchResult result = new MatchResult(null);
             final List<Object> values = new ArrayList<>();
-            final TokenStream secundary = tokenStream.secundary();
+            final TokenStream secundary = tokenStream.secondary();
 
             for (Case<?> aCase : this.cases) {
                 final Option<MatchResult> unapply;
@@ -331,7 +327,7 @@ public class Parser {
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             for (Case<?> aCase : this.cases) {
-                final TokenStream secundary = tokenStream.secundary();
+                final TokenStream secundary = tokenStream.secondary();
                 final Option<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
@@ -383,13 +379,13 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final TokenStream secundary = tokenStream.secundary();
-            final Option<MatchResult> unapply = aCase.unapply(secundary);
+            final TokenStream secondary = tokenStream.secondary();
+            final Option<MatchResult> unapply = aCase.unapply(secondary);
 
             final MatchResult result;
 
             if (unapply.isSome()) {
-                tokenStream.synchronizeWith(secundary);
+                tokenStream.synchronizeWith(secondary);
                 result = new MatchResult(Option.Some(unapply.value().matchedObject()));
                 final List<Object> bindings = unapply.value().bindings();
                 for (Object o : bindings) {
@@ -399,7 +395,7 @@ public class Parser {
                 // Simulate in order to collect variables
                 result = new MatchResult(Option.None());
                 final List<Class> classes = aCase.variableTypes();
-                for (Class _ : classes) {
+                for (Class ignore : classes) {
                     result.with(new MatchResult(Option.None(), null));
                 }
             }

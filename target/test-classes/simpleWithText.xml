@@ -1,0 +1,6 @@
+<A>Text in A
+    <B>Text in B
+        <C/>
+        <D>Text in D</D>
+    </B>
+</A>

@@ -72,8 +72,8 @@ public abstract class TokenStream {
         return sequence.length() == 0;
     }
 
-    public TokenStream secundary() {
-        return new SecundaryTokenStream(this);
+    public TokenStream secondary() {
+        return new SecondaryTokenStream(this);
     }
 
     abstract public boolean isInitial();
@@ -101,9 +101,9 @@ public abstract class TokenStream {
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    static class SecundaryTokenStream extends TokenStream {
+    static class SecondaryTokenStream extends TokenStream {
 
-        SecundaryTokenStream(TokenStream tokenStream) {
+        SecondaryTokenStream(TokenStream tokenStream) {
             super(tokenStream);
         }
 
