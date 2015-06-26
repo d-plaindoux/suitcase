@@ -1,5 +1,7 @@
-SuitCase [![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
+SuitCase 
 ========
+
+[![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
 
 SuitCase is a convenient Java library dedicated to object manipulation using `pattern matching` mechanism.
 
