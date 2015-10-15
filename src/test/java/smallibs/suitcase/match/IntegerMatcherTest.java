@@ -52,11 +52,7 @@ public class IntegerMatcherTest {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
         multiplyMatcher.caseOf(Peano.Zero).then(0);
-        multiplyMatcher.caseOf(Peano.Succ(var)).then(new Function<Integer, Integer>() {
-            public Integer apply(Integer i) {
-                return 19 + multiplyMatcher.match(i);
-            }
-        });
+        multiplyMatcher.caseOf(Peano.Succ(var)).then((Integer i) -> 19 + multiplyMatcher.match(i));
 
         TestCase.assertEquals(19 * 1000, multiplyMatcher.match(1000).intValue());
     }
@@ -66,11 +62,7 @@ public class IntegerMatcherTest {
         final Matcher<Integer, Boolean> evenMatcher = Matcher.create();
 
         evenMatcher.caseOf(0).then(true);
-        evenMatcher.caseOf(Peano.Succ(Peano.Succ(var))).then(new Function<Integer, Boolean>() {
-            public Boolean apply(Integer i) {
-                return evenMatcher.match(i);
-            }
-        });
+        evenMatcher.caseOf(Peano.Succ(Peano.Succ(var))).then(evenMatcher::match);
 
         evenMatcher.caseOf(__).then(false);
 
@@ -86,5 +78,13 @@ public class IntegerMatcherTest {
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));
+
+        final Matcher<Integer, Boolean> even = Matcher.create();
+
+        even.caseOf( var ).when( (Integer v1) -> v1 % 2 == 0 ).then(true);
+        even.caseOf( __ ).then(false);
+
+        even.match(12); // true
+        even.match(5); // false
     }
 }

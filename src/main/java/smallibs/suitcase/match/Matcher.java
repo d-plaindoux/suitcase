@@ -214,64 +214,53 @@ public class Matcher<T, R> {
         }
     }
 
-    public class CaseOf extends Then {
-        public final Then then;
-
-        public CaseOf(Function<?, Boolean> when, Case<T> aCase) {
-            super(when, aCase);
-            this.then = new Then(when, aCase);
-        }
-    }
-
     public class When extends Then {
-        public final Then then;
         protected final Case<T> aCase;
 
         public When(Case<T> aCase) {
             super(aCase);
 
             this.aCase = aCase;
-            this.then = new Then(aCase);
         }
 
-        public <A> CaseOf when(Function<A, Boolean> callBack) {
-            return new CaseOf(callBack, this.aCase);
+        public <A> Then when(Function<A, Boolean> callBack) {
+            return new Then(callBack, this.aCase);
         }
 
-        public CaseOf when(Function0<Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public Then when(Function0<Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A> CaseOf when(Function1<A, Boolean> callBack) {
-            return new CaseOf(callBack, this.aCase);
+        public <A> Then when(Function1<A, Boolean> callBack) {
+            return new Then(callBack, this.aCase);
         }
 
-        public <A, B> CaseOf when(Function2<A, B, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B> Then when(Function2<A, B, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C> CaseOf when(Function3<A, B, C, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C> Then when(Function3<A, B, C, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D> CaseOf when(Function4<A, B, C, D, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C, D> Then when(Function4<A, B, C, D, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E> CaseOf when(Function5<A, B, C, D, E, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E> Then when(Function5<A, B, C, D, E, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F> CaseOf when(Function6<A, B, C, D, E, F, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F> Then when(Function6<A, B, C, D, E, F, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F, G> CaseOf when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F, G> Then when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F, G, H> CaseOf when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
-            return new CaseOf(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F, G, H> Then when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
+            return new Then(Functions.function(callBack), this.aCase);
         }
     }
 }

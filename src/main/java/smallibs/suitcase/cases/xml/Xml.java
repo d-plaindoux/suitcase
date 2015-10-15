@@ -129,19 +129,14 @@ public final class Xml {
 
         comments.caseOf(Seq(Kwd("<!--"), Text, Kwd("-->"), Opt(comments))).then(true);
 
-        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd("/>"))).then.
+        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd("/>"))).
                 then((String name, Option<AS> atts) -> handler.anElement(name, atts, Option.<ES>None()));
 
-        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd(">"), Opt(comments), Opt(var.of(elements)), Kwd("</"), Ident(var), Kwd(">"))).then.
-                then((String sname, Option<AS> atts, Option<ES> content, String ename) -> {
-                    if (sname.equals(ename)) {
-                        return handler.anElement(sname, atts, content);
-                    } else {
-                        throw new MatchingException();
-                    }
-                });
+        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd(">"), Opt(comments), Opt(var.of(elements)), Kwd("</"), Ident(var), Kwd(">"))).
+                when((String sname, Option<AS> atts, Option<ES> content, String ename) -> sname.equals(ename)).
+                then((String sname, Option<AS> atts, Option<ES> content, String ename) -> handler.anElement(sname, atts, content));
 
-        attributes.caseOf(Seq(Ident(var), Kwd("="), String(var), Opt(var.of(attributes)))).then.
+        attributes.caseOf(Seq(Ident(var), Kwd("="), String(var), Opt(var.of(attributes)))).
                 then((String name, String value, Option<AS> attribute) -> handler.someAttributes(handler.anAttribute(name, value), attribute));
 
         return main;
