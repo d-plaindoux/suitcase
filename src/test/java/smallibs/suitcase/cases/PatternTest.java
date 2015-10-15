@@ -27,7 +27,7 @@ import smallibs.suitcase.utils.Pair;
 
 import java.util.Arrays;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 
 public class PatternTest {
@@ -109,22 +109,22 @@ public class PatternTest {
 
     @Test
     public void shouldConsNotlMatchEmptyList() {
-        TestCase.assertTrue(Lists.Cons(_, _).unapply(Arrays.asList()).isNone());
+        TestCase.assertTrue(Lists.Cons(__, __).unapply(Arrays.asList()).isNone());
     }
 
     @Test
     public void shouldConsMatchNonEmptyList() {
-        TestCase.assertFalse(Lists.<Integer>Cons(_, _).unapply(Arrays.asList(1)).isNone());
+        TestCase.assertFalse(Lists.<Integer>Cons(__, __).unapply(Arrays.asList(1)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2() {
-        TestCase.assertFalse(Lists.<Integer>Cons(_, Lists.Cons(_, _)).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(Lists.<Integer>Cons(__, Lists.Cons(__, __)).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(var.of(Lists.<Integer>Cons(_, Lists.Cons(_, Lists.Empty))).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(var.of(Lists.<Integer>Cons(__, Lists.Cons(__, Lists.Empty))).unapply(Arrays.asList(1, 2)).isNone());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PatternTest {
 
     @Test
     public void shouldMatchPair() {
-        TestCase.assertFalse(Pairs.Pair(_, _).unapply(new Pair<Object, Object>(1, 2)).isNone());
+        TestCase.assertFalse(Pairs.Pair(__, __).unapply(new Pair<Object, Object>(1, 2)).isNone());
     }
 
     @Test
@@ -158,12 +158,12 @@ public class PatternTest {
 
     @Test
     public void shouldMatchNonZero() {
-        TestCase.assertFalse(Peano.Succ(_).unapply(1).isNone());
+        TestCase.assertFalse(Peano.Succ(__).unapply(1).isNone());
     }
 
     @Test
     public void shouldNotMatchNonZero() {
-        TestCase.assertTrue(var.of(Peano.Succ(_)).unapply(0).isNone());
+        TestCase.assertTrue(var.of(Peano.Succ(__)).unapply(0).isNone());
     }
 }
 

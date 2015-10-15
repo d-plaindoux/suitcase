@@ -30,16 +30,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.fromObject;
 
 public class Parser {
 
-    public static Case<TokenStream> Kwd = Kwd(_);
-    public static Case<TokenStream> Ident = Ident(_);
-    public static Case<TokenStream> Int = Int(_);
-    public static Case<TokenStream> Float = Float(_);
-    public static Case<TokenStream> String = String(_);
+    public static Case<TokenStream> Kwd = Kwd(__);
+    public static Case<TokenStream> Ident = Ident(__);
+    public static Case<TokenStream> Int = Int(__);
+    public static Case<TokenStream> Float = Float(__);
+    public static Case<TokenStream> String = String(__);
 
     public static <T> ReentrantMatcher<TokenStream, T> parser(Matcher<TokenStream, T> matcher) {
         return new ReentrantParser<>(matcher);
@@ -100,7 +100,7 @@ public class Parser {
     }
 
     private static Option<MatchResult> matchFully(TokenStream tokenStream, Option<MatchResult> result) {
-        if (result.isSome() && tokenStream.isInitial() && !tokenStream.isEmpty()) {
+        if (result.isPresent() && tokenStream.isInitial() && !tokenStream.isEmpty()) {
             return Option.None();
         }
 
@@ -125,11 +125,11 @@ public class Parser {
 
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
-            final TokenStream secundary = tokenStream.secondary();
+            final TokenStream secondary = tokenStream.secondary();
 
             final Token token;
             try {
-                token = secundary.nextToken();
+                token = secondary.nextToken();
             } catch (IOException | UnexpectedCharException e) {
                 return Option.None();
             }
@@ -139,7 +139,7 @@ public class Parser {
                 return Option.None();
             }
 
-            tokenStream.synchronizeWith(secundary);
+            tokenStream.commit(secondary);
 
             return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
         }
@@ -148,7 +148,7 @@ public class Parser {
             if (this.type.isAssignableFrom(token.getClass())) {
                 final Token<T> castedToken = type.cast(token);
                 final Option<MatchResult> unapply = this.value.unapply(castedToken.value());
-                if (unapply.isSome()) {
+                if (unapply.isPresent()) {
                     return Option.Some(new MatchResult(token).with(unapply.value()));
                 }
             }
@@ -268,18 +268,18 @@ public class Parser {
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             final MatchResult result = new MatchResult(null);
             final List<Object> values = new ArrayList<>();
-            final TokenStream secundary = tokenStream.secondary();
+            final TokenStream secondary = tokenStream.secondary();
 
             for (Case<?> aCase : this.cases) {
                 final Option<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
                     final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
-                    unapply = streamCase.unapply(secundary);
+                    unapply = streamCase.unapply(secondary);
                 } else {
                     try {
                         final Case<Token> tokenCase = (Case<Token>) aCase;
-                        unapply = tokenCase.unapply(secundary.nextToken());
+                        unapply = tokenCase.unapply(secondary.nextToken());
                     } catch (IOException | UnexpectedCharException e) {
                         return Option.None();
                     }
@@ -293,7 +293,7 @@ public class Parser {
                 }
             }
 
-            tokenStream.synchronizeWith(secundary);
+            tokenStream.commit(secondary);
 
             return matchFully(tokenStream, Option.Some(new MatchResult(values).with(result)));
         }
@@ -327,23 +327,23 @@ public class Parser {
         @Override
         public Option<MatchResult> unapply(TokenStream tokenStream) {
             for (Case<?> aCase : this.cases) {
-                final TokenStream secundary = tokenStream.secondary();
+                final TokenStream secondary = tokenStream.secondary();
                 final Option<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
                     final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
-                    unapply = streamCase.unapply(secundary);
+                    unapply = streamCase.unapply(secondary);
                 } else {
                     try {
                         final Case<Token> tokenCase = (Case<Token>) aCase;
-                        unapply = tokenCase.unapply(secundary.nextToken());
+                        unapply = tokenCase.unapply(secondary.nextToken());
                     } catch (IOException | UnexpectedCharException e) {
                         return Option.None();
                     }
                 }
 
-                if (unapply.isSome()) {
-                    tokenStream.synchronizeWith(secundary);
+                if (unapply.isPresent()) {
+                    tokenStream.commit(secondary);
                     return matchFully(tokenStream, unapply);
                 }
             }
@@ -384,8 +384,8 @@ public class Parser {
 
             final MatchResult result;
 
-            if (unapply.isSome()) {
-                tokenStream.synchronizeWith(secondary);
+            if (unapply.isPresent()) {
+                tokenStream.commit(secondary);
                 result = new MatchResult(Option.Some(unapply.value().matchedObject()));
                 final List<Object> bindings = unapply.value().bindings();
                 for (Object o : bindings) {

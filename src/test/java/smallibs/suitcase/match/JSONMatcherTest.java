@@ -150,7 +150,7 @@ public class JSONMatcherTest {
                 "      'email': 'bob@gmail.com'\n" +
                 "    },\n" +
                 "    {\n" +
-                "      'name': 'Kiki',\n" +
+                "      'name': 'Alice',\n" +
                 "      'age':  25.0,\n" +
                 "      'french': false,\n" +
                 "      'email': null\n" +

@@ -34,7 +34,7 @@ import java.io.InputStream;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.xml.Dom.Att;
 import static smallibs.suitcase.cases.xml.Dom.Empty;
@@ -57,8 +57,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Empty).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Empty).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -68,8 +68,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -79,8 +79,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Empty)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(Empty)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -90,8 +90,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Empty, Empty)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(Empty, Empty)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -101,8 +101,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -112,8 +112,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_, Empty)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(__, Empty)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -124,8 +124,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Empty, _)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(Empty, __)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -135,8 +135,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_, _)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(__, __)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -146,8 +146,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -157,8 +157,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(_, _, _)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(__, __, __)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -168,8 +168,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Tag(_))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(Tag(__))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -179,8 +179,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Text(_))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(Text(__))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -190,8 +190,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Tag(_))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(Tag(__))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -201,8 +201,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Text(_))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(Text(__))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -212,8 +212,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(Tag(_), Text(_))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Seq(Tag(__), Text(__))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -227,8 +227,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -238,8 +238,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("A")).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag("A")).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -249,8 +249,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag("B")).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag("B")).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -260,8 +260,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Text(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Text(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -271,8 +271,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -282,8 +282,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, _)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__, __)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -293,8 +293,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -304,8 +304,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att(_, _))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag(__, Att(__, __))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -315,8 +315,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att(_, _))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__, Att(__, __))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -326,8 +326,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att("a", _))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag(__, Att("a", __))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -337,8 +337,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att("c", _))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__, Att("c", __))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -348,8 +348,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att(_, "vA"))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag(__, Att(__, "vA"))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -359,8 +359,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att(_, "vC"))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__, Att(__, "vC"))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -371,8 +371,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithAttributes.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_, Att("b", _), Att("a", _))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Tag(__, Att("b", __), Att("a", __))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -386,8 +386,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Text(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Text(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -397,8 +397,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Text("Hello, World!")).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Text("Hello, World!")).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -408,8 +408,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Text("Hello, not that World!")).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Text("Hello, not that World!")).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -419,8 +419,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Tag(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Tag(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -434,8 +434,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Opt(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Opt(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -445,8 +445,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Opt(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Opt(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -456,8 +456,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Opt(Tag("A"))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Opt(Tag("A"))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -467,8 +467,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Opt(Tag("B"))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Opt(Tag("B"))).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -482,8 +482,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(OptRep(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(OptRep(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -493,8 +493,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(OptRep(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(OptRep(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -504,8 +504,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(OptRep(Text(_)), OptRep(Tag(_)))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(OptRep(Text(__)), OptRep(Tag(__)))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -519,8 +519,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Rep(_)).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Rep(__)).then(false);
+        matcher.caseOf(__).then(true);
 
         assertTrue(matcher.match(term));
     }
@@ -530,8 +530,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Rep(_)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Rep(__)).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -541,8 +541,8 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(OptRep(Text(_)), Rep(Tag(_)))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Seq(OptRep(Text(__)), Rep(Tag(__)))).then(true);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -556,12 +556,12 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Empty)).then.function(new Function<XmlTerm, Boolean>() {
+        matcher.caseOf(var.of(Empty)).then(new Function<XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o) {
                 return o.size() == 0;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -571,12 +571,12 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/empty.xml").getDocumentElement());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Tag(_))).then.function(new Function<XmlTerm, Boolean>() {
+        matcher.caseOf(var.of(Tag(__))).then(new Function<XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o) {
                 return o.size() == 1 && o.next().getNodeType() == Node.ELEMENT_NODE;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -586,12 +586,12 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/tagWithTextOnly.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Text(_))).then.function(new Function<XmlTerm, Boolean>() {
+        matcher.caseOf(var.of(Text(__))).then(new Function<XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o) {
                 return o.size() == 1 && o.next().getNodeType() == Node.TEXT_NODE;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -601,12 +601,12 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Seq(Tag(_), Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
+        matcher.caseOf(var.of(Seq(Tag(__), Tag(__)))).then(new Function<XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o) {
                 return o.size() == 2 && o.next().getNodeType() == Node.ELEMENT_NODE && o.next().getNodeType() == Node.ELEMENT_NODE;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -616,12 +616,12 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(OptRep(Tag(_)))).then.function(new Function<XmlTerm, Boolean>() {
+        matcher.caseOf(var.of(OptRep(Tag(__)))).then(new Function<XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o) {
                 return o.size() == 2 && o.next().getNodeType() == Node.ELEMENT_NODE && o.next().getNodeType() == Node.ELEMENT_NODE;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -631,13 +631,13 @@ public class XmlMatcherTest {
         final XmlTerm term = Dom.toXmlTerm(getDocument("/simple.xml").getDocumentElement().getChildNodes());
         final Matcher<XmlTerm, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Seq(var, var)).then.function(new Function2<XmlTerm, XmlTerm, Boolean>() {
+        matcher.caseOf(Seq(var, var)).then(new Function2<XmlTerm, XmlTerm, Boolean>() {
             public Boolean apply(XmlTerm o1, XmlTerm o2) {
                 return o1.size() == 1 && o1.next().getNodeType() == Node.ELEMENT_NODE &&
                         o2.size() == 1 && o2.next().getNodeType() == Node.ELEMENT_NODE;
             }
         });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(__).then(false);
 
         assertTrue(matcher.match(term));
     }
@@ -649,25 +649,25 @@ public class XmlMatcherTest {
     private Matcher<XmlTerm, Integer> getNumberOfChars() {
         final Matcher<XmlTerm, Integer> numberOfChars = Matcher.<XmlTerm, Integer>create();
 
-        numberOfChars.caseOf(Text(var)).then.function(
+        numberOfChars.caseOf(Text(var)).then(
                 new Function<String, Integer>() {
                     public Integer apply(String o) {
                         return o.length();
                     }
                 }).
-                caseOf(Tag(_, var.of(OptRep(_)))).then.function(
+                caseOf(Tag(__, var.of(OptRep(__)))).then(
                 new Function<XmlTerm, Integer>() {
                     public Integer apply(XmlTerm o) {
                         return numberOfChars.match(o);
                     }
                 }).
-                caseOf(Seq(var, var.of(Rep(_)))).then.function(
+                caseOf(Seq(var, var.of(Rep(__)))).then(
                 new Function2<XmlTerm, XmlTerm, Integer>() {
                     public Integer apply(XmlTerm o1, XmlTerm o2) {
                         return numberOfChars.match(o1) + numberOfChars.match(o2);
                     }
                 }).
-                caseOf(Empty).then.value(0);
+                caseOf(Empty).then(0);
 
         return numberOfChars;
     }

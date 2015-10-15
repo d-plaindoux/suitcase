@@ -29,9 +29,14 @@ import java.util.List;
 
 public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
 
+    public static <E,T> Matcher<E, T> reentrantMatcher(Matcher<E, T> matcher) {
+        return new ReentrantMatcher<>(matcher);
+    }
+
     private final Matcher<E, T> matcher;
 
-    public ReentrantMatcher(Matcher<E, T> matcher) {
+    protected ReentrantMatcher(Matcher<E, T> matcher) {
+        super();
         this.matcher = matcher;
     }
 

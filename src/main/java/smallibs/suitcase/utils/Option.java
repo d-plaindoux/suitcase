@@ -18,42 +18,31 @@
 
 package smallibs.suitcase.utils;
 
-public abstract class Option<T> {
+public interface Option<T> {
 
-    public enum Kind {None, Some}
-
-    public static <T> Option<T> None() {
+    static <T> Option<T> None() {
         return new NoneCase<>();
     }
 
-    public static <T> Option<T> Some(T value) {
+    static <T> Option<T> Some(T value) {
         return new SomeCase<>(value);
     }
 
-    final public boolean isNone() {
-        switch (this.kind()) {
-            case None:
-                return true;
-            case Some:
-                return false;
-            default:
-                throw new IllegalArgumentException();
-        }
+    default boolean isNone() {
+        return false;
     }
 
-    final public boolean isSome() {
+    default boolean isPresent() {
         return !isNone();
     }
 
-    abstract public Kind kind();
-
-    abstract public T value();
+    T value();
 
     // -----------------------------------------------------------------------------------------------------------------
     // Implementations
     // -----------------------------------------------------------------------------------------------------------------
 
-    public static class NoneCase<T> extends Option<T> {
+    class NoneCase<T> implements Option<T> {
 
         @Override
         public T value() {
@@ -61,14 +50,14 @@ public abstract class Option<T> {
         }
 
         @Override
-        public Kind kind() {
-            return Kind.None;
+        public boolean isNone() {
+            return true;
         }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
-    public static class SomeCase<T> extends Option<T> {
+    class SomeCase<T> implements Option<T> {
         public final T value;
 
         public SomeCase(T value) {
@@ -78,11 +67,6 @@ public abstract class Option<T> {
         @Override
         public T value() {
             return this.value;
-        }
-
-        @Override
-        public Kind kind() {
-            return Kind.Some;
         }
     }
 

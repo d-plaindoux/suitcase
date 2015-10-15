@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import smallibs.suitcase.utils.Function;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 
 public class ConditionalMatcherTest {
@@ -31,12 +31,12 @@ public class ConditionalMatcherTest {
     public void shouldMatchWhenNull() {
         final Matcher<Object, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(_)).when(new Function<Object, Boolean>() {
+        matcher.caseOf(var.of(__)).when(new Function<Object, Boolean>() {
             public Boolean apply(Object var) throws Exception {
                 return var == null;
             }
-        }).then.value(true);
-        matcher.caseOf(var.of(_)).then.value(false);
+        }).then(true);
+        matcher.caseOf(var.of(__)).then(false);
 
         TestCase.assertTrue(matcher.match(null));
     }
@@ -45,12 +45,12 @@ public class ConditionalMatcherTest {
     public void shouldNotMatchWhenNotNull() {
         final Matcher<Object, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(_)).when(new Function<Object, Boolean>() {
+        matcher.caseOf(var.of(__)).when(new Function<Object, Boolean>() {
             public Boolean apply(Object var) throws Exception {
                 return var == null;
             }
-        }).then.value(true);
-        matcher.caseOf(var.of(_)).then.value(false);
+        }).then(true);
+        matcher.caseOf(var.of(__)).then(false);
 
         TestCase.assertFalse(matcher.match("Hello"));
     }

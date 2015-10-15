@@ -29,10 +29,12 @@ import smallibs.suitcase.utils.Option;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public final class Dom {
+
+    public static Case<XmlTerm> Empty = new Seq();
 
     public static Case<XmlTerm> Tag(Object name, final Object... content) {
         final List<Case<Element>> attributes = new ArrayList<>();
@@ -41,10 +43,15 @@ public final class Dom {
         }};
 
         for (Object obj : content) {
-            if (Att.isAnAttributeCase(obj)) {
+            final Boolean isAttribute = Att.getAttributeCase(obj).map(elementCase -> {
                 newContent.remove(0);
-                attributes.add((Case<Element>) obj);
-            } else {
+                attributes.add(elementCase);
+                return true;
+            }).orElse(false);
+
+            // All attributes are managed ... the remaining content is the tag body
+
+            if (!isAttribute) {
                 break;
             }
         }
@@ -76,8 +83,6 @@ public final class Dom {
         final Case<XmlTerm> seq = Seq(content);
         return Seq(seq, new OptionalRepeatable(seq));
     }
-
-    public static Case<XmlTerm> Empty = new Seq();
 
     // =================================================================================================================
     // Type "transformation" in order to transform a node or a node list to an xml term
@@ -147,11 +152,13 @@ public final class Dom {
             this.valueCase = Cases.fromObject(value);
         }
 
-        static boolean isAnAttributeCase(Object object) {
+        static Optional<Case<Element>> getAttributeCase(Object object) {
             if (object instanceof Var) {
-                return isAnAttributeCase(((Var) object).getValue());
+                return getAttributeCase(((Var) object).getValue());
+            } else if (object instanceof Att) {
+                return Optional.of((Att)object);
             } else {
-                return object instanceof Att;
+                return Optional.empty();
             }
         }
 
@@ -343,11 +350,11 @@ public final class Dom {
     // Optional and Repeatable cases
     // =================================================================================================================
 
-    private static abstract class Optional implements XmlCase {
+    private static abstract class OptionalCase implements XmlCase {
 
         protected final Case<XmlTerm> content;
 
-        Optional(Case<XmlTerm> content) {
+        OptionalCase(Case<XmlTerm> content) {
             this.content = content;
         }
 
@@ -376,7 +383,7 @@ public final class Dom {
         }
     }
 
-    private static class Opt extends Optional {
+    private static class Opt extends OptionalCase {
 
         private Opt(Case<XmlTerm> content) {
             super(content);
@@ -398,7 +405,7 @@ public final class Dom {
 
     // =================================================================================================================
 
-    private static class OptionalRepeatable extends Optional {
+    private static class OptionalRepeatable extends OptionalCase {
 
         OptionalRepeatable(Case<XmlTerm> content) {
             super(content);
@@ -464,9 +471,6 @@ public final class Dom {
             return new SecondaryTerm(this.nodes);
         }
 
-        public final List<Node> nodes() {
-            return Collections.unmodifiableList(this.nodes);
-        }
     }
 
     // =================================================================================================================

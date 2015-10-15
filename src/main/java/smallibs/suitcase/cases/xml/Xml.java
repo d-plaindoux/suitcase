@@ -25,9 +25,6 @@ import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Function;
-import smallibs.suitcase.utils.Function2;
-import smallibs.suitcase.utils.Function3;
-import smallibs.suitcase.utils.Function4;
 import smallibs.suitcase.utils.Option;
 
 import static smallibs.suitcase.cases.core.Cases.var;
@@ -48,6 +45,10 @@ public final class Xml {
     // -----------------------------------------------------------------------------------------------------------------
 
     static private final Lexer elementLexer;
+    static private final Lexer commentLexer;
+    static private final Lexer textLexer;
+    static private final Lexer cdataLexer;
+    static private final Matcher<TokenStream, Boolean> validator;
 
     static {
         elementLexer = new Lexer();
@@ -56,22 +57,16 @@ public final class Xml {
         elementLexer.tokenizers(Tokenizer.String(), Tokenizer.QuotedString(), JavaLexer.IDENT);
     }
 
-    static private final Lexer commentLexer;
-
     static {
         commentLexer = new Lexer();
         commentLexer.tokenizers(Tokenizer.Kwd("<!--"), Tokenizer.Kwd("-->"));
         commentLexer.tokenizers(TextTokenizer(".*?(?=--)"));
     }
 
-    static private final Lexer textLexer;
-
     static {
         textLexer = new Lexer();
         textLexer.tokenizers(TextTokenizer("[^<]+"));
     }
-
-    static private final Lexer cdataLexer;
 
     static {
         cdataLexer = new Lexer();
@@ -79,18 +74,16 @@ public final class Xml {
         cdataLexer.tokenizers(TextTokenizer(".*?(?=]]>)"));
     }
 
-    public static TokenStream stream(CharSequence sequence) {
-        return elementLexer.parse(sequence);
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     // Xml validation parser
     // -----------------------------------------------------------------------------------------------------------------
 
-    static private final Matcher<TokenStream, Boolean> validator;
-
     static {
         validator = handleWith(new XmlValidator());
+    }
+
+    public static TokenStream stream(CharSequence sequence) {
+        return elementLexer.parse(sequence);
     }
 
     public static Boolean validate(TokenStream stream) {
@@ -104,10 +97,11 @@ public final class Xml {
     public static <ES, E, AS, A> Matcher<TokenStream, E> handleWith(final XmlHandler<ES, E, AS, A> handler) {
         final Matcher<TokenStream, E> main;
         final Matcher<TokenStream, ES> elements;
+        final Matcher<TokenStream, E> element;
         final Matcher<TokenStream, E> text;
         final Matcher<TokenStream, E> cdata;
         final Matcher<TokenStream, Boolean> comments;
-        final Matcher<TokenStream, E> element;
+        final Matcher<TokenStream, E> tag;
         final Matcher<TokenStream, AS> attributes;
 
         main = parser(Matcher.<TokenStream, E>create(), elementLexer);
@@ -116,68 +110,39 @@ public final class Xml {
         text = parser(Matcher.<TokenStream, E>create(), textLexer);
         cdata = parser(Matcher.<TokenStream, E>create(), cdataLexer);
         comments = parser(Matcher.<TokenStream, Boolean>create(), commentLexer);
+        tag = parser(Matcher.<TokenStream, E>create(), elementLexer);
         attributes = parser(Matcher.<TokenStream, AS>create(), elementLexer);
 
-        main.caseOf(Seq(Opt(comments), var.of(element), Opt(comments))).then.function(new Function<E, E>() {
+        main.caseOf(Seq(Opt(comments), var.of(element), Opt(comments))).then(new Function<E, E>() {
             @Override
             public E apply(E element) throws Exception {
                 return element;
             }
         });
 
-        elements.caseOf(Seq(var.of(Alt(cdata, text, element)), Opt(comments), Opt(var.of(elements)))).then.function(
-                new Function2<E, Option<ES>, ES>() {
-                    @Override
-                    public ES apply(E element, Option<ES> elements) throws Exception {
-                        return handler.someElements(element, elements);
-                    }
-                });
+        elements.caseOf(Seq(var.of(element), Opt(comments), Opt(var.of(elements)))).then(handler::someElements);
+        text.caseOf(Text(var)).then(handler::aText);
 
-        text.caseOf(Text(var)).then.function(
-                new Function<String, E>() {
-                    @Override
-                    public E apply(String cdata) throws Exception {
-                        return handler.aText(cdata);
-                    }
-                });
+        element.caseOf(var.of(Alt(cdata, text, tag))).then((E i) -> i);
 
-        cdata.caseOf(Seq(Kwd("<![CDATA["), Text(var), Kwd("]]>"))).then.function(
-                new Function<String, E>() {
-                    @Override
-                    public E apply(String cdata) throws Exception {
-                        return handler.aText(cdata);
-                    }
-                });
+        cdata.caseOf(Seq(Kwd("<![CDATA["), Text(var), Kwd("]]>"))).then(handler::aText);
 
-        comments.caseOf(Seq(Kwd("<!--"), Text, Kwd("-->"), Opt(comments))).then.value(true);
+        comments.caseOf(Seq(Kwd("<!--"), Text, Kwd("-->"), Opt(comments))).then(true);
 
-        element.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd("/>"))).then.function(
-                new Function2<String, Option<AS>, E>() {
-                    @Override
-                    public E apply(String name, Option<AS> attributes) throws Exception {
-                        return handler.anElement(name, attributes, Option.<ES>None());
-                    }
-                });
+        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd("/>"))).then.
+                then((String name, Option<AS> atts) -> handler.anElement(name, atts, Option.<ES>None()));
 
-        element.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd(">"), Opt(comments), Opt(var.of(elements)), Kwd("</"), Ident(var), Kwd(">"))).then.function(
-                new Function4<String, Option<AS>, Option<ES>, String, E>() {
-                    @Override
-                    public E apply(String sname, Option<AS> attributes, Option<ES> content, String ename) throws Exception {
-                        if (sname.equals(ename)) {
-                            return handler.anElement(sname, attributes, content);
-                        } else {
-                            throw new MatchingException();
-                        }
+        tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd(">"), Opt(comments), Opt(var.of(elements)), Kwd("</"), Ident(var), Kwd(">"))).then.
+                then((String sname, Option<AS> atts, Option<ES> content, String ename) -> {
+                    if (sname.equals(ename)) {
+                        return handler.anElement(sname, atts, content);
+                    } else {
+                        throw new MatchingException();
                     }
                 });
 
         attributes.caseOf(Seq(Ident(var), Kwd("="), String(var), Opt(var.of(attributes)))).then.
-                function(new Function3<String, String, Option<AS>, AS>() {
-                    @Override
-                    public AS apply(String name, String value, Option<AS> attribute) throws Exception {
-                        return handler.someAttributes(handler.anAttribute(name, value), attribute);
-                    }
-                });
+                then((String name, String value, Option<AS> attribute) -> handler.someAttributes(handler.anAttribute(name, value), attribute));
 
         return main;
     }

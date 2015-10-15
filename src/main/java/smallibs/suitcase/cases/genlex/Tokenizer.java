@@ -50,7 +50,7 @@ public abstract class Tokenizer {
     }
 
     public static Tokenizer Hexa() {
-        return new HexaRecognizer();
+        return new HexadecimalRecognizer();
     }
 
     public static Skip Skip(String value) {
@@ -136,10 +136,10 @@ public abstract class Tokenizer {
         @Override
         public Option<Token<?>> recognize(CharSequence sequence) {
             final Option<Token<?>> option = value.recognize(sequence);
-            if (option.isSome()) {
+            if (option.isPresent()) {
                 final Token<?> value = option.value();
                 final Token<?> generic = Token.Generic(kind, value.length(), value.value());
-                return (Option<Token<?>>) Option.Some(generic); // ???
+                return Option.Some(generic);
             } else {
                 return Option.None();
             }
@@ -153,7 +153,7 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<String> matched(String string) {
             return Token.Ident(string);
         }
     }
@@ -164,7 +164,7 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<String> matched(String string) {
             return Token.String(string.length(), string.substring(1, string.length() - 1));
         }
     }
@@ -175,7 +175,7 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<String> matched(String string) {
             return Token.String(string.length(), string.substring(1, string.length() - 1));
         }
     }
@@ -190,18 +190,18 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<Integer> matched(String string) {
             return Token.Int(string.length(), Integer.valueOf(string));
         }
     }
 
-    private static class HexaRecognizer extends PatternRecognizer {
-        private HexaRecognizer() {
+    private static class HexadecimalRecognizer extends PatternRecognizer {
+        private HexadecimalRecognizer() {
             super("0[xX][a-fA-F0-9]+");
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<Integer> matched(String string) {
             return Token.Int(string.length(), Integer.valueOf(string.substring(2, string.length()), 16));
         }
     }
@@ -212,7 +212,7 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<Float> matched(String string) {
             return Token.Float(string.length(), Float.valueOf(string));
         }
     }
@@ -223,7 +223,7 @@ public abstract class Tokenizer {
         }
 
         @Override
-        protected Token<?> matched(String string) {
+        protected Token<String> matched(String string) {
             return Token.String(string.length(), string);
         }
     }

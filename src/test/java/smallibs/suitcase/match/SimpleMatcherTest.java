@@ -24,7 +24,7 @@ import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function2;
 import smallibs.suitcase.utils.Pair;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.utils.Pairs.Pair;
 
@@ -34,7 +34,7 @@ public class SimpleMatcherTest {
     public void shouldMatchNullObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then.value(42);
+        matcher.caseOf(null).then(42);
 
         TestCase.assertEquals(42, matcher.match(null).intValue());
     }
@@ -43,7 +43,7 @@ public class SimpleMatcherTest {
     public void shouldNotMatchConstantObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then.value(42);
+        matcher.caseOf(null).then(42);
 
         matcher.match(19);
     }
@@ -61,13 +61,13 @@ public class SimpleMatcherTest {
     public void shouldMatchASubclasses() throws MatchingException {
         final Matcher<A, String> matcherA = Matcher.create();
 
-        matcherA.caseOf(var.<A>of(B.class)).then.function(new Function<B, String>() {
+        matcherA.caseOf(var.<A>of(B.class)).then(new Function<B, String>() {
             public String apply(B acceptor) {
                 return "B";
             }
         });
-        matcherA.caseOf(C.class).then.value("C");
-        matcherA.caseOf(_).then.value("A");
+        matcherA.caseOf(C.class).then("C");
+        matcherA.caseOf(__).then("A");
 
         TestCase.assertEquals("B", matcherA.match(new B()));
         TestCase.assertEquals("C", matcherA.match(new C()));
@@ -77,7 +77,7 @@ public class SimpleMatcherTest {
     public void shouldSwitchPair() throws MatchingException {
         final Matcher<Pair<Integer, String>, Pair<String, Integer>> matcher = Matcher.create();
 
-        matcher.caseOf(Pair(var, var)).then.function(new Function2<Integer, String, Pair<String, Integer>>() {
+        matcher.caseOf(Pair(var, var)).then(new Function2<Integer, String, Pair<String, Integer>>() {
             public Pair<String, Integer> apply(Integer i, String s) {
                 return new Pair<>(s, i);
             }

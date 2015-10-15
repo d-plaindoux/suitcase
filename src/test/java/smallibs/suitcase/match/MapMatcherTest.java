@@ -24,7 +24,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.Map;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.utils.Maps.Entry;
 import static smallibs.suitcase.cases.utils.Maps.Map;
 
@@ -33,8 +33,8 @@ public class MapMatcherTest {
     public void shouldMatchNamedObject() throws MatchingException {
         final Matcher<Map<String, Integer>, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Entry("hello", 42)).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Entry("hello", 42)).then(true);
+        matcher.caseOf(__).then(false);
 
         final HashMap<String, Integer> map = new HashMap<>();
         map.put("hello", 42);
@@ -46,8 +46,8 @@ public class MapMatcherTest {
     public void shouldMatchNamedObjects() throws MatchingException {
         final Matcher<Map<String, Integer>, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Map(Entry("hello", 42), Entry("world", 19))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Map(Entry("hello", 42), Entry("world", 19))).then(true);
+        matcher.caseOf(__).then(false);
 
         final HashMap<String, Integer> map = new HashMap<>();
         map.put("hello", 42);

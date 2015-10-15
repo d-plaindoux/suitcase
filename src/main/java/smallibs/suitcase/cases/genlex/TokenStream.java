@@ -24,15 +24,10 @@ import java.io.IOException;
 
 public abstract class TokenStream {
 
-    public static TokenStream stream(Lexer lexer, CharSequence sequence) {
-        return new InitialTokenStream(lexer, sequence);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-
-    private Lexer lexer;
     private final AnalysedCharSequence sequence;
 
+    // -----------------------------------------------------------------------------------------------------------------
+    private Lexer lexer;
     protected TokenStream(Lexer lexer, CharSequence sequence) {
         this.lexer = lexer;
         this.sequence = new AnalysedCharSequence(sequence);
@@ -43,7 +38,11 @@ public abstract class TokenStream {
         this.sequence = tokenStream.sequence.clone();
     }
 
-    public void synchronizeWith(TokenStream stream) {
+    public static TokenStream stream(Lexer lexer, CharSequence sequence) {
+        return new InitialTokenStream(lexer, sequence);
+    }
+
+    public void commit(TokenStream stream) {
         this.sequence.commit(stream.sequence.index - this.sequence.index);
     }
 

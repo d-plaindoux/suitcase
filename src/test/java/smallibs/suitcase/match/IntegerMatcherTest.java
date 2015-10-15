@@ -23,7 +23,7 @@ import org.junit.Test;
 import smallibs.suitcase.cases.peano.Peano;
 import smallibs.suitcase.utils.Function;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 
 public class IntegerMatcherTest {
@@ -31,7 +31,7 @@ public class IntegerMatcherTest {
     public void shouldMatchTypedObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Integer.class).then.value(42);
+        matcher.caseOf(Integer.class).then(42);
 
         TestCase.assertEquals(42, matcher.match(0).intValue());
     }
@@ -40,8 +40,8 @@ public class IntegerMatcherTest {
     public void shouldMatchWithAlternativeNullObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Integer.class).then.value(42);
-        matcher.caseOf(null).then.value(19);
+        matcher.caseOf(Integer.class).then(42);
+        matcher.caseOf(null).then(19);
 
         TestCase.assertEquals(42, matcher.match(0).intValue());
         TestCase.assertEquals(19, matcher.match(null).intValue());
@@ -51,8 +51,8 @@ public class IntegerMatcherTest {
     public void shouldComputePeanoMultiplicationWithCasePatterns() throws MatchingException {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.caseOf(Peano.Zero).then.value(0);
-        multiplyMatcher.caseOf(Peano.Succ(var)).then.function(new Function<Integer, Integer>() {
+        multiplyMatcher.caseOf(Peano.Zero).then(0);
+        multiplyMatcher.caseOf(Peano.Succ(var)).then(new Function<Integer, Integer>() {
             public Integer apply(Integer i) {
                 return 19 + multiplyMatcher.match(i);
             }
@@ -65,14 +65,14 @@ public class IntegerMatcherTest {
     public void shouldCheckEvenPeano() throws MatchingException {
         final Matcher<Integer, Boolean> evenMatcher = Matcher.create();
 
-        evenMatcher.caseOf(0).then.value(true);
-        evenMatcher.caseOf(Peano.Succ(Peano.Succ(var))).then.function(new Function<Integer, Boolean>() {
+        evenMatcher.caseOf(0).then(true);
+        evenMatcher.caseOf(Peano.Succ(Peano.Succ(var))).then(new Function<Integer, Boolean>() {
             public Boolean apply(Integer i) {
                 return evenMatcher.match(i);
             }
         });
 
-        evenMatcher.caseOf(_).then.value(false);
+        evenMatcher.caseOf(__).then(false);
 
         TestCase.assertEquals(true, evenMatcher.match(10).booleanValue());
     }
@@ -81,8 +81,8 @@ public class IntegerMatcherTest {
     public void shouldCheckIntegerAndReturnImplicitConstantValue() throws MatchingException {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
-        isZero.caseOf(0).then.value(true);
-        isZero.caseOf(_).then.value(false);
+        isZero.caseOf(0).then(true);
+        isZero.caseOf(__).then(false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));

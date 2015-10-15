@@ -23,10 +23,10 @@ public class Var<T> implements Case<T> {
     @Override
     public Option<MatchResult> unapply(T t) {
         final Option<MatchResult> unapply = this.value.unapply(t);
-        if (unapply.isNone()) {
-            return Option.None();
-        } else {
+        if (unapply.isPresent()) {
             return Option.Some(new MatchResult(unapply.value().matchedObject(), t).with(unapply.value()));
+        } else {
+            return Option.None();
         }
     }
 

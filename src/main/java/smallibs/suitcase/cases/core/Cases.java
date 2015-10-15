@@ -19,9 +19,42 @@
 package smallibs.suitcase.cases.core;
 
 import smallibs.suitcase.cases.Case;
-import smallibs.suitcase.match.Matcher;
 
 public final class Cases {
+
+    public static AnyObject __ = new AnyObject();
+    public static VariableObject var = new VariableObject();
+
+    private Cases() {
+        // Prevent useless creation
+    }
+
+    public static <T> Case<T> fromObject(final Object value) {
+        if (value == null) return nil();
+        else if (value.equals(__)) return any();
+        else if (value.equals(var)) return var.of(Cases.<T>any());
+        else if (value instanceof Class) return typeOf((Class<?>) value);
+        else if (value instanceof Case) return (Case<T>) value;
+        else return Cases.constant((T) value);
+    }
+
+    public static <T> Case<T> constant(T value) {
+        assert value != null;
+        return new Constant<>(value);
+    }
+
+    public static <T> Case<T> nil() {
+        return new Null<>();
+    }
+
+    public static <T> Case<T> any() {
+        return new Any<>();
+    }
+
+    public static <T> Case<T> typeOf(Class<?> type) {
+        assert type != null;
+        return new TypeOf<>(type);
+    }
 
     public static class AnyObject {
         @Override
@@ -63,38 +96,15 @@ public final class Cases {
         }
     }
 
-    public static AnyObject _ = new AnyObject();
-    public static VariableObject var = new VariableObject();
+    public static class SequenceObject {
+        @Override
+        public boolean equals(Object o) {
+            return this == o || o instanceof AnyObject;
+        }
 
-    private Cases() {
-        // Prevent useless creation
+        @Override
+        public int hashCode() {
+            return 13;
+        }
     }
-
-    public static <T> Case<T> fromObject(final Object value) {
-        if (value == null) return nil();
-        else if (value.equals(_)) return any();
-        else if (value.equals(var)) return var.of(Cases.<T>any());
-        else if (value instanceof Class) return typeOf((Class<?>) value);
-        else if (value instanceof Case) return (Case<T>) value;
-        else return Cases.constant((T) value);
-    }
-
-    public static <T> Case<T> constant(T value) {
-        assert value != null;
-        return new Constant<>(value);
-    }
-
-    public static <T> Case<T> nil() {
-        return new Null<>();
-    }
-
-    public static <T> Case<T> any() {
-        return new Any<>();
-    }
-
-    public static <T> Case<T> typeOf(Class<?> type) {
-        assert type != null;
-        return new TypeOf<>(type);
-    }
-
 }

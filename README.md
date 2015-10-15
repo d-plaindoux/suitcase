@@ -25,8 +25,8 @@ checks if an integer is <tt>O</tt> or not.
 ``` java
 final Match<Integer, Boolean> isZero = Match.match();
 
-isZero.caseOf(0).then.value(true);
-isZero.caseOf(_).then.value(false);
+isZero.caseOf(0).then(true);
+isZero.caseOf(_).then(false);
 
 isZero.match(0); // == true
 ```

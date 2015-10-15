@@ -44,6 +44,7 @@ public final class JSon {
     // -----------------------------------------------------------------------------------------------------------------
 
     static private final Lexer jsonLexer;
+    static private final Matcher<TokenStream, Boolean> validator;
 
     static {
         jsonLexer = new Lexer();
@@ -53,18 +54,16 @@ public final class JSon {
         jsonLexer.tokenizers(Tokenizer.Float(), Tokenizer.Int(), Tokenizer.String(), Tokenizer.QuotedString());
     }
 
-    public static TokenStream stream(CharSequence sequence) {
-        return jsonLexer.parse(sequence);
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     // JSON validation parser
     // -----------------------------------------------------------------------------------------------------------------
 
-    static private final Matcher<TokenStream, Boolean> validator;
-
     static {
         validator = JSon.withHandler(new JSonValidator());
+    }
+
+    public static TokenStream stream(CharSequence sequence) {
+        return jsonLexer.parse(sequence);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -89,90 +88,37 @@ public final class JSon {
 
         // Parse rules definition
 
-        main.caseOf(var.of(Alt(object, array))).then.function(new Function<R, R>() {
+        main.caseOf(var.of(Alt(object, array))).then(new Function<R, R>() {
             @Override
             public R apply(R r) throws Exception {
                 return r;
             }
         });
 
-        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then.function(new Function<Option<MS>, R>() {
+        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then(new Function<Option<MS>, R>() {
             @Override
             public R apply(Option<MS> o) throws Exception {
                 return handler.anObject(o);
             }
         });
 
-        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then.function(new Function<Option<VS>, R>() {
+        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then(new Function<Option<VS>, R>() {
             @Override
             public R apply(Option<VS> o) throws Exception {
                 return handler.anArray(o);
             }
         });
 
-        members.caseOf(Seq(var.of(member), Opt(Seq(Kwd(","), var.of(members))))).then.function(new Function2<M, Option<MS>, MS>() {
-            @Override
-            public MS apply(M o1, Option<MS> o2) throws Exception {
-                return handler.someMembers(o1, o2);
-            }
-        });
-
-        member.caseOf(Seq(String(var), Kwd(":"), var.of(value))).then.function(new Function2<String, V, M>() {
-            @Override
-            public M apply(String o1, V o2) throws Exception {
-                return handler.aMember(o1, o2);
-            }
-        });
-
-        values.caseOf(Seq(var.of(value), Opt(Seq(Kwd(","), var.of(values))))).then.function(new Function2<V, Option<VS>, VS>() {
-            @Override
-            public VS apply(V o1, Option<VS> o2) throws Exception {
-                return handler.someValues(o1, o2);
-            }
-        });
-
-        value.caseOf(var.of(main)).then.function(new Function<R, V>() {
-            @Override
-            public V apply(R o) throws Exception {
-                return handler.aValue(o);
-            }
-        });
-        value.caseOf(String(var)).then.function(new Function<String, V>() {
-            @Override
-            public V apply(String o) throws Exception {
-                return handler.aString(o);
-            }
-        });
-        value.caseOf(Int(var)).then.function(new Function<Integer, V>() {
-            @Override
-            public V apply(Integer o) throws Exception {
-                return handler.anInteger(o);
-            }
-        });
-        value.caseOf(Float(var)).then.function(new Function<Float, V>() {
-            @Override
-            public V apply(Float o) throws Exception {
-                return handler.aFloat(o);
-            }
-        });
-        value.caseOf(Kwd("null")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aNull();
-            }
-        });
-        value.caseOf(Kwd("true")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aBoolean(true);
-            }
-        });
-        value.caseOf(Kwd("false")).then.function(new Function0<Object>() {
-            @Override
-            public Object apply() throws Exception {
-                return handler.aBoolean(false);
-            }
-        });
+        members.caseOf(Seq(var.of(member), Opt(Seq(Kwd(","), var.of(members))))).then(handler::someMembers);
+        member.caseOf(Seq(String(var), Kwd(":"), var.of(value))).then(handler::aMember);
+        values.caseOf(Seq(var.of(value), Opt(Seq(Kwd(","), var.of(values))))).then(handler::someValues);
+        value.caseOf(var.of(main)).then(handler::aValue);
+        value.caseOf(String(var)).then(handler::aString);
+        value.caseOf(Int(var)).then(handler::anInteger);
+        value.caseOf(Float(var)).then(handler::aFloat);
+        value.caseOf(Kwd("null")).then(handler::aNull);
+        value.caseOf(Kwd("true")).then(() -> handler.aBoolean(true));
+        value.caseOf(Kwd("false")).then(() -> handler.aBoolean(false));
 
         return main;
     }

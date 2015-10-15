@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import smallibs.suitcase.utils.Function;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.lang.Beans.Att;
 import static smallibs.suitcase.cases.lang.Beans.Obj;
@@ -47,8 +47,8 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenAttName() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("a", _))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Obj(Att("a", __))).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match(new A(42)));
     }
@@ -57,8 +57,8 @@ public class BeanMatcherTest {
     public void shouldNotMatchABeanWithAGivenAttName() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("b", _))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Obj(Att("b", __))).then(false);
+        matcher.caseOf(__).then(true);
 
         TestCase.assertTrue(matcher.match(new A(42)));
     }
@@ -67,8 +67,8 @@ public class BeanMatcherTest {
     public void shouldNotMatchABeanWithAGivenAttValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("a", 19))).then.value(false);
-        matcher.caseOf(_).then.value(true);
+        matcher.caseOf(Obj(Att("a", 19))).then(false);
+        matcher.caseOf(__).then(true);
 
         TestCase.assertTrue(matcher.match(new A(42)));
     }
@@ -77,8 +77,8 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenAttValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("a", 42))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Obj(Att("a", 42))).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match(new A(42)));
     }
@@ -87,8 +87,8 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenMethodValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("ceci", 42))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Obj(Att("ceci", 42))).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
     }
@@ -97,8 +97,8 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithAGivenValue() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att(_, 42))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Obj(Att(__, 42))).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
     }
@@ -107,8 +107,8 @@ public class BeanMatcherTest {
     public void shouldMatchABeanWithGivenAttributes() {
         final Matcher<A, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("a", 21), Att("ceci", 42))).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Obj(Att("a", 21), Att("ceci", 42))).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match(new A(21)));
     }
@@ -117,12 +117,12 @@ public class BeanMatcherTest {
     public void shouldMatchAStringContent() {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(Obj(Att("bytes", var))).then.function(new Function<byte[], Integer>() {
+        matcher.caseOf(Obj(Att("bytes", var))).then(new Function<byte[], Integer>() {
             public Integer apply(byte[] bytes) {
                 return bytes.length;
             }
         });
-        matcher.caseOf(_).then.value(0);
+        matcher.caseOf(__).then(0);
 
         TestCase.assertEquals(13, matcher.match("Hello, World!").intValue());
     }

@@ -24,7 +24,7 @@ import smallibs.suitcase.utils.Function;
 
 import java.util.List;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.lang.Strings.Regex;
 
@@ -34,8 +34,8 @@ public class RegexMatcherTest {
     public void shouldMatchStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Regex("Hello")).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Regex("Hello")).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match("Hello"));
     }
@@ -44,8 +44,8 @@ public class RegexMatcherTest {
     public void shouldNotMatchStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Regex("Hello")).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Regex("Hello")).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertFalse(matcher.match("Hello, World"));
     }
@@ -54,12 +54,8 @@ public class RegexMatcherTest {
     public void shouldMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(Regex("Hello, (.*)"))).then.function(new Function<List<String>, Boolean>() {
-            public Boolean apply(List<String> strings) {
-                return strings.get(1).equals("World");
-            }
-        });
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(var.of(Regex("Hello, (.*)"))).then((List<String> strings) -> strings.get(1).equals("World"));
+        matcher.caseOf(__).then(false);
 
         TestCase.assertTrue(matcher.match("Hello, World"));
     }
@@ -68,8 +64,8 @@ public class RegexMatcherTest {
     public void shouldNotMatchSubStringUsingRegex() throws Exception {
         final Matcher<String, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(Regex("Hello, .*!")).then.value(true);
-        matcher.caseOf(_).then.value(false);
+        matcher.caseOf(Regex("Hello, .*!")).then(true);
+        matcher.caseOf(__).then(false);
 
         TestCase.assertFalse(matcher.match("Hello, World"));
     }

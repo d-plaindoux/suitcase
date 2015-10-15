@@ -20,7 +20,7 @@ package smallibs.suitcase.cases.genlex;
 
 public class JavaLexer extends Lexer {
 
-    public static final Tokenizer IDENT = Tokenizer.Ident("([\\p{L}_$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
+    public static final Tokenizer IDENT = Tokenizer.Ident("([\\p{L}$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
     public JavaLexer() {
         super();

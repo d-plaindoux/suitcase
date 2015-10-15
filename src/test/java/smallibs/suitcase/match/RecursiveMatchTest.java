@@ -31,12 +31,8 @@ public class RecursiveMatchTest {
     public void shouldHaveStackOverflow() throws MatchingException {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
-        multiplyMatcher.caseOf(Zero).then.value(0);
-        multiplyMatcher.caseOf(Succ(var)).then.function(new Function<Integer, Integer>() {
-            public Integer apply(Integer i) {
-                return 1 + multiplyMatcher.match(i);
-            }
-        });
+        multiplyMatcher.caseOf(Zero).then(0);
+        multiplyMatcher.caseOf(Succ(var)).then((Integer i) -> 1 + multiplyMatcher.match(i));
 
         multiplyMatcher.match(1000000);
     }

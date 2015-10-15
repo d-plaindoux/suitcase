@@ -24,9 +24,10 @@ import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function2;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static smallibs.suitcase.cases.core.Cases._;
+import static smallibs.suitcase.cases.core.Cases.__;
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.utils.Lists.Cons;
 import static smallibs.suitcase.cases.utils.Lists.Empty;
@@ -36,41 +37,33 @@ public class ListMatcherTest {
     public void shouldMatchLisContainingAnObject() throws MatchingException {
         final Matcher<List<Object>, Boolean> isEmpty = Matcher.create();
 
-        isEmpty.caseOf(Cons(1, _)).then.value(true);
-        isEmpty.caseOf(_).then.value(false);
+        isEmpty.caseOf(Cons(1, __)).then(true);
+        isEmpty.caseOf(__).then(false);
 
-        TestCase.assertTrue(isEmpty.match(Arrays.<Object>asList(1)));
-        TestCase.assertFalse(isEmpty.match(Arrays.<Object>asList()));
-        TestCase.assertFalse(isEmpty.match(Arrays.<Object>asList(2, 3)));
+        TestCase.assertTrue(isEmpty.match(Collections.singletonList(1)));
+        TestCase.assertFalse(isEmpty.match(Collections.emptyList()));
+        TestCase.assertFalse(isEmpty.match(Arrays.asList(2, 3)));
     }
 
     @Test
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
-        final Matcher<List<Object>, Integer> sizeOfMatcher = Matcher.create();
+        final Matcher<List<?>, Integer> sizeOfMatcher = Matcher.create();
 
-        sizeOfMatcher.caseOf(Empty).then.value(0);
-        sizeOfMatcher.caseOf(Cons(_, var)).then.function(new Function<List<Object>, Integer>() {
-            public Integer apply(List<Object> tail) {
-                return 1 + sizeOfMatcher.match(tail);
-            }
-        });
+        sizeOfMatcher.caseOf(Empty).then(0);
+        sizeOfMatcher.caseOf(Cons(__, var)).then((List<Object> tail) -> 1 + sizeOfMatcher.match(tail));
 
-        TestCase.assertEquals(0, sizeOfMatcher.match(Arrays.<Object>asList()).intValue());
-        TestCase.assertEquals(4, sizeOfMatcher.match(Arrays.<Object>asList(1, 2, 3, 4)).intValue());
+        TestCase.assertEquals(0, sizeOfMatcher.match(Collections.emptyList()).intValue());
+        TestCase.assertEquals(4, sizeOfMatcher.match(Arrays.asList(1, 2, 3, 4)).intValue());
     }
 
     @Test
     public void shouldComputeAdditionWithAdHocPatternObject() throws MatchingException {
         final Matcher<List<Integer>, Integer> addAll = Matcher.create();
 
-        addAll.caseOf(Empty).then.value(0);
-        addAll.caseOf(Cons(var, var)).then.function(new Function2<Integer, List<Integer>, Integer>() {
-            public Integer apply(Integer i, List<Integer> l) {
-                return i + addAll.match(l);
-            }
-        });
+        addAll.caseOf(Empty).then(0);
+        addAll.caseOf(Cons(var, var)).then((Integer i, List<Integer> l) -> i + addAll.match(l));
 
-        TestCase.assertEquals(0, addAll.match(Arrays.<Integer>asList()).intValue());
+        TestCase.assertEquals(0, addAll.match(Collections.emptyList()).intValue());
         TestCase.assertEquals(10, addAll.match(Arrays.asList(1, 2, 3, 4)).intValue());
     }
 
@@ -78,10 +71,10 @@ public class ListMatcherTest {
     public void shouldCheckIntegerAsHeadListAndReturnImplicitConstantValue() throws MatchingException {
         final Matcher<List<Integer>, Boolean> headIsZero = Matcher.create();
 
-        headIsZero.caseOf(Cons(0, _)).then.value(true);
-        headIsZero.caseOf(_).then.value(false);
+        headIsZero.caseOf(Cons(0, __)).then(true);
+        headIsZero.caseOf(__).then(false);
 
-        TestCase.assertTrue(headIsZero.match(Arrays.asList(0)));
+        TestCase.assertTrue(headIsZero.match(Collections.singletonList(0)));
         TestCase.assertFalse(headIsZero.match(Arrays.asList(1, 2)));
     }
 }

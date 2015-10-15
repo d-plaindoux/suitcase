@@ -70,7 +70,7 @@ public class GSonBuilder implements JSonHandler<JsonElement, JsonObject, Pair<St
 
         objectList.add(o1);
 
-        if (o2.isSome()) {
+        if (o2.isPresent()) {
             objectList.addAll(o2.value());
         }
 
