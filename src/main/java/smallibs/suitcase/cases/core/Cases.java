@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2013 D. Plaindoux.
+ * Copyright (C)2015 D. Plaindoux.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -93,18 +93,6 @@ public final class Cases {
 
         public <T> Case<T> of(AnyObject any) {
             return new Var<>(Cases.<T>any());
-        }
-    }
-
-    public static class SequenceObject {
-        @Override
-        public boolean equals(Object o) {
-            return this == o || o instanceof AnyObject;
-        }
-
-        @Override
-        public int hashCode() {
-            return 13;
         }
     }
 }

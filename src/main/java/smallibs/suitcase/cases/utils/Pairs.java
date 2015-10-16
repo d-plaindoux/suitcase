@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2013 D. Plaindoux.
+ * Copyright (C)2015 D. Plaindoux.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -18,6 +18,7 @@
 
 package smallibs.suitcase.cases.utils;
 
+import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
@@ -32,6 +33,7 @@ public final class Pairs {
         return new PairCase<>(o1, o2);
     }
 
+    @CaseType(Pair.class)
     private static class PairCase<T1, T2> implements Case<Pair<T1, T2>> {
 
         private final Case<T1> c1;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C)2013 D. Plaindoux.
+ * Copyright (C)2015 D. Plaindoux.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published
@@ -18,6 +18,7 @@
 
 package smallibs.suitcase.cases.utils;
 
+import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
@@ -40,6 +41,7 @@ public class Maps {
     // Private case classes
     // ------------------------------------------------------------------------------------------------------------------
 
+    @CaseType(Map.class)
     private static class MapCase<T1, T2> implements Case<Map<T1, T2>> {
 
         private final List<Case<Map<T1, T2>>> entries;
