@@ -24,7 +24,7 @@ checks if an integer is <tt>O</tt> or not.
 final Match<Integer, Boolean> isZero = Match.match();
 
 isZero.caseOf(0).then(true);
-isZero.caseOf(_).then(false);
+isZero.caseOf(__).then(false);
 
 isZero.match(0); // == true
 ```
