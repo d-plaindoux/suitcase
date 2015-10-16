@@ -4,7 +4,8 @@
 
     <groupId>smallibs</groupId>
     <artifactId>suitcase</artifactId>
-    <version>1.0-SNAPSHOT</version>    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>SuitCase</name>
     <url>http://https://github.com/d-plaindoux/suitcase</url>
