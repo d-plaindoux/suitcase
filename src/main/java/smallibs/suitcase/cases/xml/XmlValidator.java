@@ -18,18 +18,18 @@
 
 package smallibs.suitcase.cases.xml;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 public class XmlValidator implements XmlHandler<Boolean, Boolean, Boolean, Boolean> {
 
     @Override
-    public Boolean someElements(Boolean element, Option<Boolean> values) {
-        return element && (values.isNone() || values.value());
+    public Boolean someElements(Boolean element, Optional<Boolean> values) {
+        return element && (!values.isPresent() || values.get());
     }
 
     @Override
-    public Boolean anElement(String name, Option<Boolean> attributes, Option<Boolean> values) {
-        return (attributes.isNone() || attributes.value()) && (values.isNone() || values.value());
+    public Boolean anElement(String name, Optional<Boolean> attributes, Optional<Boolean> values) {
+        return (!attributes.isPresent() || attributes.get()) && (!values.isPresent() || values.get());
     }
 
     @Override
@@ -38,8 +38,8 @@ public class XmlValidator implements XmlHandler<Boolean, Boolean, Boolean, Boole
     }
 
     @Override
-    public Boolean someAttributes(Boolean attribute, Option<Boolean> attributes) {
-        return attribute && (attributes.isNone() || attributes.value());
+    public Boolean someAttributes(Boolean attribute, Optional<Boolean> attributes) {
+        return attribute && (!attributes.isPresent() || attributes.get());
     }
 
     @Override

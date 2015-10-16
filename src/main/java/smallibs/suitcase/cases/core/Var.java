@@ -2,7 +2,7 @@ package smallibs.suitcase.cases.core;
 
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class Var<T> implements Case<T> {
     }
 
     @Override
-    public Option<MatchResult> unapply(T t) {
-        final Option<MatchResult> unapply = this.value.unapply(t);
+    public Optional<MatchResult> unapply(T t) {
+        final Optional<MatchResult> unapply = this.value.unapply(t);
         if (unapply.isPresent()) {
-            return Option.Some(new MatchResult(unapply.value().matchedObject(), t).with(unapply.value()));
+            return Optional.ofNullable(new MatchResult(unapply.get().matchedObject(), t).with(unapply.get()));
         } else {
-            return Option.None();
+            return Optional.empty();
         }
     }
 

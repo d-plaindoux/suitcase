@@ -23,35 +23,35 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 import smallibs.suitcase.utils.Pair;
 
 public class GSonBuilder implements JSonHandler<JsonElement, JsonObject, Pair<String, JsonElement>, JsonArray, JsonElement> {
     @Override
-    public JsonElement anObject(Option<JsonObject> members) {
-        if (members.isNone()) {
+    public JsonElement anObject(Optional<JsonObject> members) {
+        if (!members.isPresent()) {
             return new JsonObject();
         } else {
-            return members.value();
+            return members.get();
         }
     }
 
     @Override
-    public JsonArray anArray(Option<JsonArray> values) {
-        if (values.isNone()) {
+    public JsonArray anArray(Optional<JsonArray> values) {
+        if (!values.isPresent()) {
             return new JsonArray();
         } else {
-            return values.value();
+            return values.get();
         }
     }
 
     @Override
-    public JsonObject someMembers(Pair<String, JsonElement> o1, Option<JsonObject> o2) {
+    public JsonObject someMembers(Pair<String, JsonElement> o1, Optional<JsonObject> o2) {
         final JsonObject objectMap;
-        if (o2.isNone()) {
+        if (!o2.isPresent()) {
             objectMap = new JsonObject();
         } else {
-            objectMap = o2.value();
+            objectMap = o2.get();
         }
 
         objectMap.add(o1._1, o1._2);
@@ -65,13 +65,13 @@ public class GSonBuilder implements JSonHandler<JsonElement, JsonObject, Pair<St
     }
 
     @Override
-    public JsonArray someValues(JsonElement o1, Option<JsonArray> o2) {
+    public JsonArray someValues(JsonElement o1, Optional<JsonArray> o2) {
         final JsonArray objectList = new JsonArray();
 
         objectList.add(o1);
 
         if (o2.isPresent()) {
-            objectList.addAll(o2.value());
+            objectList.addAll(o2.get());
         }
 
         return objectList;

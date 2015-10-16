@@ -21,7 +21,7 @@ package smallibs.suitcase.cases.lang;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -56,19 +56,19 @@ public final class Beans {
         }
 
         @Override
-        public Option<MatchResult> unapply(Object o) {
+        public Optional<MatchResult> unapply(Object o) {
             final MatchResult matchResult = new MatchResult(null);
 
             for (Case<Object> content : contentCases) {
-                final Option<MatchResult> unapply = content.unapply(o);
-                if (unapply.isNone()) {
+                final Optional<MatchResult> unapply = content.unapply(o);
+                if (!unapply.isPresent()) {
                     return unapply;
                 } else {
-                    matchResult.with(unapply.value());
+                    matchResult.with(unapply.get());
                 }
             }
 
-            return Option.Some(new MatchResult(o).with(matchResult));
+            return Optional.ofNullable(new MatchResult(o).with(matchResult));
         }
 
 
@@ -97,93 +97,93 @@ public final class Beans {
         }
 
         @Override
-        public Option<MatchResult> unapply(Object object) {
+        public Optional<MatchResult> unapply(Object object) {
             final Field[] fields = object.getClass().getDeclaredFields();
             for (Field field : fields) {
-                final Option<MatchResult> unapply = unapplyField(object, field);
-                if (!unapply.isNone()) {
+                final Optional<MatchResult> unapply = unapplyField(object, field);
+                if (!!unapply.isPresent()) {
                     return unapply;
                 }
             }
 
             final Method[] methods = object.getClass().getDeclaredMethods();
             for (Method field : methods) {
-                final Option<MatchResult> unapply = unapplyMethod(object, field);
-                if (!unapply.isNone()) {
+                final Optional<MatchResult> unapply = unapplyMethod(object, field);
+                if (!!unapply.isPresent()) {
                     return unapply;
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         // =============================================================================================================
 
-        private Option<MatchResult> unapplyMethod(Object object, Method method) {
+        private Optional<MatchResult> unapplyMethod(Object object, Method method) {
             final String fieldName = getFieldName(method);
 
             if (fieldName != null) {
-                final Option<MatchResult> unapplyName = unapplyName(fieldName);
-                if (!unapplyName.isNone()) {
-                    final Option<MatchResult> unapplyValue = unapplyMethodValue(object, method);
-                    if (!unapplyValue.isNone()) {
-                        return Option.Some(new MatchResult(method).with(unapplyName.value()).with(unapplyValue.value()));
+                final Optional<MatchResult> unapplyName = unapplyName(fieldName);
+                if (!!unapplyName.isPresent()) {
+                    final Optional<MatchResult> unapplyValue = unapplyMethodValue(object, method);
+                    if (!!unapplyValue.isPresent()) {
+                        return Optional.ofNullable(new MatchResult(method).with(unapplyName.get()).with(unapplyValue.get()));
                     }
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
-        private Option<MatchResult> unapplyField(Object object, Field field) {
-            final Option<MatchResult> unapplyName = unapplyName(field.getName());
-            if (!unapplyName.isNone()) {
-                final Option<MatchResult> unapplyValue = unapplyFieldValue(object, field);
-                if (!unapplyValue.isNone()) {
-                    return Option.Some(new MatchResult(field).with(unapplyName.value()).with(unapplyValue.value()));
+        private Optional<MatchResult> unapplyField(Object object, Field field) {
+            final Optional<MatchResult> unapplyName = unapplyName(field.getName());
+            if (!!unapplyName.isPresent()) {
+                final Optional<MatchResult> unapplyValue = unapplyFieldValue(object, field);
+                if (!!unapplyValue.isPresent()) {
+                    return Optional.ofNullable(new MatchResult(field).with(unapplyName.get()).with(unapplyValue.get()));
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         // =============================================================================================================
 
-        private Option<MatchResult> unapplyName(String name) {
+        private Optional<MatchResult> unapplyName(String name) {
             return nameCase.unapply(name);
         }
 
-        private Option<MatchResult> unapplyMethodValue(Object object, Method method) {
+        private Optional<MatchResult> unapplyMethodValue(Object object, Method method) {
             if (Modifier.isPublic(method.getModifiers()) && method.getParameterTypes().length == 0) {
                 try {
                     return valueCase.unapply(method.invoke(object));
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    return Option.None();
+                    return Optional.empty();
                 }
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
-        private Option<MatchResult> unapplyDirectFieldValue(Object object, Field field) {
+        private Optional<MatchResult> unapplyDirectFieldValue(Object object, Field field) {
             try {
                 return valueCase.unapply(field.get(object));
             } catch (IllegalAccessException consume) {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
-        private Option<MatchResult> unapplyGetterFieldValue(Object object, Field field) {
+        private Optional<MatchResult> unapplyGetterFieldValue(Object object, Field field) {
             try {
                 final Method methodDef = object.getClass().getMethod(getGetterName(field));
                 return valueCase.unapply(methodDef.invoke(object));
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
-        private Option<MatchResult> unapplyFieldValue(Object object, Field field) {
-            final Option<MatchResult> unapply;
+        private Optional<MatchResult> unapplyFieldValue(Object object, Field field) {
+            final Optional<MatchResult> unapply;
 
             if (Modifier.isPublic(field.getModifiers())) {
                 unapply = unapplyDirectFieldValue(object, field);

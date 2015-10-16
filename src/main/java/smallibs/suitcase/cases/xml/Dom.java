@@ -25,7 +25,7 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
 import smallibs.suitcase.cases.core.Var;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,25 +119,25 @@ public final class Dom {
         }
 
         @Override
-        public Option<MatchResult> unapply(XmlTerm nodeList) {
-            final Option<MatchResult> result;
+        public Optional<MatchResult> unapply(XmlTerm nodeList) {
+            final Optional<MatchResult> result;
 
             if (checkNodeAvailability(nodeList)) {
                 final Node node = nodeList.secondary().next();
 
                 result = unapplyNode(node);
 
-                if (!result.isNone()) {
+                if (!!result.isPresent()) {
                     nodeList.next();
                 }
             } else {
-                result = Option.None();
+                result = Optional.empty();
             }
 
             return result;
         }
 
-        abstract Option<MatchResult> unapplyNode(Node node);
+        abstract Optional<MatchResult> unapplyNode(Node node);
     }
 
     // =================================================================================================================
@@ -163,19 +163,19 @@ public final class Dom {
         }
 
         @Override
-        public Option<MatchResult> unapply(Element term) {
+        public Optional<MatchResult> unapply(Element term) {
             for (int i = 0; i < term.getAttributes().getLength(); i += 1) {
                 final Node node = term.getAttributes().item(i);
-                final Option<MatchResult> unapplyName = nameCase.unapply(node.getNodeName());
-                if (!unapplyName.isNone()) {
-                    final Option<MatchResult> unapplyValue = valueCase.unapply(node.getNodeValue());
-                    if (!unapplyValue.isNone()) {
-                        return Option.Some(new MatchResult(node).with(unapplyName.value()).with(unapplyValue.value()));
+                final Optional<MatchResult> unapplyName = nameCase.unapply(node.getNodeName());
+                if (!!unapplyName.isPresent()) {
+                    final Optional<MatchResult> unapplyValue = valueCase.unapply(node.getNodeValue());
+                    if (!!unapplyValue.isPresent()) {
+                        return Optional.ofNullable(new MatchResult(node).with(unapplyName.get()).with(unapplyValue.get()));
                     }
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         @Override
@@ -200,31 +200,31 @@ public final class Dom {
         }
 
         @Override
-        Option<MatchResult> unapplyNode(Node node) {
+        Optional<MatchResult> unapplyNode(Node node) {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 final Element element = (Element) node;
-                final Option<MatchResult> unapplyName = name.unapply(element.getTagName());
-                if (unapplyName.isNone()) {
+                final Optional<MatchResult> unapplyName = name.unapply(element.getTagName());
+                if (!unapplyName.isPresent()) {
                     return unapplyName;
                 } else {
                     for (Case<Element> attribute : attributes) {
-                        final Option<MatchResult> unapply = attribute.unapply(element);
-                        if (unapply.isNone()) {
+                        final Optional<MatchResult> unapply = attribute.unapply(element);
+                        if (!unapply.isPresent()) {
                             return unapply;
                         } else {
-                            unapplyName.value().with(unapply.value());
+                            unapplyName.get().with(unapply.get());
                         }
                     }
 
-                    final Option<MatchResult> unapplyContent = content.unapply(toXmlTerm(node.getChildNodes()));
-                    if (unapplyContent.isNone()) {
+                    final Optional<MatchResult> unapplyContent = content.unapply(toXmlTerm(node.getChildNodes()));
+                    if (!unapplyContent.isPresent()) {
                         return unapplyContent;
                     } else {
-                        return Option.Some(new MatchResult(new InitialTerm(node)).with(unapplyName.value()).with(unapplyContent.value()));
+                        return Optional.ofNullable(new MatchResult(new InitialTerm(node)).with(unapplyName.get()).with(unapplyContent.get()));
                     }
                 }
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
@@ -255,16 +255,16 @@ public final class Dom {
         }
 
         @Override
-        Option<MatchResult> unapplyNode(Node node) {
+        Optional<MatchResult> unapplyNode(Node node) {
             if (node.getNodeType() == Node.TEXT_NODE) {
-                final Option<MatchResult> unapplyText = text.unapply(node.getTextContent().trim());
-                if (unapplyText.isNone()) {
+                final Optional<MatchResult> unapplyText = text.unapply(node.getTextContent().trim());
+                if (!unapplyText.isPresent()) {
                     return unapplyText;
                 } else {
-                    return Option.Some(new MatchResult(new InitialTerm(node)).with(unapplyText.value()));
+                    return Optional.ofNullable(new MatchResult(new InitialTerm(node)).with(unapplyText.get()));
                 }
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
@@ -299,36 +299,36 @@ public final class Dom {
         }
 
         @Override
-        public Option<MatchResult> unapply(XmlTerm nodeList) {
+        public Optional<MatchResult> unapply(XmlTerm nodeList) {
             final XmlTerm secondary = nodeList.secondary();
             final MatchResult result = new MatchResult(null);
 
             for (Case<XmlTerm> aContent : content) {
-                final Option<MatchResult> unapply;
+                final Optional<MatchResult> unapply;
 
                 if (isXmlCase(aContent)) {
                     unapply = aContent.unapply(secondary);
                 } else if (secondary.hasNext()) {
                     unapply = aContent.unapply(new InitialTerm(secondary.next()));
                 } else {
-                    unapply = Option.None();
+                    unapply = Optional.empty();
                 }
 
-                if (unapply.isNone()) {
+                if (!unapply.isPresent()) {
                     return unapply;
                 } else {
-                    result.with(unapply.value());
+                    result.with(unapply.get());
                 }
             }
 
             if (nodeList.isInitial() && secondary.hasNext()) {
-                return Option.None();
+                return Optional.empty();
             } else {
                 final List<Node> matched = new ArrayList<>();
                 while (nodeList.size() > secondary.size()) {
                     matched.add(nodeList.next());
                 }
-                return Option.Some(new MatchResult(new InitialTerm(matched)).with(result));
+                return Optional.ofNullable(new MatchResult(new InitialTerm(matched)).with(result));
             }
 
         }
@@ -359,7 +359,7 @@ public final class Dom {
         }
 
         @Override
-        public Option<MatchResult> unapply(XmlTerm nodeList) {
+        public Optional<MatchResult> unapply(XmlTerm nodeList) {
             final XmlTerm secondary = nodeList.secondary();
             final MatchResult matchResult = unapplyXmlTerm(secondary);
 
@@ -369,9 +369,9 @@ public final class Dom {
             }
 
             if (nodeList.isInitial() && nodeList.hasNext()) {
-                return Option.None();
+                return Optional.empty();
             } else {
-                return Option.Some(new MatchResult(new InitialTerm(matched)).with(matchResult));
+                return Optional.ofNullable(new MatchResult(new InitialTerm(matched)).with(matchResult));
             }
         }
 
@@ -393,10 +393,10 @@ public final class Dom {
         protected MatchResult unapplyXmlTerm(XmlTerm nodeList) {
             final MatchResult matchResult = new MatchResult(null);
 
-            final Option<MatchResult> unapply = content.unapply(nodeList);
+            final Optional<MatchResult> unapply = content.unapply(nodeList);
 
-            if (!unapply.isNone()) {
-                matchResult.with(unapply.value());
+            if (!!unapply.isPresent()) {
+                matchResult.with(unapply.get());
             }
 
             return matchResult;
@@ -416,9 +416,9 @@ public final class Dom {
             final MatchResult matchResult = new MatchResult(null);
 
             while (true) {
-                final Option<MatchResult> unapply = content.unapply(nodeList);
-                if (!unapply.isNone()) {
-                    matchResult.with(unapply.value());
+                final Optional<MatchResult> unapply = content.unapply(nodeList);
+                if (!!unapply.isPresent()) {
+                    matchResult.with(unapply.get());
                 } else {
                     break;
                 }

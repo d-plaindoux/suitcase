@@ -18,12 +18,16 @@
 
 package smallibs.suitcase.cases;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
+import java.util.Collections;
 import java.util.List;
 
+@FunctionalInterface
 public interface Case<T> {
-    Option<MatchResult> unapply(T t);
+    Optional<MatchResult> unapply(T t);
 
-    List<Class> variableTypes();
+    default List<Class> variableTypes() {
+        return Collections.emptyList();
+    }
 }

@@ -22,7 +22,7 @@ import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,11 +40,11 @@ public final class Lists {
     private static class Empty<E> implements Case<List<E>> {
 
         @Override
-        public Option<MatchResult> unapply(List<E> list) {
+        public Optional<MatchResult> unapply(List<E> list) {
             if (list.isEmpty()) {
-                return Option.Some(new MatchResult(list));
+                return Optional.ofNullable(new MatchResult(list));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
@@ -66,20 +66,20 @@ public final class Lists {
         }
 
         @Override
-        public Option<MatchResult> unapply(List<E> list) {
+        public Optional<MatchResult> unapply(List<E> list) {
             if (!list.isEmpty()) {
                 final List<E> tail = new LinkedList<>(list);
-                final Option<MatchResult> headResult = this.caseHead.unapply(tail.remove(0));
+                final Optional<MatchResult> headResult = this.caseHead.unapply(tail.remove(0));
 
-                if (!headResult.isNone()) {
-                    final Option<MatchResult> tailResult = this.caseTail.unapply(tail);
-                    if (!tailResult.isNone()) {
-                        return Option.Some(new MatchResult(list).with(headResult.value()).with(tailResult.value()));
+                if (!!headResult.isPresent()) {
+                    final Optional<MatchResult> tailResult = this.caseTail.unapply(tail);
+                    if (!!tailResult.isPresent()) {
+                        return Optional.ofNullable(new MatchResult(list).with(headResult.get()).with(tailResult.get()));
                     }
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         @Override

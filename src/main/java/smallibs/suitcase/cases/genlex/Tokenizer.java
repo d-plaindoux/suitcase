@@ -18,8 +18,7 @@
 
 package smallibs.suitcase.cases.genlex;
 
-import smallibs.suitcase.utils.Option;
-
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +72,7 @@ public abstract class Tokenizer {
     // Public abstract methods
     // -----------------------------------------------------------------------------------------------------------------
 
-    public abstract Option<Token<?>> recognize(CharSequence sequence);
+    public abstract Optional<Token<?>> recognize(CharSequence sequence);
 
     // -----------------------------------------------------------------------------------------------------------------
     // Private classes
@@ -87,11 +86,11 @@ public abstract class Tokenizer {
         }
 
         @Override
-        public Option<Token<?>> recognize(CharSequence sequence) {
+        public Optional<Token<?>> recognize(CharSequence sequence) {
             if (value.length() <= sequence.length() && value.contentEquals(sequence.subSequence(0, value.length()))) {
-                return new Option.SomeCase<>(Token.Keyword(value));
+                return Optional.ofNullable(Token.Keyword(value));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
     }
@@ -113,13 +112,13 @@ public abstract class Tokenizer {
         protected abstract Token<?> matched(String string);
 
         @Override
-        public Option<Token<?>> recognize(CharSequence sequence) {
+        public Optional<Token<?>> recognize(CharSequence sequence) {
             final Matcher matcher = pattern.matcher(sequence);
             if (matcher.find()) {
                 final CharSequence recognized = sequence.subSequence(matcher.start(), matcher.end());
-                return new Option.SomeCase<>(matched(recognized.toString()));
+                return Optional.ofNullable(matched(recognized.toString()));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
     }
@@ -134,14 +133,14 @@ public abstract class Tokenizer {
         }
 
         @Override
-        public Option<Token<?>> recognize(CharSequence sequence) {
-            final Option<Token<?>> option = value.recognize(sequence);
+        public Optional<Token<?>> recognize(CharSequence sequence) {
+            final Optional<Token<?>> option = value.recognize(sequence);
             if (option.isPresent()) {
-                final Token<?> value = option.value();
+                final Token<?> value = option.get();
                 final Token<?> generic = Token.Generic(kind, value.length(), value.value());
-                return Option.Some(generic);
+                return Optional.ofNullable(generic);
             } else {
-                return Option.None();
+                return Optional.empty();
             }
 
         }

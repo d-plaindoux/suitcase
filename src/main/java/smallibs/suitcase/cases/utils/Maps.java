@@ -22,7 +22,7 @@ import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,17 +55,17 @@ public class Maps {
         }
 
         @Override
-        public Option<MatchResult> unapply(Map<T1, T2> map) {
+        public Optional<MatchResult> unapply(Map<T1, T2> map) {
             final MatchResult matchResult = new MatchResult(map);
             for (Case<Map<T1, T2>> entry : this.entries) {
-                final Option<MatchResult> unapply = entry.unapply(map);
-                if (unapply.isNone()) {
+                final Optional<MatchResult> unapply = entry.unapply(map);
+                if (!unapply.isPresent()) {
                     return unapply;
                 } else {
-                    matchResult.with(unapply.value());
+                    matchResult.with(unapply.get());
                 }
             }
-            return Option.Some(matchResult);
+            return Optional.ofNullable(matchResult);
         }
 
         @Override
@@ -91,11 +91,11 @@ public class Maps {
         }
 
         @Override
-        public Option<MatchResult> unapply(Map<T1, T2> map) {
+        public Optional<MatchResult> unapply(Map<T1, T2> map) {
             if (map.containsKey(this.key)) {
                 return this.valCase.unapply(map.get(this.key));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 

@@ -23,9 +23,8 @@ import smallibs.suitcase.cases.genlex.Lexer;
 import smallibs.suitcase.cases.genlex.TokenStream;
 import smallibs.suitcase.cases.genlex.Tokenizer;
 import smallibs.suitcase.match.Matcher;
-import smallibs.suitcase.match.MatchingException;
 import smallibs.suitcase.utils.Function;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.genlex.Parser.Alt;
@@ -130,14 +129,14 @@ public final class Xml {
         comments.caseOf(Seq(Kwd("<!--"), Text, Kwd("-->"), Opt(comments))).then(true);
 
         tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd("/>"))).
-                then((String name, Option<AS> atts) -> handler.anElement(name, atts, Option.<ES>None()));
+                then((String name, Optional<AS> atts) -> handler.anElement(name, atts, Optional.<ES>empty()));
 
         tag.caseOf(Seq(Kwd("<"), Ident(var), Opt(var.of(attributes)), Kwd(">"), Opt(comments), Opt(var.of(elements)), Kwd("</"), Ident(var), Kwd(">"))).
-                when((String sname, Option<AS> atts, Option<ES> content, String ename) -> sname.equals(ename)).
-                then((String sname, Option<AS> atts, Option<ES> content, String ename) -> handler.anElement(sname, atts, content));
+                when((String sname, Optional<AS> atts, Optional<ES> content, String ename) -> sname.equals(ename)).
+                then((String sname, Optional<AS> atts, Optional<ES> content, String ename) -> handler.anElement(sname, atts, content));
 
         attributes.caseOf(Seq(Ident(var), Kwd("="), String(var), Opt(var.of(attributes)))).
-                then((String name, String value, Option<AS> attribute) -> handler.someAttributes(handler.anAttribute(name, value), attribute));
+                then((String name, String value, Optional<AS> attribute) -> handler.someAttributes(handler.anAttribute(name, value), attribute));
 
         return main;
     }

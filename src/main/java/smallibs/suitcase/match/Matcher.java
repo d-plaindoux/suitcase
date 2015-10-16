@@ -33,7 +33,7 @@ import smallibs.suitcase.utils.Function6;
 import smallibs.suitcase.utils.Function7;
 import smallibs.suitcase.utils.Function8;
 import smallibs.suitcase.utils.Functions;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 import smallibs.suitcase.utils.Pair;
 
 import java.util.LinkedList;
@@ -84,9 +84,10 @@ public class Matcher<T, R> {
     @SuppressWarnings("unchecked") // TODO
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
-            final Option<MatchResult> option = rule.match(object);
+            final Optional<MatchResult> option = rule.match(object);
+
             if (option.isPresent()) {
-                final Object o = collectParameters(option.value().bindings());
+                final Object o = collectParameters(option.get().bindings());
                 final Function<?, Boolean> when = rule.getWhen();
                 if (when == null || apply((Function<Object, Boolean>) when, o)) {
                     final Function<?, R> then = rule.getThen();
@@ -124,14 +125,14 @@ public class Matcher<T, R> {
         }
 
         private boolean typeIsCorrect(Object object) {
-            return type == null || !Cases.typeOf(type).unapply(object).isNone();
+            return type == null || !!Cases.typeOf(type).unapply(object).isPresent();
         }
 
-        Option<MatchResult> match(T object) {
+        Optional<MatchResult> match(T object) {
             if (this.typeIsCorrect(object)) {
                 return aCase.unapply(object);
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 

@@ -25,7 +25,7 @@ import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import static smallibs.suitcase.cases.core.Cases.var;
 import static smallibs.suitcase.cases.genlex.Parser.Alt;
@@ -95,16 +95,16 @@ public final class JSon {
             }
         });
 
-        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then(new Function<Option<MS>, R>() {
+        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then(new Function<Optional<MS>, R>() {
             @Override
-            public R apply(Option<MS> o) throws Exception {
+            public R apply(Optional<MS> o) throws Exception {
                 return handler.anObject(o);
             }
         });
 
-        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then(new Function<Option<VS>, R>() {
+        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then(new Function<Optional<VS>, R>() {
             @Override
-            public R apply(Option<VS> o) throws Exception {
+            public R apply(Optional<VS> o) throws Exception {
                 return handler.anArray(o);
             }
         });

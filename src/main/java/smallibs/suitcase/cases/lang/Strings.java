@@ -21,7 +21,7 @@ package smallibs.suitcase.cases.lang;
 import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +43,16 @@ public final class Strings {
         }
 
         @Override
-        public Option<MatchResult> unapply(String s) {
+        public Optional<MatchResult> unapply(String s) {
             final Matcher matcher = expression.matcher(s);
             if (matcher.matches()) {
                 final List<String> strings = new ArrayList<>();
                 for (int i = 0; i <= matcher.groupCount(); i += 1) {
                     strings.add(s.substring(matcher.start(i), matcher.end(i)));
                 }
-                return Option.Some(new MatchResult(strings));
+                return Optional.ofNullable(new MatchResult(strings));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 

@@ -18,17 +18,17 @@
 
 package smallibs.suitcase.cases.xml;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 public interface XmlHandler<ES, E, AS, A> {
 
-    ES someElements(E element, Option<ES> values);
+    ES someElements(E element, Optional<ES> values);
 
-    E anElement(String name, Option<AS> attributes, Option<ES> values);
+    E anElement(String name, Optional<AS> attributes, Optional<ES> values);
 
     E aText(String cdata);
 
-    AS someAttributes(A attribute, Option<AS> attributes);
+    AS someAttributes(A attribute, Optional<AS> attributes);
 
     A anAttribute(String name, String value);
 

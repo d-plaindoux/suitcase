@@ -20,7 +20,7 @@ package smallibs.suitcase.cases.core;
 
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +33,11 @@ public class TypeOf<T> implements Case<T> {
     }
 
     @Override
-    public Option<MatchResult> unapply(T object) {
+    public Optional<MatchResult> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return Option.Some(new MatchResult(object));
+            return Optional.ofNullable(new MatchResult(object));
         } else {
-            return Option.None();
+            return Optional.empty();
         }
     }
 

@@ -20,7 +20,7 @@ package smallibs.suitcase.cases.core;
 
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,11 @@ import java.util.List;
 public class Null<T> implements Case<T> {
 
     @Override
-    public Option<MatchResult> unapply(T object) {
+    public Optional<MatchResult> unapply(T object) {
         if (object == null) {
-            return Option.Some(new MatchResult(null));
+            return Optional.ofNullable(new MatchResult(null));
         } else {
-            return Option.None();
+            return Optional.empty();
         }
     }
 

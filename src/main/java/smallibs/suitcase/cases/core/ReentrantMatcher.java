@@ -22,7 +22,7 @@ import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.match.MatchingException;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +41,11 @@ public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
     }
 
     @Override
-    public Option<MatchResult> unapply(E stream) {
+    public Optional<MatchResult> unapply(E stream) {
         try {
-            return Option.Some(new MatchResult(matcher.match(stream)));
+            return Optional.ofNullable(new MatchResult(matcher.match(stream)));
         } catch (MatchingException e) {
-            return Option.None();
+            return Optional.empty();
         }
     }
 

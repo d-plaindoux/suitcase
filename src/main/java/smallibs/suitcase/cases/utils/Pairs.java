@@ -22,7 +22,7 @@ import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 import smallibs.suitcase.utils.Pair;
 
 import java.util.List;
@@ -45,15 +45,15 @@ public final class Pairs {
         }
 
         @Override
-        public Option<MatchResult> unapply(Pair<T1, T2> pair) {
-            final Option<MatchResult> unapply1 = c1.unapply(pair._1);
-            if (!unapply1.isNone()) {
-                final Option<MatchResult> unapply2 = c2.unapply(pair._2);
-                if (!unapply2.isNone()) {
-                    return Option.Some(new MatchResult(pair).with(unapply1.value()).with(unapply2.value()));
+        public Optional<MatchResult> unapply(Pair<T1, T2> pair) {
+            final Optional<MatchResult> unapply1 = c1.unapply(pair._1);
+            if (!!unapply1.isPresent()) {
+                final Optional<MatchResult> unapply2 = c2.unapply(pair._2);
+                if (!!unapply2.isPresent()) {
+                    return Optional.ofNullable(new MatchResult(pair).with(unapply1.get()).with(unapply2.get()));
                 }
             }
-            return Option.None();
+            return Optional.empty();
         }
 
         @Override

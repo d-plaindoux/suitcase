@@ -18,22 +18,22 @@
 
 package smallibs.suitcase.cases.json;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 public class JSonValidator implements JSonHandler<Boolean, Boolean, Boolean, Boolean, Boolean> {
     @Override
-    public Boolean anObject(Option<Boolean> members) {
-        return members.isNone() || members.value();
+    public Boolean anObject(Optional<Boolean> members) {
+        return !members.isPresent() || members.get();
     }
 
     @Override
-    public Boolean anArray(Option<Boolean> values) {
-        return values.isNone() || values.value();
+    public Boolean anArray(Optional<Boolean> values) {
+        return !values.isPresent() || values.get();
     }
 
     @Override
-    public Boolean someMembers(Boolean o1, Option<Boolean> o2) {
-        return o1 && (o2.isNone() || o2.value());
+    public Boolean someMembers(Boolean o1, Optional<Boolean> o2) {
+        return o1 && (!o2.isPresent() || o2.get());
     }
 
     @Override
@@ -42,8 +42,8 @@ public class JSonValidator implements JSonHandler<Boolean, Boolean, Boolean, Boo
     }
 
     @Override
-    public Boolean someValues(Boolean o1, Option<Boolean> o2) {
-        return o1 && (o2.isNone() || o2.value());
+    public Boolean someValues(Boolean o1, Optional<Boolean> o2) {
+        return o1 && (!o2.isPresent() || o2.get());
     }
 
     @Override

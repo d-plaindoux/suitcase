@@ -18,7 +18,7 @@
 
 package smallibs.suitcase.cases.json;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 import smallibs.suitcase.utils.Pair;
 
 import java.util.ArrayList;
@@ -28,30 +28,30 @@ import java.util.Map;
 
 public class POJOBuilder implements JSonHandler<Object, Map<String, Object>, Pair<String, Object>, List<Object>, Object> {
     @Override
-    public Object anObject(Option<Map<String, Object>> members) {
-        if (members.isNone()) {
+    public Object anObject(Optional<Map<String, Object>> members) {
+        if (!members.isPresent()) {
             return new HashMap<>();
         } else {
-            return members.value();
+            return members.get();
         }
     }
 
     @Override
-    public Object anArray(Option<List<Object>> values) {
-        if (values.isNone()) {
+    public Object anArray(Optional<List<Object>> values) {
+        if (!values.isPresent()) {
             return new ArrayList<>();
         } else {
-            return values.value();
+            return values.get();
         }
     }
 
     @Override
-    public Map<String, Object> someMembers(Pair<String, Object> o1, Option<Map<String, Object>> o2) {
+    public Map<String, Object> someMembers(Pair<String, Object> o1, Optional<Map<String, Object>> o2) {
         final Map<String, Object> objectMap;
-        if (o2.isNone()) {
+        if (!o2.isPresent()) {
             objectMap = new HashMap<>();
         } else {
-            objectMap = o2.value();
+            objectMap = o2.get();
         }
 
         objectMap.put(o1._1, o1._2);
@@ -65,12 +65,12 @@ public class POJOBuilder implements JSonHandler<Object, Map<String, Object>, Pai
     }
 
     @Override
-    public List<Object> someValues(Object o1, Option<List<Object>> o2) {
+    public List<Object> someValues(Object o1, Optional<List<Object>> o2) {
         final List<Object> objectList;
-        if (o2.isNone()) {
+        if (!o2.isPresent()) {
             objectList = new ArrayList<>();
         } else {
-            objectList = o2.value();
+            objectList = o2.get();
         }
 
         objectList.add(0, o1);

@@ -24,7 +24,7 @@ import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.ReentrantMatcher;
 import smallibs.suitcase.cases.core.Var;
 import smallibs.suitcase.match.Matcher;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -99,9 +99,9 @@ public class Parser {
         }
     }
 
-    private static Option<MatchResult> matchFully(TokenStream tokenStream, Option<MatchResult> result) {
+    private static Optional<MatchResult> matchFully(TokenStream tokenStream, Optional<MatchResult> result) {
         if (result.isPresent() && tokenStream.isInitial() && !tokenStream.isEmpty()) {
-            return Option.None();
+            return Optional.empty();
         }
 
         return result;
@@ -124,36 +124,37 @@ public class Parser {
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
+        public Optional<MatchResult> unapply(TokenStream tokenStream) {
             final TokenStream secondary = tokenStream.secondary();
 
             final Token token;
             try {
                 token = secondary.nextToken();
             } catch (IOException | UnexpectedCharException e) {
-                return Option.None();
+                return Optional.empty();
             }
 
-            final Option<MatchResult> resultOption = this.unapplyToken(token);
-            if (resultOption.isNone()) {
-                return Option.None();
+            final Optional<MatchResult> resultOptional = this.unapplyToken(token);
+
+            if (!resultOptional.isPresent()) {
+                return Optional.empty();
             }
 
             tokenStream.commit(secondary);
 
-            return matchFully(tokenStream, Option.Some(new MatchResult(token).with(resultOption.value())));
+            return matchFully(tokenStream, Optional.ofNullable(new MatchResult(token).with(resultOptional.get())));
         }
 
-        protected Option<MatchResult> unapplyToken(Token token) {
+        protected Optional<MatchResult> unapplyToken(Token token) {
             if (this.type.isAssignableFrom(token.getClass())) {
-                final Token<T> castedToken = type.cast(token);
-                final Option<MatchResult> unapply = this.value.unapply(castedToken.value());
+                final Token<T> castToken = type.cast(token);
+                final Optional<MatchResult> unapply = this.value.unapply(castToken.value());
                 if (unapply.isPresent()) {
-                    return Option.Some(new MatchResult(token).with(unapply.value()));
+                    return Optional.ofNullable(new MatchResult(token).with(unapply.get()));
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         @Override
@@ -202,13 +203,13 @@ public class Parser {
         }
 
         @Override
-        protected Option<MatchResult> unapplyToken(Token token) {
+        protected Optional<MatchResult> unapplyToken(Token token) {
             if (Token.GenericToken.class.isAssignableFrom(token.getClass()) &&
                     Token.GenericToken.class.cast(token).kind().equals(this.kind)) {
                 return super.unapplyToken(token);
             }
 
-            return Option.None();
+            return Optional.empty();
         }
     }
 
@@ -223,24 +224,24 @@ public class Parser {
 
     @CaseType(TokenStream.class)
     private static class ReentrantParser<R> extends ReentrantMatcher<TokenStream, R> implements TokenStreamCase {
-        private final Option<Lexer> lexer;
+        private final Optional<Lexer> lexer;
 
         public ReentrantParser(Matcher<TokenStream, R> matcher) {
             super(matcher);
-            this.lexer = Option.None();
+            this.lexer = Optional.empty();
         }
 
         public ReentrantParser(Matcher<TokenStream, R> matcher, Lexer lexer) {
             super(matcher);
-            this.lexer = Option.Some(lexer);
+            this.lexer = Optional.ofNullable(lexer);
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream stream) {
-            if (lexer.isNone()) {
+        public Optional<MatchResult> unapply(TokenStream stream) {
+            if (!lexer.isPresent()) {
                 return super.unapply(stream);
             } else {
-                final Lexer lexer = stream.setLexer(this.lexer.value());
+                final Lexer lexer = stream.setLexer(this.lexer.get());
                 try {
                     return super.unapply(stream);
                 } finally {
@@ -265,13 +266,13 @@ public class Parser {
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
+        public Optional<MatchResult> unapply(TokenStream tokenStream) {
             final MatchResult result = new MatchResult(null);
             final List<Object> values = new ArrayList<>();
             final TokenStream secondary = tokenStream.secondary();
 
             for (Case<?> aCase : this.cases) {
-                final Option<MatchResult> unapply;
+                final Optional<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
                     final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
@@ -281,21 +282,21 @@ public class Parser {
                         final Case<Token> tokenCase = (Case<Token>) aCase;
                         unapply = tokenCase.unapply(secondary.nextToken());
                     } catch (IOException | UnexpectedCharException e) {
-                        return Option.None();
+                        return Optional.empty();
                     }
                 }
 
-                if (unapply.isNone()) {
+                if (!unapply.isPresent()) {
                     return unapply;
                 } else {
-                    values.add(unapply.value().matchedObject());
-                    result.with(unapply.value());
+                    values.add(unapply.get().matchedObject());
+                    result.with(unapply.get());
                 }
             }
 
             tokenStream.commit(secondary);
 
-            return matchFully(tokenStream, Option.Some(new MatchResult(values).with(result)));
+            return matchFully(tokenStream, Optional.ofNullable(new MatchResult(values).with(result)));
         }
 
         @Override
@@ -325,10 +326,10 @@ public class Parser {
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
+        public Optional<MatchResult> unapply(TokenStream tokenStream) {
             for (Case<?> aCase : this.cases) {
                 final TokenStream secondary = tokenStream.secondary();
-                final Option<MatchResult> unapply;
+                final Optional<MatchResult> unapply;
 
                 if (isTokenStreamCase(aCase)) {
                     final Case<TokenStream> streamCase = (Case<TokenStream>) aCase;
@@ -338,7 +339,7 @@ public class Parser {
                         final Case<Token> tokenCase = (Case<Token>) aCase;
                         unapply = tokenCase.unapply(secondary.nextToken());
                     } catch (IOException | UnexpectedCharException e) {
-                        return Option.None();
+                        return Optional.empty();
                     }
                 }
 
@@ -348,7 +349,7 @@ public class Parser {
                 }
             }
 
-            return Option.None();
+            return Optional.empty();
         }
 
         @Override
@@ -378,29 +379,29 @@ public class Parser {
         }
 
         @Override
-        public Option<MatchResult> unapply(TokenStream tokenStream) {
+        public Optional<MatchResult> unapply(TokenStream tokenStream) {
             final TokenStream secondary = tokenStream.secondary();
-            final Option<MatchResult> unapply = aCase.unapply(secondary);
+            final Optional<MatchResult> unapply = aCase.unapply(secondary);
 
             final MatchResult result;
 
             if (unapply.isPresent()) {
                 tokenStream.commit(secondary);
-                result = new MatchResult(Option.Some(unapply.value().matchedObject()));
-                final List<Object> bindings = unapply.value().bindings();
+                result = new MatchResult(Optional.ofNullable(unapply.get().matchedObject()));
+                final List<Object> bindings = unapply.get().bindings();
                 for (Object o : bindings) {
-                    result.with(new MatchResult(Option.Some(o), null));
+                    result.with(new MatchResult(Optional.ofNullable(o), null));
                 }
             } else {
                 // Simulate in order to collect variables
-                result = new MatchResult(Option.None());
+                result = new MatchResult(Optional.empty());
                 final List<Class> classes = aCase.variableTypes();
                 for (Class ignore : classes) {
-                    result.with(new MatchResult(Option.None(), null));
+                    result.with(new MatchResult(Optional.empty(), null));
                 }
             }
 
-            return matchFully(tokenStream, Option.Some(result));
+            return matchFully(tokenStream, Optional.ofNullable(result));
         }
 
         @Override

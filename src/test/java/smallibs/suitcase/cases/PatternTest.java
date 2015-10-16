@@ -36,134 +36,134 @@ public class PatternTest {
 
     @Test
     public void shouldMatchNullValueWithNull() {
-        TestCase.assertFalse(Cases.nil().unapply(null).isNone());
+        TestCase.assertFalse(!Cases.nil().unapply(null).isPresent());
     }
 
     @Test
     public void shouldNotMatchNotNullValueWithNull() {
-        TestCase.assertTrue(Cases.nil().unapply(42).isNone());
+        TestCase.assertTrue(!Cases.nil().unapply(42).isPresent());
     }
 
     // Constant
 
     @Test
     public void shouldMatchConstantValueWithConstant() {
-        TestCase.assertFalse(Cases.constant(42).unapply(42).isNone());
+        TestCase.assertFalse(!Cases.constant(42).unapply(42).isPresent());
     }
 
     @Test
     public void shouldNotMatchConstantValueWithDifferentConstant() {
-        TestCase.assertTrue(Cases.constant(42).unapply(19).isNone());
+        TestCase.assertTrue(!Cases.constant(42).unapply(19).isPresent());
     }
 
     @Test
     public void shouldNotMatchNullValueWithConstant() {
-        TestCase.assertTrue(Cases.constant(42).unapply(null).isNone());
+        TestCase.assertTrue(!Cases.constant(42).unapply(null).isPresent());
     }
 
     // TypeOf
 
     @Test
     public void shouldMatchValueValueWithTypeOf() {
-        TestCase.assertFalse(Cases.typeOf(Integer.class).unapply(19).isNone());
+        TestCase.assertFalse(!Cases.typeOf(Integer.class).unapply(19).isPresent());
     }
 
     @Test
     public void shouldNotMatchValueValueWithWrongTypeOf() {
-        TestCase.assertTrue(Cases.typeOf(String.class).unapply(19).isNone());
+        TestCase.assertTrue(!Cases.typeOf(String.class).unapply(19).isPresent());
     }
 
     @Test
     public void shouldNotMatchNullValueWithTypeOf() {
-        TestCase.assertTrue(Cases.typeOf(String.class).unapply(null).isNone());
+        TestCase.assertTrue(!Cases.typeOf(String.class).unapply(null).isPresent());
     }
 
     @Test
     public void shouldMatchSubTypeValueWithTypeOf() {
-        TestCase.assertFalse(Cases.typeOf(Object.class).unapply("toto").isNone());
+        TestCase.assertFalse(!Cases.typeOf(Object.class).unapply("toto").isPresent());
     }
 
     // Any
 
     @Test
     public void shouldMatchNullValueWithAny() {
-        TestCase.assertFalse(Cases.any().unapply(null).isNone());
+        TestCase.assertFalse(!Cases.any().unapply(null).isPresent());
     }
 
     @Test
     public void shouldMatchNotNullValueWithAny() {
-        TestCase.assertFalse(Cases.any().unapply(42).isNone());
+        TestCase.assertFalse(!Cases.any().unapply(42).isPresent());
     }
 
     // List
 
     @Test
     public void shouldNilMatchEmptyList() {
-        TestCase.assertFalse(Lists.Empty.unapply(Arrays.asList()).isNone());
+        TestCase.assertFalse(!Lists.Empty.unapply(Arrays.asList()).isPresent());
     }
 
     @Test
     public void shouldNilNotlMatchNonList() {
-        TestCase.assertTrue(Lists.Empty.unapply(Arrays.asList(1)).isNone());
+        TestCase.assertTrue(!Lists.Empty.unapply(Arrays.asList(1)).isPresent());
     }
 
     @Test
     public void shouldConsNotlMatchEmptyList() {
-        TestCase.assertTrue(Lists.Cons(__, __).unapply(Arrays.asList()).isNone());
+        TestCase.assertTrue(!Lists.Cons(__, __).unapply(Arrays.asList()).isPresent());
     }
 
     @Test
     public void shouldConsMatchNonEmptyList() {
-        TestCase.assertFalse(Lists.<Integer>Cons(__, __).unapply(Arrays.asList(1)).isNone());
+        TestCase.assertFalse(!Lists.<Integer>Cons(__, __).unapply(Arrays.asList(1)).isPresent());
     }
 
     @Test
     public void shouldConsMatchListSize2() {
-        TestCase.assertFalse(Lists.<Integer>Cons(__, Lists.Cons(__, __)).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(!Lists.<Integer>Cons(__, Lists.Cons(__, __)).unapply(Arrays.asList(1, 2)).isPresent());
     }
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(var.of(Lists.<Integer>Cons(__, Lists.Cons(__, Lists.Empty))).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(!var.of(Lists.<Integer>Cons(__, Lists.Cons(__, Lists.Empty))).unapply(Arrays.asList(1, 2)).isPresent());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(Lists.<Integer>Cons(1, Lists.Cons(2, Lists.Empty)).unapply(Arrays.asList(1, 2)).isNone());
+        TestCase.assertFalse(!Lists.<Integer>Cons(1, Lists.Cons(2, Lists.Empty)).unapply(Arrays.asList(1, 2)).isPresent());
     }
 
     // $Pair
 
     @Test
     public void shouldMatchPair() {
-        TestCase.assertFalse(Pairs.Pair(__, __).unapply(new Pair<Object, Object>(1, 2)).isNone());
+        TestCase.assertFalse(!Pairs.Pair(__, __).unapply(new Pair<Object, Object>(1, 2)).isPresent());
     }
 
     @Test
     public void shouldMatchPairAndValues() {
-        TestCase.assertFalse(Pairs.Pair(1, 2).unapply(new Pair<Object, Object>(1, 2)).isNone());
+        TestCase.assertFalse(!Pairs.Pair(1, 2).unapply(new Pair<Object, Object>(1, 2)).isPresent());
     }
 
     // Peano
 
     @Test
     public void shouldMatchZero() {
-        TestCase.assertFalse(Peano.Zero.unapply(0).isNone());
+        TestCase.assertFalse(!Peano.Zero.unapply(0).isPresent());
     }
 
     @Test
     public void shouldNotMatchZero() {
-        TestCase.assertTrue(Peano.Zero.unapply(1).isNone());
+        TestCase.assertTrue(!Peano.Zero.unapply(1).isPresent());
     }
 
     @Test
     public void shouldMatchNonZero() {
-        TestCase.assertFalse(Peano.Succ(__).unapply(1).isNone());
+        TestCase.assertFalse(!Peano.Succ(__).unapply(1).isPresent());
     }
 
     @Test
     public void shouldNotMatchNonZero() {
-        TestCase.assertTrue(var.of(Peano.Succ(__)).unapply(0).isNone());
+        TestCase.assertTrue(!var.of(Peano.Succ(__)).unapply(0).isPresent());
     }
 }
 

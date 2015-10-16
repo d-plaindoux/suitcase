@@ -22,7 +22,7 @@ import smallibs.suitcase.annotations.CaseType;
 import smallibs.suitcase.cases.Case;
 import smallibs.suitcase.cases.MatchResult;
 import smallibs.suitcase.cases.core.Cases;
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +39,11 @@ public final class Peano {
     public static class Zero implements Case<Integer> {
 
         @Override
-        public Option<MatchResult> unapply(Integer integer) {
+        public Optional<MatchResult> unapply(Integer integer) {
             if (integer == 0) {
-                return Option.Some(new MatchResult(integer));
+                return Optional.ofNullable(new MatchResult(integer));
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 
@@ -63,11 +63,11 @@ public final class Peano {
         }
 
         @Override
-        public Option<MatchResult> unapply(Integer integer) {
+        public Optional<MatchResult> unapply(Integer integer) {
             if (integer > 0) {
                 return this.value.unapply(integer - 1);
             } else {
-                return Option.None();
+                return Optional.empty();
             }
         }
 

@@ -18,19 +18,19 @@
 
 package smallibs.suitcase.cases.json;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 public interface JSonHandler<R, MS, M, VS, V> {
 
-    R anObject(Option<MS> members);
+    R anObject(Optional<MS> members);
 
-    R anArray(Option<VS> values);
+    R anArray(Optional<VS> values);
 
-    MS someMembers(M o1, Option<MS> o2);
+    MS someMembers(M o1, Optional<MS> o2);
 
     M aMember(String o1, V o2);
 
-    VS someValues(V o1, Option<VS> o2);
+    VS someValues(V o1, Optional<VS> o2);
 
     V anInteger(int i);
 

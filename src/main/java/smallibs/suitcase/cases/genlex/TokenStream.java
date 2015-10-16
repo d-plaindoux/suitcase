@@ -18,7 +18,7 @@
 
 package smallibs.suitcase.cases.genlex;
 
-import smallibs.suitcase.utils.Option;
+import java.util.Optional;
 
 import java.io.IOException;
 
@@ -54,10 +54,10 @@ public abstract class TokenStream {
         performSkip();
 
         for (Tokenizer token : lexer.getTokenizers()) {
-            final Option<Token<?>> recognize = token.recognize(sequence);
-            if (!recognize.isNone()) {
-                this.sequence.commit(recognize.value().length());
-                return recognize.value();
+            final Optional<Token<?>> recognize = token.recognize(sequence);
+            if (!!recognize.isPresent()) {
+                this.sequence.commit(recognize.get().length());
+                return recognize.get();
             }
         }
 
@@ -82,9 +82,9 @@ public abstract class TokenStream {
         do {
             skipped = false;
             for (Tokenizer token : lexer.getSkipped()) {
-                final Option<Token<?>> recognize = token.recognize(sequence);
-                if (!recognize.isNone()) {
-                    this.sequence.commit(recognize.value().length());
+                final Optional<Token<?>> recognize = token.recognize(sequence);
+                if (!!recognize.isPresent()) {
+                    this.sequence.commit(recognize.get().length());
                     skipped = true;
                     break;
                 }
