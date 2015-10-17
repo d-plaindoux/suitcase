@@ -25,6 +25,8 @@ import smallibs.suitcase.match.Matcher;
 import smallibs.suitcase.utils.Function;
 import smallibs.suitcase.utils.Function0;
 import smallibs.suitcase.utils.Function2;
+
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 import static smallibs.suitcase.cases.core.Cases.var;
@@ -76,15 +78,18 @@ public final class JSon {
 
     public static <R, MS, M, VS, V> Matcher<TokenStream, R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
         final Matcher<TokenStream, R> main, object, array;
-        final Matcher<TokenStream, Object> members, member, values, value;
+        final Matcher<TokenStream, MS> members;
+        final Matcher<TokenStream, M> member;
+        final Matcher<TokenStream, VS> values;
+        final Matcher<TokenStream, V> value;
 
         main = parser(Matcher.<TokenStream, R>create());
         object = parser(Matcher.<TokenStream, R>create());
         array = parser(Matcher.<TokenStream, R>create());
-        members = parser(Matcher.<TokenStream, Object>create());
-        member = parser(Matcher.<TokenStream, Object>create());
-        values = parser(Matcher.<TokenStream, Object>create());
-        value = parser(Matcher.<TokenStream, Object>create());
+        members = parser(Matcher.<TokenStream, MS>create());
+        member = parser(Matcher.<TokenStream, M>create());
+        values = parser(Matcher.<TokenStream, VS>create());
+        value = parser(Matcher.<TokenStream, V>create());
 
         // Parse rules definition
 

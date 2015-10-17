@@ -88,10 +88,8 @@ public class Matcher<T, R> {
 
             if (option.isPresent()) {
                 final Object o = collectParameters(option.get().bindings());
-                final Function<?, Boolean> when = rule.getWhen();
-                if (when == null || apply((Function<Object, Boolean>) when, o)) {
-                    final Function<?, R> then = rule.getThen();
-                    return this.apply((Function<Object, R>) then, o);
+                if (rule.getWhen() == null || this.apply((Function<Object, Boolean>) rule.getWhen(), o)) {
+                    return this.apply((Function<Object, R>) rule.getThen(), o);
                 }
             }
         }
@@ -125,7 +123,7 @@ public class Matcher<T, R> {
         }
 
         private boolean typeIsCorrect(Object object) {
-            return type == null || !!Cases.typeOf(type).unapply(object).isPresent();
+            return type == null || Cases.typeOf(type).unapply(object).isPresent();
         }
 
         Optional<MatchResult> match(T object) {

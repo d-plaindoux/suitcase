@@ -127,7 +127,7 @@ public final class Dom {
 
                 result = unapplyNode(node);
 
-                if (!!result.isPresent()) {
+                if (result.isPresent()) {
                     nodeList.next();
                 }
             } else {
@@ -167,9 +167,9 @@ public final class Dom {
             for (int i = 0; i < term.getAttributes().getLength(); i += 1) {
                 final Node node = term.getAttributes().item(i);
                 final Optional<MatchResult> unapplyName = nameCase.unapply(node.getNodeName());
-                if (!!unapplyName.isPresent()) {
+                if (unapplyName.isPresent()) {
                     final Optional<MatchResult> unapplyValue = valueCase.unapply(node.getNodeValue());
-                    if (!!unapplyValue.isPresent()) {
+                    if (unapplyValue.isPresent()) {
                         return Optional.ofNullable(new MatchResult(node).with(unapplyName.get()).with(unapplyValue.get()));
                     }
                 }
@@ -395,7 +395,7 @@ public final class Dom {
 
             final Optional<MatchResult> unapply = content.unapply(nodeList);
 
-            if (!!unapply.isPresent()) {
+            if (unapply.isPresent()) {
                 matchResult.with(unapply.get());
             }
 
@@ -417,7 +417,7 @@ public final class Dom {
 
             while (true) {
                 final Optional<MatchResult> unapply = content.unapply(nodeList);
-                if (!!unapply.isPresent()) {
+                if (unapply.isPresent()) {
                     matchResult.with(unapply.get());
                 } else {
                     break;

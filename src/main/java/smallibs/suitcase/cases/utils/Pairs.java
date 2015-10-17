@@ -47,9 +47,9 @@ public final class Pairs {
         @Override
         public Optional<MatchResult> unapply(Pair<T1, T2> pair) {
             final Optional<MatchResult> unapply1 = c1.unapply(pair._1);
-            if (!!unapply1.isPresent()) {
+            if (unapply1.isPresent()) {
                 final Optional<MatchResult> unapply2 = c2.unapply(pair._2);
-                if (!!unapply2.isPresent()) {
+                if (unapply2.isPresent()) {
                     return Optional.ofNullable(new MatchResult(pair).with(unapply1.get()).with(unapply2.get()));
                 }
             }

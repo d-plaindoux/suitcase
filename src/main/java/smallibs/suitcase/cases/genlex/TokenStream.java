@@ -55,7 +55,7 @@ public abstract class TokenStream {
 
         for (Tokenizer token : lexer.getTokenizers()) {
             final Optional<Token<?>> recognize = token.recognize(sequence);
-            if (!!recognize.isPresent()) {
+            if (recognize.isPresent()) {
                 this.sequence.commit(recognize.get().length());
                 return recognize.get();
             }
@@ -83,7 +83,7 @@ public abstract class TokenStream {
             skipped = false;
             for (Tokenizer token : lexer.getSkipped()) {
                 final Optional<Token<?>> recognize = token.recognize(sequence);
-                if (!!recognize.isPresent()) {
+                if (recognize.isPresent()) {
                     this.sequence.commit(recognize.get().length());
                     skipped = true;
                     break;

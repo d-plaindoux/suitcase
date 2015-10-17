@@ -125,13 +125,10 @@ public class JSONMatcherTest {
     public void shouldBuildBigGSONObject() throws IOException {
         final String jsonValue;
 
-        try (InputStream inputStream = JSONMatcherTest.class.getResource("/not-so-small.json").openStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            IOUtils.copy(inputStream, outputStream);
-            jsonValue = outputStream.toString();
+        try (InputStream inputStream = JSONMatcherTest.class.getResource("/not-so-small.json").openStream()) {
+            jsonValue = new String(IOUtils.toByteArray(inputStream));
         }
 
-        final long t0 = System.currentTimeMillis();
         final Object json = JSon.withHandler(new GSonBuilder()).match(JSon.stream(jsonValue));
 
         TestCase.assertNotNull(json);

@@ -101,7 +101,7 @@ public final class Beans {
             final Field[] fields = object.getClass().getDeclaredFields();
             for (Field field : fields) {
                 final Optional<MatchResult> unapply = unapplyField(object, field);
-                if (!!unapply.isPresent()) {
+                if (unapply.isPresent()) {
                     return unapply;
                 }
             }
@@ -109,7 +109,7 @@ public final class Beans {
             final Method[] methods = object.getClass().getDeclaredMethods();
             for (Method field : methods) {
                 final Optional<MatchResult> unapply = unapplyMethod(object, field);
-                if (!!unapply.isPresent()) {
+                if (unapply.isPresent()) {
                     return unapply;
                 }
             }
@@ -124,9 +124,9 @@ public final class Beans {
 
             if (fieldName != null) {
                 final Optional<MatchResult> unapplyName = unapplyName(fieldName);
-                if (!!unapplyName.isPresent()) {
+                if (unapplyName.isPresent()) {
                     final Optional<MatchResult> unapplyValue = unapplyMethodValue(object, method);
-                    if (!!unapplyValue.isPresent()) {
+                    if (unapplyValue.isPresent()) {
                         return Optional.ofNullable(new MatchResult(method).with(unapplyName.get()).with(unapplyValue.get()));
                     }
                 }
@@ -137,9 +137,9 @@ public final class Beans {
 
         private Optional<MatchResult> unapplyField(Object object, Field field) {
             final Optional<MatchResult> unapplyName = unapplyName(field.getName());
-            if (!!unapplyName.isPresent()) {
+            if (unapplyName.isPresent()) {
                 final Optional<MatchResult> unapplyValue = unapplyFieldValue(object, field);
-                if (!!unapplyValue.isPresent()) {
+                if (unapplyValue.isPresent()) {
                     return Optional.ofNullable(new MatchResult(field).with(unapplyName.get()).with(unapplyValue.get()));
                 }
             }

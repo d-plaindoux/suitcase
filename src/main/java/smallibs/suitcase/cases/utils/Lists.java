@@ -71,9 +71,9 @@ public final class Lists {
                 final List<E> tail = new LinkedList<>(list);
                 final Optional<MatchResult> headResult = this.caseHead.unapply(tail.remove(0));
 
-                if (!!headResult.isPresent()) {
+                if (headResult.isPresent()) {
                     final Optional<MatchResult> tailResult = this.caseTail.unapply(tail);
-                    if (!!tailResult.isPresent()) {
+                    if (tailResult.isPresent()) {
                         return Optional.ofNullable(new MatchResult(list).with(headResult.get()).with(tailResult.get()));
                     }
                 }

@@ -13,7 +13,7 @@ code dissemination and finally brakes incremental compilation approach.
 In addition such mechanism only enables selection based on types and does not provides a simple and
 intuitive mechanism filtering objects using their values i.e. attributes.
 
-For this purpose a simple pattern matching inspired by Scala [extractor object](http://www.scala-lang.org/node/112)
+For this purpose a simple pattern matching inspired by Scala [extractor object](http://docs.scala-lang.org/tutorials/tour/extractor-objects.html)
 has been designed.
 
 This pattern matching offers a simple mechanism for simple object selection based on intrinsic equality.
