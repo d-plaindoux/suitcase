@@ -60,7 +60,7 @@ buildNumber.properties
 *.ipr
 *.iws
 
-## Plugin-specific files:git
+## Plugin-specific files:
 
 # IntelliJ
 /out/
@@ -123,3 +123,4 @@ local.properties
 
 settings.xml
 maven-central-deploy.sh
+maven-central-deploy.log

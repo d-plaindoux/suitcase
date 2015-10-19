@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The <class>Matcher</class> defines a pattern matching rule set.
+ * The Matcher defines a pattern matching rule set.
  *
  * @param <T> The matched object type
  * @param <R> The matching result type
@@ -118,7 +118,14 @@ public class Matcher<T, R> {
         return parameter;
     }
 
-    @SuppressWarnings("unchecked") // TODO
+    /**
+     * Main method performing the pattern matching.
+     *
+     * @param object The object to be matched
+     * @return a computation result done by an accepted rule during pattern matching process
+     * @throws MatchingException when no pattern matching rule can be applied
+     */
+    @SuppressWarnings("unchecked")
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
             final Optional<MatchResult> option = rule.match(object);
