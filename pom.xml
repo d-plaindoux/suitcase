@@ -4,7 +4,7 @@
 
     <groupId>org.smallibs</groupId>
     <artifactId>suitcase</artifactId>
-    <version>master-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>org.smallibs:suitcase</name>
