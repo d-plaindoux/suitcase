@@ -55,7 +55,7 @@ public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
     }
 
     @Override
-    public When caseOf(Object object) {
+    public WhenRule caseOf(Object object) {
         return matcher.caseOf(object);
     }
 

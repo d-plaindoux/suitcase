@@ -33,32 +33,77 @@ import smallibs.suitcase.utils.Function6;
 import smallibs.suitcase.utils.Function7;
 import smallibs.suitcase.utils.Function8;
 import smallibs.suitcase.utils.Functions;
-import java.util.Optional;
 import smallibs.suitcase.utils.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+
+/**
+ * The <class>Matcher</class> defines a pattern matching rule set.
+ *
+ * @param <T> The matched object type
+ * @param <R> The matching result type
+ */
 
 public class Matcher<T, R> {
 
+    /**
+     * The rule set
+     */
+    private final List<Rule> rules;
+
+    /**
+     * The constructor
+     */
+    protected Matcher() {
+        this.rules = new LinkedList<>();
+    }
+
+    /**
+     * Factory
+     *
+     * @param <T> The matched object type
+     * @param <R> The matching result type
+     * @return a fresh pattern matching rule set
+     */
     public static <T, R> Matcher<T, R> create() {
         return new Matcher<>();
     }
 
     /**
-     * Class Definition
+     * Method applying a function to a given parameters
+     *
+     * @param function
+     * @param result
+     * @param <M>
+     * @return
      */
-
-    private final List<Rule> rules;
-
-    protected Matcher() {
-        this.rules = new LinkedList<>();
+    private static <M> M apply(final Function<Object, M> function, final Object result) {
+        try {
+            return function.apply(result);
+        } catch (Exception e) {
+            throw new MatchingException(e);
+        }
     }
 
-    public When caseOf(Object object) {
-        return new When(Cases.<T>fromObject(object));
+    /**
+     * Method called in order to create a new rule. The returns a When
+     * object able to capture a conditional or a termination.
+     *
+     * @param object The pattern
+     * @return a
+     */
+    public WhenRule caseOf(Object object) {
+        return new WhenRule(Cases.<T>fromObject(object));
     }
 
+    /**
+     * Method collecting parameters building an intermediate object
+     *
+     * @param result The matching result
+     * @return a
+     */
     private Object collectParameters(List<Object> result) {
         Object parameter;
 
@@ -73,14 +118,6 @@ public class Matcher<T, R> {
         return parameter;
     }
 
-    private <M> M apply(final Function<Object, M> function, final Object result) {
-        try {
-            return function.apply(result);
-        } catch (Exception e) {
-            throw new MatchingException(e);
-        }
-    }
-
     @SuppressWarnings("unchecked") // TODO
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
@@ -88,8 +125,8 @@ public class Matcher<T, R> {
 
             if (option.isPresent()) {
                 final Object o = collectParameters(option.get().bindings());
-                if (rule.getWhen() == null || this.apply((Function<Object, Boolean>) rule.getWhen(), o)) {
-                    return this.apply((Function<Object, R>) rule.getThen(), o);
+                if (rule.getWhen() == null || apply((Function<Object, Boolean>) rule.getWhen(), o)) {
+                    return apply((Function<Object, R>) rule.getThen(), o);
                 }
             }
         }
@@ -143,16 +180,16 @@ public class Matcher<T, R> {
         }
     }
 
-    public class Then {
+    public class ThenRule {
         protected final Function<?, Boolean> when;
         protected final Case<T> aCase;
 
-        public Then(Case<T> aCase) {
+        public ThenRule(Case<T> aCase) {
             this.when = null;
             this.aCase = aCase;
         }
 
-        public Then(Function<?, Boolean> when, Case<T> aCase) {
+        public ThenRule(Function<?, Boolean> when, Case<T> aCase) {
             this.when = when;
             this.aCase = aCase;
         }
@@ -212,53 +249,53 @@ public class Matcher<T, R> {
         }
     }
 
-    public class When extends Then {
+    public class WhenRule extends ThenRule {
         protected final Case<T> aCase;
 
-        public When(Case<T> aCase) {
+        public WhenRule(Case<T> aCase) {
             super(aCase);
 
             this.aCase = aCase;
         }
 
-        public <A> Then when(Function<A, Boolean> callBack) {
-            return new Then(callBack, this.aCase);
+        public <A> ThenRule when(Function<A, Boolean> callBack) {
+            return new ThenRule(callBack, this.aCase);
         }
 
-        public Then when(Function0<Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public ThenRule when(Function0<Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A> Then when(Function1<A, Boolean> callBack) {
-            return new Then(callBack, this.aCase);
+        public <A> ThenRule when(Function1<A, Boolean> callBack) {
+            return new ThenRule(callBack, this.aCase);
         }
 
-        public <A, B> Then when(Function2<A, B, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B> ThenRule when(Function2<A, B, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C> Then when(Function3<A, B, C, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C> ThenRule when(Function3<A, B, C, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D> Then when(Function4<A, B, C, D, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C, D> ThenRule when(Function4<A, B, C, D, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E> Then when(Function5<A, B, C, D, E, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E> ThenRule when(Function5<A, B, C, D, E, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F> Then when(Function6<A, B, C, D, E, F, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F> ThenRule when(Function6<A, B, C, D, E, F, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F, G> Then when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F, G> ThenRule when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
 
-        public <A, B, C, D, E, F, G, H> Then when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
-            return new Then(Functions.function(callBack), this.aCase);
+        public <A, B, C, D, E, F, G, H> ThenRule when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
+            return new ThenRule(Functions.function(callBack), this.aCase);
         }
     }
 }

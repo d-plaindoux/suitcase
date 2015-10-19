@@ -120,3 +120,6 @@ local.properties
 .texlipse
 
 
+
+settings.xml
+maven-central-deploy.sh
