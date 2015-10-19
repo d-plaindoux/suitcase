@@ -15,12 +15,12 @@ code dissemination and finally brakes incremental compilation approach.
 In addition such mechanism only enables selection based on types and does not provides a simple and
 intuitive mechanism filtering objects using their values i.e. attributes.
 
-For this purpose a simple pattern matching inspired by Scala [extractor object](http://docs.scala-lang.org/tutorials/tour/extractor-objects.html)
-has been designed.
+For this purpose a simple pattern matching inspired by Scala 
+[extractor object](http://docs.scala-lang.org/tutorials/tour/extractor-objects.html) has been designed.
 
 This pattern matching offers a simple mechanism for simple object selection based on intrinsic equality.
-Indeed pattern matching cases can be done on the object kind and it's internal state. For instance the following sample
-checks if an integer is <tt>O</tt> or not.
+Indeed pattern matching cases can be done on the object kind and it's internal state. For instance the following 
+sample checks if an integer is <tt>O</tt> or not.
 
 ``` java
 final Match<Integer, Boolean> isZero = Match.match();
@@ -33,18 +33,38 @@ isZero.match(0); // == true
 
 ## Regexp, XML, List Patterns and more ...
 
-More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki) and in particular ad-hoc case is explained with
-practical implementations covering matching for lists, string regular expression, XML etc.
+More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki) and in 
+particular ad-hoc case is explained with practical implementations covering matching for lists, string regular 
+expression, XML etc.
 
 See also:
 
 * [Core Pattern Matching](https://github.com/d-plaindoux/suitcase/wiki#core-pattern-matching)
 * [Generic Parser](https://github.com/d-plaindoux/suitcase/wiki#generic-parser)
 
-## Other Propositions
+## Releases
 
+This library is available at Sonatype OSS Repository Hosting service and can be simply used adding the following 
+dependency to your pom project.
+
+```
+<dependency>
+  <groupId>org.smallibs</groupId>
+  <artifactId>suitcase</artifactId>
+  <version>0.2</version>
+</dependency>
+```
+
+## Dependencies
+
+* Google JSON 2.2.4
+
+## Other Propositions
+   
 Some propositions are also available for this purpose like:
+
 * [Towards Pattern Matching in Java](http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
+
 
 ## License
 
