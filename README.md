@@ -59,10 +59,12 @@ dependency to your pom project.
 
 * Google JSON 2.2.4
 
-## Other Propositions
+## Other Propositions & Discussions
    
-Some propositions are also available for this purpose like [Towards Pattern Matching in Java](http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
+A review of various approches is given in the [Structural Pattern Matching in Java](http://blog.higher-order.com/blog/2009/08/21/structural-pattern-matching-in-java/). 
+It starts from the visitor and proposes alternatives with a functional programming approach.
 
+Some propositions are also available for this purpose like [Towards Pattern Matching in Java](http://kerflyn.wordpress.com/2012/05/09/towards-pattern-matching-in-java/)
 
 ## License
 
