@@ -25,6 +25,7 @@ import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Pair;
 
 import static org.smallibs.suitcase.cases.core.Cases.__;
+import static org.smallibs.suitcase.cases.core.Cases.constant;
 import static org.smallibs.suitcase.cases.core.Cases.var;
 import static org.smallibs.suitcase.cases.utils.Pairs.Pair;
 
@@ -34,7 +35,7 @@ public class SimpleMatcherTest {
     public void shouldMatchNullObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then(42);
+        matcher.caseOf(constant(null)).then(42);
 
         TestCase.assertEquals(42, matcher.match(null).intValue());
     }
@@ -43,7 +44,7 @@ public class SimpleMatcherTest {
     public void shouldNotMatchConstantObject() throws MatchingException {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
-        matcher.caseOf(null).then(42);
+        matcher.caseOf(constant(null)).then(42);
 
         matcher.match(19);
     }
@@ -61,11 +62,7 @@ public class SimpleMatcherTest {
     public void shouldMatchASubclasses() throws MatchingException {
         final Matcher<A, String> matcherA = Matcher.create();
 
-        matcherA.caseOf(var.<A>of(B.class)).then(new Function<B, String>() {
-            public String apply(B acceptor) {
-                return "B";
-            }
-        });
+        matcherA.caseOf(var.<A>of(B.class)).then(acceptor -> "B");
         matcherA.caseOf(C.class).then("C");
         matcherA.caseOf(__).then("A");
 

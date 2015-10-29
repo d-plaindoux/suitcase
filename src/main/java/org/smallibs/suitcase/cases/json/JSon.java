@@ -18,6 +18,7 @@
 
 package org.smallibs.suitcase.cases.json;
 
+import org.smallibs.suitcase.cases.core.ReentrantMatcher;
 import org.smallibs.suitcase.cases.genlex.Lexer;
 import org.smallibs.suitcase.cases.genlex.TokenStream;
 import org.smallibs.suitcase.cases.genlex.Tokenizer;
@@ -74,7 +75,8 @@ public final class JSon {
     }
 
     public static <R, MS, M, VS, V> Matcher<TokenStream, R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
-        final Matcher<TokenStream, R> main, object, array;
+        final ReentrantMatcher<TokenStream, R> main;
+        final Matcher<TokenStream, R> object, array;
         final Matcher<TokenStream, MS> members;
         final Matcher<TokenStream, M> member;
         final Matcher<TokenStream, VS> values;

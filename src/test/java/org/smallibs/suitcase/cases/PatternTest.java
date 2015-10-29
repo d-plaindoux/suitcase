@@ -99,12 +99,12 @@ public class PatternTest {
 
     @Test
     public void shouldNilMatchEmptyList() {
-        TestCase.assertFalse(!Lists.Empty.unapply(Arrays.asList()).isPresent());
+        TestCase.assertFalse(!Lists.Empty().unapply(Arrays.asList()).isPresent());
     }
 
     @Test
     public void shouldNilNotlMatchNonList() {
-        TestCase.assertTrue(!Lists.Empty.unapply(Arrays.asList(1)).isPresent());
+        TestCase.assertTrue(!Lists.Empty().unapply(Arrays.asList(1)).isPresent());
     }
 
     @Test
@@ -124,12 +124,12 @@ public class PatternTest {
 
     @Test
     public void shouldConsMatchListSize2Exactly() {
-        TestCase.assertFalse(!var.of(Lists.<Integer>Cons(__, Lists.Cons(__, Lists.Empty))).unapply(Arrays.asList(1, 2)).isPresent());
+        TestCase.assertFalse(!var.of(Lists.<Integer>Cons(__, Lists.Cons(__, Lists.Empty()))).unapply(Arrays.asList(1, 2)).isPresent());
     }
 
     @Test
     public void shouldMatchTheListExactly() {
-        TestCase.assertFalse(!Lists.<Integer>Cons(1, Lists.Cons(2, Lists.Empty)).unapply(Arrays.asList(1, 2)).isPresent());
+        TestCase.assertFalse(!Lists.<Integer>Cons(1, Lists.Cons(2, Lists.Empty())).unapply(Arrays.asList(1, 2)).isPresent());
     }
 
     // $Pair

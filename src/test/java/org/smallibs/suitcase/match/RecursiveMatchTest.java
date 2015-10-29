@@ -31,7 +31,7 @@ public class RecursiveMatchTest {
         final Matcher<Integer, Integer> multiplyMatcher = Matcher.create();
 
         multiplyMatcher.caseOf(Zero).then(0);
-        multiplyMatcher.caseOf(Succ(var)).then((Integer i) -> 1 + multiplyMatcher.match(i));
+        multiplyMatcher.caseOf(Succ(var.of(Integer.class))).then((Integer i) -> 1 + multiplyMatcher.match(i));
 
         multiplyMatcher.match(1000000);
     }

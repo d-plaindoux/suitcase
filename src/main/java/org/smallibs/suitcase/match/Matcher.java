@@ -94,8 +94,30 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRule caseOf(Object object) {
-        return new WhenRule(Cases.<T>fromObject(object));
+    public WhenRule caseOf(Case<? extends T> object) {
+        return new WhenRule(Cases.fromObject(object));
+    }
+
+    /**
+     * Method called in order to create a new rule. The returns a When
+     * object able to capture a conditional or a termination.
+     *
+     * @param object The pattern
+     * @return a
+     */
+    public WhenRule caseOf(Class<? extends T> object) {
+        return new WhenRule(Cases.typeOf(object));
+    }
+
+    /**
+     * Method called in order to create a new rule. The returns a When
+     * object able to capture a conditional or a termination.
+     *
+     * @param object The pattern
+     * @return a
+     */
+    public WhenRule caseOf(T object) {
+        return new WhenRule(Cases.constant(object));
     }
 
     /**

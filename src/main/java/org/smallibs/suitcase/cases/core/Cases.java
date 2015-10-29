@@ -31,16 +31,12 @@ public final class Cases {
 
     @SuppressWarnings("unchecked")
     public static <T> Case<T> fromObject(final Object value) {
-        if (value == null) return nil();
-        else if (value.equals(__)) return any();
-        else if (value.equals(var)) return var.of(Cases.<T>any());
-        else if (value instanceof Class) return typeOf((Class<?>) value);
+        if (value instanceof Class) return typeOf((Class<?>) value);
         else if (value instanceof Case) return (Case<T>) value;
         else return Cases.constant((T) value);
     }
 
     public static <T> Case<T> constant(T value) {
-        assert value != null;
         return new Constant<>(value);
     }
 
@@ -57,27 +53,11 @@ public final class Cases {
         return new TypeOf<>(type);
     }
 
-    public static class AnyObject {
-        @Override
-        public boolean equals(Object o) {
-            return this == o || o instanceof AnyObject;
-        }
+    public static class AnyObject extends Any {}
 
-        @Override
-        public int hashCode() {
-            return 13;
-        }
-    }
-
-    public static class VariableObject {
-        @Override
-        public boolean equals(Object o) {
-            return this == o || o instanceof VariableObject;
-        }
-
-        @Override
-        public int hashCode() {
-            return 13;
+    public static class VariableObject extends Var {
+        public VariableObject() {
+            super(new Any());
         }
 
         public <T> Case<T> of(T value) {
@@ -88,12 +68,8 @@ public final class Cases {
             return new Var<>(value);
         }
 
-        public <T> Case<T> of(Case<T> value) {
+        public <T> Case<T> of(Case<? extends T> value) {
             return new Var<>(value);
-        }
-
-        public <T> Case<T> of(AnyObject any) {
-            return new Var<>(Cases.<T>any());
         }
     }
 }

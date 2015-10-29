@@ -32,11 +32,11 @@ import java.util.List;
 
 public final class Beans {
 
-    public static Case<Object> Obj(Object... contents) {
+    public static Case Obj(Object... contents) {
         return new Bean(contents);
     }
 
-    public static Case<Object> Att(Object nameCase, Object valueCase) {
+    public static Case Att(Object nameCase, Object valueCase) {
         return new BeanAtt(nameCase, valueCase);
     }
 

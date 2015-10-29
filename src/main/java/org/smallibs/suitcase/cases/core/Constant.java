@@ -20,14 +20,15 @@ package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.MatchResult;
-import java.util.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class Constant<T> implements Case<T> {
 
-    private final Object object;
+    private final T object;
 
     public Constant(T object) {
         this.object = object;
@@ -35,7 +36,7 @@ public class Constant<T> implements Case<T> {
 
     @Override
     public Optional<MatchResult> unapply(T object) {
-        if (object != null && object.equals(this.object)) {
+        if (Objects.deepEquals(this.object, object)) {
             return Optional.ofNullable(new MatchResult(object));
         } else {
             return Optional.empty();

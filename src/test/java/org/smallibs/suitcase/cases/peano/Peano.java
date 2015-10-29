@@ -27,11 +27,16 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.smallibs.suitcase.cases.core.Cases.constant;
+
 public final class Peano {
 
-    public static Case<Integer> Zero = new Zero();
+    public static Zero Zero = new Zero();
 
-    public static Case<Integer> Succ(Object o) {
+    public static Succ Succ(Integer o) {
+        return new Succ(constant(o));
+    }
+    public static Succ Succ(Case<Integer> o) {
         return new Succ(o);
     }
 
@@ -58,8 +63,8 @@ public final class Peano {
 
         private final Case<Integer> value;
 
-        public Succ(Object o1) {
-            this.value = Cases.fromObject(o1);
+        public Succ(Case<Integer> o1) {
+            this.value = o1;
         }
 
         @Override

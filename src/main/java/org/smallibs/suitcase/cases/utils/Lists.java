@@ -30,7 +30,9 @@ import java.util.List;
 
 public final class Lists {
 
-    public static Case<List<?>> Empty = new Empty();
+    public static <T> Case<List<T>> Empty() {
+        return new Empty<>();
+    }
 
     public static <T> Case<List<T>> Cons(Object o1, Object o2) {
         return new Cons<>(o1, o2);

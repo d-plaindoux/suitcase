@@ -29,13 +29,9 @@ public class ConditionalMatcherTest {
 
     @Test
     public void shouldMatchWhenNull() {
-        final Matcher<Object, Boolean> matcher = Matcher.create();
+        final Matcher<Integer, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(__)).when(new Function<Object, Boolean>() {
-            public Boolean apply(Object var) throws Exception {
-                return var == null;
-            }
-        }).then(true);
+        matcher.caseOf(var.of(__)).when(var1 -> var1 == null).then(true);
         matcher.caseOf(var.of(__)).then(false);
 
         TestCase.assertTrue(matcher.match(null));
@@ -45,12 +41,8 @@ public class ConditionalMatcherTest {
     public void shouldNotMatchWhenNotNull() {
         final Matcher<Object, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(__)).when(new Function<Object, Boolean>() {
-            public Boolean apply(Object var) throws Exception {
-                return var == null;
-            }
-        }).then(true);
-        matcher.caseOf(var.of(__)).then(false);
+        matcher.caseOf(var).when(var1 -> var1 == null).then(true);
+        matcher.caseOf(var).then(false);
 
         TestCase.assertFalse(matcher.match("Hello"));
     }

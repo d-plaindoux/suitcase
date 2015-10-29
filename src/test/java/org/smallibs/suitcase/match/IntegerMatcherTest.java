@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.smallibs.suitcase.cases.peano.Peano;
 
 import static org.smallibs.suitcase.cases.core.Cases.__;
+import static org.smallibs.suitcase.cases.core.Cases.constant;
 import static org.smallibs.suitcase.cases.core.Cases.var;
 
 public class IntegerMatcherTest {
@@ -40,7 +41,7 @@ public class IntegerMatcherTest {
         final Matcher<Object, Integer> matcher = Matcher.create();
 
         matcher.caseOf(Integer.class).then(42);
-        matcher.caseOf(null).then(19);
+        matcher.caseOf(constant(null)).then(19);
 
         TestCase.assertEquals(42, matcher.match(0).intValue());
         TestCase.assertEquals(19, matcher.match(null).intValue());
@@ -80,8 +81,8 @@ public class IntegerMatcherTest {
 
         final Matcher<Integer, Boolean> even = Matcher.create();
 
-        even.caseOf( var ).when( (Integer v1) -> v1 % 2 == 0 ).then(true);
-        even.caseOf( __ ).then(false);
+        even.caseOf(var.of(Integer.class)).when((Integer v1) -> v1 % 2 == 0).then(true);
+        even.caseOf(__).then(false);
 
         even.match(12); // true
         even.match(5); // false

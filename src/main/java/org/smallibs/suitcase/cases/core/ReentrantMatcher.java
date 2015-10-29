@@ -29,10 +29,6 @@ import java.util.List;
 
 public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
 
-    public static <E,T> Matcher<E, T> reentrantMatcher(Matcher<E, T> matcher) {
-        return new ReentrantMatcher<>(matcher);
-    }
-
     private final Matcher<E, T> matcher;
 
     protected ReentrantMatcher(Matcher<E, T> matcher) {
@@ -55,7 +51,17 @@ public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
     }
 
     @Override
-    public WhenRule caseOf(Object object) {
+    public WhenRule caseOf(Case<? extends E> object) {
+        return matcher.caseOf(object);
+    }
+
+    @Override
+    public WhenRule caseOf(Class<? extends E> object) {
+        return matcher.caseOf(object);
+    }
+
+    @Override
+    public WhenRule caseOf(E object) {
         return matcher.caseOf(object);
     }
 
