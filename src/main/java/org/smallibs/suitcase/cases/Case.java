@@ -27,7 +27,7 @@ import java.util.List;
 public interface Case<T> {
     Optional<MatchResult> unapply(T t);
 
-    default List<Class> variableTypes() {
-        return Collections.emptyList();
+    default int variables() {
+        return 0;
     }
 }

@@ -30,6 +30,8 @@ import java.util.List;
 
 public final class Lists {
 
+    public static Empty<?> Empty = new Empty<>();
+
     public static <T> Case<List<T>> Empty() {
         return new Empty<>();
     }
@@ -48,11 +50,6 @@ public final class Lists {
             } else {
                 return Optional.empty();
             }
-        }
-
-        @Override
-        public List<Class> variableTypes() {
-            return new ArrayList<>();
         }
     }
 
@@ -85,10 +82,8 @@ public final class Lists {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = caseHead.variableTypes();
-            classes.addAll(caseTail.variableTypes());
-            return classes;
+        public int variables() {
+            return caseHead.variables() + caseTail.variables();
         }
     }
 }

@@ -23,9 +23,6 @@ import org.smallibs.suitcase.cases.genlex.Lexer;
 import org.smallibs.suitcase.cases.genlex.TokenStream;
 import org.smallibs.suitcase.cases.genlex.Tokenizer;
 import org.smallibs.suitcase.match.Matcher;
-import org.smallibs.suitcase.utils.Function;
-
-import java.util.Optional;
 
 import static org.smallibs.suitcase.cases.core.Cases.var;
 import static org.smallibs.suitcase.cases.genlex.Parser.Alt;
@@ -75,44 +72,19 @@ public final class JSon {
     }
 
     public static <R, MS, M, VS, V> Matcher<TokenStream, R> withHandler(final JSonHandler<R, MS, M, VS, V> handler) {
-        final ReentrantMatcher<TokenStream, R> main;
-        final Matcher<TokenStream, R> object, array;
-        final Matcher<TokenStream, MS> members;
-        final Matcher<TokenStream, M> member;
-        final Matcher<TokenStream, VS> values;
-        final Matcher<TokenStream, V> value;
-
-        main = parser(Matcher.<TokenStream, R>create());
-        object = parser(Matcher.<TokenStream, R>create());
-        array = parser(Matcher.<TokenStream, R>create());
-        members = parser(Matcher.<TokenStream, MS>create());
-        member = parser(Matcher.<TokenStream, M>create());
-        values = parser(Matcher.<TokenStream, VS>create());
-        value = parser(Matcher.<TokenStream, V>create());
+        final ReentrantMatcher<TokenStream, R> main = parser(Matcher.create());
+        final ReentrantMatcher<TokenStream, R> object = parser(Matcher.create());
+        final Matcher<TokenStream, R> array = parser(Matcher.create());
+        final Matcher<TokenStream, MS> members = parser(Matcher.create());
+        final Matcher<TokenStream, M> member = parser(Matcher.create());
+        final Matcher<TokenStream, VS> values = parser(Matcher.create());
+        final Matcher<TokenStream, V> value = parser(Matcher.create());
 
         // Parse rules definition
 
-        main.caseOf(var.of(Alt(object, array))).then(new Function<R, R>() {
-            @Override
-            public R apply(R r) throws Exception {
-                return r;
-            }
-        });
-
-        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then(new Function<Optional<MS>, R>() {
-            @Override
-            public R apply(Optional<MS> o) throws Exception {
-                return handler.anObject(o);
-            }
-        });
-
-        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then(new Function<Optional<VS>, R>() {
-            @Override
-            public R apply(Optional<VS> o) throws Exception {
-                return handler.anArray(o);
-            }
-        });
-
+        main.caseOf(var.of(Alt(object, array))).then((R r) -> r);
+        object.caseOf(Seq(Kwd("{"), var.of(Opt(members)), Kwd("}"))).then(handler::anObject);
+        array.caseOf(Seq(Kwd("["), var.of(Opt(values)), Kwd("]"))).then(handler::anArray);
         members.caseOf(Seq(var.of(member), Opt(Seq(Kwd(","), var.of(members))))).then(handler::someMembers);
         member.caseOf(Seq(String(var), Kwd(":"), var.of(value))).then(handler::aMember);
         values.caseOf(Seq(var.of(value), Opt(Seq(Kwd(","), var.of(values))))).then(handler::someValues);

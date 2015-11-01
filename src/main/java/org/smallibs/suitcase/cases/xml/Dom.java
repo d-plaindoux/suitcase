@@ -178,10 +178,8 @@ public final class Dom {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = nameCase.variableTypes();
-            classes.addAll(valueCase.variableTypes());
-            return classes;
+        public int variables() {
+            return nameCase.variables() + valueCase.variables();
         }
     }
 
@@ -229,16 +227,16 @@ public final class Dom {
 
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = name.variableTypes();
+        public int variables() {
+            int variables = 0;
 
             for (Case<Element> attribute : attributes) {
-                classes.addAll(attribute.variableTypes());
+                variables += attribute.variables();
             }
 
-            classes.addAll(content.variableTypes());
+            variables += content.variables();
 
-            return classes;
+            return variables;
         }
 
     }
@@ -268,8 +266,8 @@ public final class Dom {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            return text.variableTypes();
+        public int variables() {
+            return text.variables();
         }
     }
 
@@ -334,14 +332,14 @@ public final class Dom {
 
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = new ArrayList<>();
+        public int variables() {
+            int variables = 0;
 
             for (Case<?> aCase : this.content) {
-                classes.addAll(aCase.variableTypes());
+                variables += aCase.variables();
             }
 
-            return classes;
+            return variables;
         }
     }
 
@@ -377,8 +375,8 @@ public final class Dom {
         protected abstract MatchResult unapplyXmlTerm(XmlTerm xmlTerm);
 
         @Override
-        public List<Class> variableTypes() {
-            return content.variableTypes();
+        public int variables() {
+            return content.variables();
         }
     }
 

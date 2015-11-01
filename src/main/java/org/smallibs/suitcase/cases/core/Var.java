@@ -4,8 +4,6 @@ import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.MatchResult;
 import java.util.Optional;
 
-import java.util.List;
-
 public class Var<T> implements Case<T> {
 
     private final Case<T> value;
@@ -29,9 +27,7 @@ public class Var<T> implements Case<T> {
     }
 
     @Override
-    public List<Class> variableTypes() {
-        final List<Class> classes = value.variableTypes();
-        classes.add(0, value.getClass());
-        return classes;
+    public int variables() {
+        return value.variables() + 1;
     }
 }

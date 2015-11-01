@@ -23,7 +23,6 @@ import org.smallibs.suitcase.cases.MatchResult;
 import java.util.Optional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Null<T> implements Case<T> {
 
@@ -34,11 +33,6 @@ public class Null<T> implements Case<T> {
         } else {
             return Optional.empty();
         }
-    }
-
-    @Override
-    public List<Class> variableTypes() {
-        return new ArrayList<>();
     }
 
 }

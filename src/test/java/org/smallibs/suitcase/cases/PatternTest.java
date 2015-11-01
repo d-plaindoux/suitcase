@@ -165,5 +165,6 @@ public class PatternTest {
     public void shouldNotMatchNonZero() {
         TestCase.assertTrue(!var.of(Peano.Succ(__)).unapply(0).isPresent());
     }
+
 }
 

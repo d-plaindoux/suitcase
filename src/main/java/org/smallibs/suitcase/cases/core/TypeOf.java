@@ -23,7 +23,6 @@ import org.smallibs.suitcase.cases.MatchResult;
 import java.util.Optional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TypeOf<T> implements Case<T> {
     private final Class<?> type;
@@ -39,10 +38,5 @@ public class TypeOf<T> implements Case<T> {
         } else {
             return Optional.empty();
         }
-    }
-
-    @Override
-    public List<Class> variableTypes() {
-        return new ArrayList<>();
     }
 }

@@ -25,11 +25,14 @@ import org.smallibs.suitcase.match.MatchingException;
 import java.util.Optional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
 
     private final Matcher<E, T> matcher;
+
+    public static <E,T> ReentrantMatcher<E,T> reentrant(Matcher<E, T> matcher) {
+        return new ReentrantMatcher(matcher);
+    }
 
     protected ReentrantMatcher(Matcher<E, T> matcher) {
         super();
@@ -43,11 +46,6 @@ public class ReentrantMatcher<E, T> extends Matcher<E, T> implements Case<E> {
         } catch (MatchingException e) {
             return Optional.empty();
         }
-    }
-
-    @Override
-    public List<Class> variableTypes() {
-        return new ArrayList<>();
     }
 
     @Override

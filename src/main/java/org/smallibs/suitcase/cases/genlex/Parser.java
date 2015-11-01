@@ -24,11 +24,11 @@ import org.smallibs.suitcase.cases.MatchResult;
 import org.smallibs.suitcase.cases.core.ReentrantMatcher;
 import org.smallibs.suitcase.cases.core.Var;
 import org.smallibs.suitcase.match.Matcher;
-import java.util.Optional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.smallibs.suitcase.cases.core.Cases.__;
 import static org.smallibs.suitcase.cases.core.Cases.fromObject;
@@ -158,8 +158,8 @@ public class Parser {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            return this.value.variableTypes();
+        public int variables() {
+            return this.value.variables();
         }
     }
 
@@ -300,14 +300,14 @@ public class Parser {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = new ArrayList<>();
+        public int variables() {
+            int variables = 0;
 
             for (Case<?> aCase : this.cases) {
-                classes.addAll(aCase.variableTypes());
+                variables += aCase.variables();
             }
 
-            return classes;
+            return variables;
         }
     }
 
@@ -353,18 +353,17 @@ public class Parser {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = new ArrayList<>();
+        public int variables() {
+            int variables = 0;
 
             for (Case<?> aCase : this.cases) {
-                final List<Class> classList = aCase.variableTypes();
-                if (classList.size() > classes.size()) {
-                    classes.clear();
-                    classes.addAll(classList);
+                final int classList = aCase.variables();
+                if (classList > variables) {
+                    variables = classList;
                 }
             }
 
-            return classes;
+            return variables;
         }
     }
 
@@ -393,10 +392,9 @@ public class Parser {
                     result.with(new MatchResult(Optional.ofNullable(o), null));
                 }
             } else {
-                // Simulate in order to collect variables
+                // Collect variables with an empty result
                 result = new MatchResult(Optional.empty());
-                final List<Class> classes = aCase.variableTypes();
-                for (Class ignore : classes) {
+                for (int i = 0; i < aCase.variables(); i++) {
                     result.with(new MatchResult(Optional.empty(), null));
                 }
             }
@@ -405,8 +403,8 @@ public class Parser {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            return aCase.variableTypes();
+        public int variables() {
+            return aCase.variables();
         }
     }
 }

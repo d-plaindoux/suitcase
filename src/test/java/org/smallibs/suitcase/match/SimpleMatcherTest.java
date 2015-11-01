@@ -20,7 +20,6 @@ package org.smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.utils.Function;
 import org.smallibs.suitcase.utils.Function2;
 import org.smallibs.suitcase.utils.Pair;
 

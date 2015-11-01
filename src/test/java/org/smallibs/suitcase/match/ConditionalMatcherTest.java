@@ -20,9 +20,7 @@ package org.smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.utils.Function;
 
-import static org.smallibs.suitcase.cases.core.Cases.__;
 import static org.smallibs.suitcase.cases.core.Cases.var;
 
 public class ConditionalMatcherTest {
@@ -31,8 +29,8 @@ public class ConditionalMatcherTest {
     public void shouldMatchWhenNull() {
         final Matcher<Integer, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(var.of(__)).when(var1 -> var1 == null).then(true);
-        matcher.caseOf(var.of(__)).then(false);
+        matcher.caseOf(var).when(var1 -> var1 == null).then(true);
+        matcher.caseOf(var).then(false);
 
         TestCase.assertTrue(matcher.match(null));
     }

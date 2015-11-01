@@ -22,7 +22,6 @@ import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.MatchResult;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -43,8 +42,4 @@ public class Constant<T> implements Case<T> {
         }
     }
 
-    @Override
-    public List<Class> variableTypes() {
-        return new ArrayList<>();
-    }
 }

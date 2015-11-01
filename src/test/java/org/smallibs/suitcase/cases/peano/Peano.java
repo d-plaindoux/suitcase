@@ -21,11 +21,10 @@ package org.smallibs.suitcase.cases.peano;
 import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.MatchResult;
-import org.smallibs.suitcase.cases.core.Cases;
+
 import java.util.Optional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.smallibs.suitcase.cases.core.Cases.constant;
 
@@ -51,11 +50,6 @@ public final class Peano {
                 return Optional.empty();
             }
         }
-
-        @Override
-        public List<Class> variableTypes() {
-            return new ArrayList<>();
-        }
     }
 
     @CaseType(Integer.class)
@@ -77,10 +71,8 @@ public final class Peano {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            return value.variableTypes();
+        public int variables() {
+            return value.variables();
         }
     }
-
-
 }

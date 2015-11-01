@@ -20,7 +20,6 @@ package org.smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.cases.utils.Lists;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,10 +45,10 @@ public class ListMatcherTest {
 
     @Test
     public void shouldComputeListSizeWithAdHocPatternObject() throws MatchingException {
-        final Matcher<List<?>, Integer> sizeOfMatcher = Matcher.create();
+        final Matcher<List, Integer> sizeOfMatcher = Matcher.create();
 
         sizeOfMatcher.caseOf(Empty()).then(0);
-        sizeOfMatcher.caseOf(Cons(__, var)).then((List<Object> tail) -> 1 + sizeOfMatcher.match(tail));
+        sizeOfMatcher.caseOf(Cons(__, var)).then((List tail) -> 1 + sizeOfMatcher.match(tail));
 
         TestCase.assertEquals(0, sizeOfMatcher.match(Collections.emptyList()).intValue());
         TestCase.assertEquals(4, sizeOfMatcher.match(Arrays.asList(1, 2, 3, 4)).intValue());

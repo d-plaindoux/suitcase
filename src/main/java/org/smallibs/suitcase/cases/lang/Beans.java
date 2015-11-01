@@ -73,14 +73,14 @@ public final class Beans {
 
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = new ArrayList<>();
+        public int variables() {
+            int variables = 0;
 
             for (Case<?> aCase : this.contentCases) {
-                classes.addAll(aCase.variableTypes());
+                variables += aCase.variables();
             }
 
-            return classes;
+            return variables;
         }
     }
 
@@ -208,10 +208,8 @@ public final class Beans {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = nameCase.variableTypes();
-            classes.addAll(valueCase.variableTypes());
-            return classes;
+        public int variables() {
+            return nameCase.variables() + valueCase.variables();
         }
     }
 

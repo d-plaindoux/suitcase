@@ -56,9 +56,5 @@ public final class Strings {
             }
         }
 
-        @Override
-        public List<Class> variableTypes() {
-            return new ArrayList<>();
-        }
     }
 }

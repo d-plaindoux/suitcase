@@ -57,10 +57,8 @@ public final class Pairs {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = c1.variableTypes();
-            classes.addAll(c2.variableTypes());
-            return classes;
+        public int variables() {
+            return c1.variables() + c2.variables();
         }
     }
 }

@@ -69,14 +69,14 @@ public class Maps {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            final List<Class> classes = new ArrayList<>();
+        public int variables() {
+            int variables = 0;
 
             for (Case<?> aCase : this.entries) {
-                classes.addAll(aCase.variableTypes());
+                variables += aCase.variables();
             }
 
-            return classes;
+            return variables;
         }
     }
 
@@ -100,8 +100,8 @@ public class Maps {
         }
 
         @Override
-        public List<Class> variableTypes() {
-            return valCase.variableTypes();
+        public int variables() {
+            return valCase.variables();
         }
     }
 }

@@ -50,7 +50,7 @@ public class PairMatcherTest {
     public void shouldMatchAPairAndGetSecond() {
         final Matcher<Pair<Integer,String>, String> matcher = Matcher.create();
 
-        matcher.caseOf(Pair(__,var)).then((String i) -> i);
+        matcher.caseOf(Pair(__, var)).then((String i) -> i);
 
         TestCase.assertEquals(matcher.match(new Pair<>(1, "2")), "2");
     }
