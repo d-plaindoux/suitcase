@@ -1,5 +1,7 @@
 # SuitCase 
 
+**Deep review in progress in order to enable type synthesis**
+
 [![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) 
 [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
 [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
