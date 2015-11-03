@@ -19,17 +19,20 @@
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.cases.MatchResult;
+import org.smallibs.suitcase.cases.Result;
+
 import java.util.Optional;
 
-import java.util.ArrayList;
+class Null<T> implements Case.WithoutCapture<T> {
 
-public class Null<T> implements Case<T> {
+    Null() {
+        // Nothing
+    }
 
     @Override
-    public Optional<MatchResult> unapply(T object) {
+    public Optional<Result.WithoutCapture> unapply(T object) {
         if (object == null) {
-            return Optional.ofNullable(new MatchResult(null));
+            return Optional.ofNullable(Result.success());
         } else {
             return Optional.empty();
         }

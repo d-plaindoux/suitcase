@@ -20,56 +20,44 @@ package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
 
-public final class Cases {
+public interface Cases {
 
-    public static AnyObject __ = new AnyObject();
-    public static VariableObject var = new VariableObject();
+    Any __ = new Any();
 
-    private Cases() {
-        // Prevent useless creation
+    static <T> Var.WithoutCapture<T> var() {
+        return new Var.WithoutCapture<>(new Any<>());
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Case<T> fromObject(final Object value) {
-        if (value instanceof Class) return typeOf((Class<?>) value);
-        else if (value instanceof Case) return (Case<T>) value;
-        else return Cases.constant((T) value);
+    static <T> Var.WithoutCapture<T> var(T value) {
+        return new Var.WithoutCapture<>(constant(value));
     }
 
-    public static <T> Case<T> constant(T value) {
+    static <T> Var.WithoutCapture<T> var(Class<T> value) {
+        return new Var.WithoutCapture<>(typeOf(value));
+    }
+
+    static <T> Var.WithoutCapture<T> var(Case.WithoutCapture<T> value) {
+        return new Var.WithoutCapture<>(value);
+    }
+
+    static <T, R> Var.WithCapture<T, R> var(Case.WithCapture<T, R> value) {
+        return new Var.WithCapture<>(value);
+    }
+
+    static <T> Case.WithoutCapture<T> constant(T value) {
         return new Constant<>(value);
     }
 
-    public static <T> Case<T> nil() {
+    static <T> Case.WithoutCapture<T> nil() {
         return new Null<>();
     }
 
-    public static <T> Case<T> any() {
+    static <T> Case.WithoutCapture<T> any() {
         return new Any<>();
     }
 
-    public static <T> Case<T> typeOf(Class<?> type) {
-        assert type != null;
+    static <T> Case.WithoutCapture<T> typeOf(Class<T> type) {
         return new TypeOf<>(type);
     }
 
-    public static class AnyObject extends Any {}
-
-    public static class VariableObject extends Var {
-        public VariableObject() {
-            super(new Any());
-        }
-
-        public <T> Case<T> of(T value) {
-            return new Var<>(value);
-        }
-
-        public <T> Case<T> of(Class<? extends T> value) {
-            return new Var<>(value);
-        }
-
-        public <T> Case<T> of(Case<? extends T> value) {
-            return new Var<>(value);
-        }
-    }
 }

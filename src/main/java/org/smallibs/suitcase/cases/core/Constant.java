@@ -19,24 +19,23 @@
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.cases.MatchResult;
+import org.smallibs.suitcase.cases.Result;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Constant<T> implements Case<T> {
+class Constant<T> implements Case.WithoutCapture<T> {
 
     private final T object;
 
-    public Constant(T object) {
+    Constant(T object) {
         this.object = object;
     }
 
     @Override
-    public Optional<MatchResult> unapply(T object) {
+    public Optional<Result.WithoutCapture> unapply(T object) {
         if (Objects.deepEquals(this.object, object)) {
-            return Optional.ofNullable(new MatchResult(object));
+            return Optional.ofNullable(Result.success());
         } else {
             return Optional.empty();
         }

@@ -19,22 +19,21 @@
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.cases.MatchResult;
+import org.smallibs.suitcase.cases.Result;
+
 import java.util.Optional;
 
-import java.util.ArrayList;
-
-public class TypeOf<T> implements Case<T> {
+class TypeOf<T> implements Case.WithoutCapture<T> {
     private final Class<?> type;
 
-    public TypeOf(Class<?> type) {
+    TypeOf(Class<?> type) {
         this.type = type;
     }
 
     @Override
-    public Optional<MatchResult> unapply(T object) {
+    public Optional<Result.WithoutCapture> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return Optional.ofNullable(new MatchResult(object));
+            return Optional.ofNullable(Result.success());
         } else {
             return Optional.empty();
         }

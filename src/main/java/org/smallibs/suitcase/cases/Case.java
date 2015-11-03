@@ -20,14 +20,28 @@ package org.smallibs.suitcase.cases;
 
 import java.util.Optional;
 
-import java.util.Collections;
-import java.util.List;
+public interface Case<T, R> {
+    static <T, R> Case.WithCapture<T, R> withResult(Case<T, Result.WithCapture<R>> aCase) {
+        return aCase::unapply;
+    }
 
-@FunctionalInterface
-public interface Case<T> {
-    Optional<MatchResult> unapply(T t);
+    static <T> WithoutCapture<T> withoutResult(Case<T, Result.WithoutCapture> aCase) {
+        return aCase::unapply;
+    }
 
-    default int variables() {
-        return 0;
+    static <T> Case<T, Result.WithoutCapture> toCase(Case.WithoutCapture<T> aCase) {
+        return aCase::unapply;
+    }
+
+    static <T, C> Case<T, Result.WithCapture<C>> toCase(Case.WithCapture<T, C> aCase) {
+        return aCase::unapply;
+    }
+
+    Optional<R> unapply(T t);
+
+    interface WithoutCapture<T> extends Case<T, Result.WithoutCapture> {
+    }
+
+    interface WithCapture<T, R> extends Case<T, Result.WithCapture<R>> {
     }
 }

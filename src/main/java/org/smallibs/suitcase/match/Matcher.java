@@ -18,26 +18,18 @@
 
 package org.smallibs.suitcase.match;
 
-import org.smallibs.suitcase.annotations.CaseType;
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.cases.MatchResult;
-import org.smallibs.suitcase.cases.core.Cases;
-import org.smallibs.suitcase.utils.Function;
-import org.smallibs.suitcase.utils.Function0;
-import org.smallibs.suitcase.utils.Function1;
-import org.smallibs.suitcase.utils.Function2;
-import org.smallibs.suitcase.utils.Function3;
-import org.smallibs.suitcase.utils.Function4;
-import org.smallibs.suitcase.utils.Function5;
-import org.smallibs.suitcase.utils.Function6;
-import org.smallibs.suitcase.utils.Function7;
-import org.smallibs.suitcase.utils.Function8;
+import org.smallibs.suitcase.cases.Result;
 import org.smallibs.suitcase.utils.Functions;
-import org.smallibs.suitcase.utils.Pair;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static org.smallibs.suitcase.cases.core.Cases.constant;
+import static org.smallibs.suitcase.cases.core.Cases.typeOf;
 
 /**
  * The Matcher defines a pattern matching rule set.
@@ -72,19 +64,14 @@ public class Matcher<T, R> {
     }
 
     /**
-     * Method applying a function to a given parameters
+     * Method called in order to create a new rule. The returns a When
+     * object able to capture a conditional or a termination.
      *
-     * @param function
-     * @param result
-     * @param <M>
-     * @return
+     * @param object The pattern
+     * @return a
      */
-    private static <M> M apply(final Function<Object, M> function, final Object result) {
-        try {
-            return function.apply(result);
-        } catch (Exception e) {
-            throw new MatchingException(e);
-        }
+    public WhenRuleWithoutCapture caseOf(Case.WithoutCapture<? extends T> object) {
+        return new WhenRuleWithoutCapture(object);
     }
 
     /**
@@ -94,8 +81,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRule caseOf(Case<? extends T> object) {
-        return new WhenRule(Cases.fromObject(object));
+    public <C> WhenRuleWithCapture<C> caseOf(Case.WithCapture<? extends T, C> object) {
+        return new WhenRuleWithCapture<>(object);
     }
 
     /**
@@ -105,8 +92,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRule caseOf(Class<? extends T> object) {
-        return new WhenRule(Cases.typeOf(object));
+    public <E extends T> WhenRuleWithoutCapture caseOf(Class<E> object) {
+        return new WhenRuleWithoutCapture(typeOf(object));
     }
 
     /**
@@ -116,28 +103,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRule caseOf(T object) {
-        return new WhenRule(Cases.constant(object));
-    }
-
-    /**
-     * Method collecting parameters building an intermediate object
-     *
-     * @param result The matching result
-     * @return a
-     */
-    private Object collectParameters(List<Object> result) {
-        Object parameter;
-
-        if (result.isEmpty()) {
-            parameter = null;
-        } else {
-            parameter = result.get(result.size() - 1);
-            for (int i = result.size() - 2; i >= 0; i--) {
-                parameter = new Pair<>(result.get(i), parameter);
-            }
-        }
-        return parameter;
+    public WhenRuleWithoutCapture caseOf(T object) {
+        return new WhenRuleWithoutCapture(constant(object));
     }
 
     /**
@@ -147,78 +114,59 @@ public class Matcher<T, R> {
      * @return a computation result done by an accepted rule during pattern matching process
      * @throws MatchingException when no pattern matching rule can be applied
      */
-    @SuppressWarnings("unchecked")
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
-            final Optional<MatchResult> option = rule.match(object);
-
+            //noinspection unchecked
+            final Optional<R> option = rule.match(object);
             if (option.isPresent()) {
-                final Object o = collectParameters(option.get().bindings());
-                if (rule.getWhen() == null || apply((Function<Object, Boolean>) rule.getWhen(), o)) {
-                    return apply((Function<Object, R>) rule.getThen(), o);
-                }
+                return option.get();
             }
         }
 
         throw new MatchingException();
     }
 
+    private abstract class Rule<O extends T> {
+        abstract Optional<R> match(O object);
+    }
+
     // =================================================================================================================
-    // Behaviors
+    // Behaviors for Rule Without Capture
     // =================================================================================================================
 
-    private class Rule {
-        private final Class<?> type;
-        private final Case<T> aCase;
-        private final Function<?, Boolean> when;
-        private final Function<?, R> then;
+    private class RuleWithoutCapture<O extends T> extends Rule<O> {
+        private final Case<O, Result.WithoutCapture> aCase;
+        private final Supplier<Boolean> when;
+        private final Supplier<R> then;
 
-        private Rule(Case<T> aCase, Function<?, Boolean> when, Function<?, R> then) {
-            this.type = this.getType(aCase);
+        private RuleWithoutCapture(Case<O, Result.WithoutCapture> aCase, Supplier<Boolean> when, Supplier<R> then) {
             this.aCase = aCase;
             this.when = when;
             this.then = then;
         }
 
-        private Class<?> getType(Case aCase) {
-            if (aCase.getClass().isAnnotationPresent(CaseType.class)) {
-                return aCase.getClass().getAnnotation(CaseType.class).value();
-            } else {
-                return null;
-            }
-        }
+        @Override
+        Optional<R> match(O object) {
+            return aCase.unapply(object).flatMap(matchResult -> {
+                if (when == null || when.get()) {
+                    return Optional.of(then.get());
+                }
 
-        private boolean typeIsCorrect(Object object) {
-            return type == null || Cases.typeOf(type).unapply(object).isPresent();
-        }
-
-        Optional<MatchResult> match(T object) {
-            if (this.typeIsCorrect(object)) {
-                return aCase.unapply(object);
-            } else {
                 return Optional.empty();
-            }
-        }
-
-        Function<?, Boolean> getWhen() {
-            return when;
-        }
-
-        Function<?, R> getThen() {
-            return then;
+            });
         }
     }
 
-    public class ThenRule {
-        protected final Function<?, Boolean> when;
-        protected final Case<T> aCase;
+    public class ThenRuleWithoutCapture {
+        protected final Supplier<Boolean> when;
+        protected final Case<? extends T, Result.WithoutCapture> aCase;
 
-        public ThenRule(Case<T> aCase) {
+        public ThenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture> aCase) {
             this.when = null;
             this.aCase = aCase;
         }
 
-        public ThenRule(Function<?, Boolean> when, Case<T> aCase) {
+        public ThenRuleWithoutCapture(Supplier<Boolean> when, Case<? extends T, Result.WithoutCapture> aCase) {
             this.when = when;
             this.aCase = aCase;
         }
@@ -227,104 +175,91 @@ public class Matcher<T, R> {
             return then(Functions.constant(c));
         }
 
-        public <A> Matcher<T, R> then(Function<A, R> callBack) {
-            rules.add(new Rule(aCase, when, callBack));
-            return Matcher.this;
-        }
-
-        public Matcher<T, R> then(Function0<R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A> Matcher<T, R> then(Function1<A, R> callBack) {
-            rules.add(new Rule(aCase, when, callBack));
-            return Matcher.this;
-        }
-
-        public <A, B> Matcher<T, R> then(Function2<A, B, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C> Matcher<T, R> then(Function3<A, B, C, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C, D> Matcher<T, R> then(Function4<A, B, C, D, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C, D, E> Matcher<T, R> then(Function5<A, B, C, D, E, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C, D, E, F> Matcher<T, R> then(Function6<A, B, C, D, E, F, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C, D, E, F, G> Matcher<T, R> then(Function7<A, B, C, D, E, F, G, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
-            return Matcher.this;
-        }
-
-        public <A, B, C, D, E, F, G, H> Matcher<T, R> then(Function8<A, B, C, D, E, F, G, H, R> callBack) {
-            rules.add(new Rule(aCase, when, Functions.function(callBack)));
+        public Matcher<T, R> then(Supplier<R> callBack) {
+            rules.add(new RuleWithoutCapture<>(aCase, when, callBack));
             return Matcher.this;
         }
     }
 
-    public class WhenRule extends ThenRule {
-        protected final Case<T> aCase;
+    public class WhenRuleWithoutCapture extends ThenRuleWithoutCapture {
+        protected final Case<? extends T, Result.WithoutCapture> aCase;
 
-        public WhenRule(Case<T> aCase) {
+        public WhenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture> aCase) {
             super(aCase);
 
             this.aCase = aCase;
         }
 
-        public <A> ThenRule when(Function<A, Boolean> callBack) {
-            return new ThenRule(callBack, this.aCase);
-        }
-
-        public ThenRule when(Function0<Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A> ThenRule when(Function1<A, Boolean> callBack) {
-            return new ThenRule(callBack, this.aCase);
-        }
-
-        public <A, B> ThenRule when(Function2<A, B, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C> ThenRule when(Function3<A, B, C, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C, D> ThenRule when(Function4<A, B, C, D, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C, D, E> ThenRule when(Function5<A, B, C, D, E, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C, D, E, F> ThenRule when(Function6<A, B, C, D, E, F, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C, D, E, F, G> ThenRule when(Function7<A, B, C, D, E, F, G, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
-        }
-
-        public <A, B, C, D, E, F, G, H> ThenRule when(Function8<A, B, C, D, E, F, G, H, Boolean> callBack) {
-            return new ThenRule(Functions.function(callBack), this.aCase);
+        public ThenRuleWithoutCapture when(Supplier<Boolean> callBack) {
+            return new ThenRuleWithoutCapture(callBack, this.aCase);
         }
     }
+
+
+    // =================================================================================================================
+    // Behaviors for Rule With Capture
+    // =================================================================================================================
+
+    private class RuleWithCapture<O extends T, C> extends Rule<O> {
+        private final Case<O, Result.WithCapture<C>> aCase;
+        private final Function<C, Boolean> when;
+        private final Function<C, R> then;
+
+        private RuleWithCapture(Case<O, Result.WithCapture<C>> aCase, Function<C, Boolean> when, Function<C, R> then) {
+            this.aCase = aCase;
+            this.when = when;
+            this.then = then;
+        }
+
+        @Override
+        Optional<R> match(O object) {
+            return aCase.unapply(object).flatMap(matchResult -> {
+                if (when == null || when.apply(matchResult.capturedObject())) {
+                    return Optional.of(then.apply(matchResult.capturedObject()));
+                }
+
+                return Optional.empty();
+            });
+        }
+    }
+
+    public class ThenRuleWithCapture<C> {
+        protected final Case<? extends T, Result.WithCapture<C>> aCase;
+        protected final Function<C, Boolean> when;
+
+        public ThenRuleWithCapture(Case<? extends T, Result.WithCapture<C>> aCase) {
+            this.when = null;
+            this.aCase = aCase;
+        }
+
+        public ThenRuleWithCapture(Function<C, Boolean> when, Case<? extends T, Result.WithCapture<C>> aCase) {
+            this.when = when;
+            this.aCase = aCase;
+        }
+
+        public Matcher<? extends T, R> then(Function<C, R> callBack) {
+            rules.add(new RuleWithCapture<>(aCase, when, callBack));
+            return Matcher.this;
+        }
+
+        public Matcher<? extends T, R> then(R callBack) {
+            rules.add(new RuleWithCapture<>(aCase, when, (c -> callBack)));
+            return Matcher.this;
+        }
+    }
+
+    public class WhenRuleWithCapture<C> extends ThenRuleWithCapture<C> {
+        protected final Case<? extends T, Result.WithCapture<C>> aCase;
+
+        public WhenRuleWithCapture(Case<? extends T, Result.WithCapture<C>> aCase) {
+            super(aCase);
+
+            this.aCase = aCase;
+        }
+
+        public ThenRuleWithCapture<C> when(Function<C, Boolean> callBack) {
+            return new ThenRuleWithCapture<>(callBack, this.aCase);
+        }
+    }
+
 }

@@ -1,33 +1,57 @@
+/*
+ * Copyright (C)2015 D. Plaindoux.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation; either version 2, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; see the file COPYING.  If not, write to
+ * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.cases.MatchResult;
+import org.smallibs.suitcase.cases.Result;
+import org.smallibs.suitcase.utils.Pair;
+
 import java.util.Optional;
 
-public class Var<T> implements Case<T> {
+public interface Var {
 
-    private final Case<T> value;
+    class WithCapture<T, R> implements Case.WithCapture<T, Pair<T, R>> {
 
-    public Var(Object value) {
-        this.value = Cases.fromObject(value);
-    }
+        private final Case.WithCapture<T, R> aCase;
 
-    @Override
-    public Optional<MatchResult> unapply(T t) {
-        final Optional<MatchResult> unapply = this.value.unapply(t);
-        if (unapply.isPresent()) {
-            return Optional.ofNullable(new MatchResult(unapply.get().matchedObject(), t).with(unapply.get()));
-        } else {
-            return Optional.empty();
+        public WithCapture(Case.WithCapture<T, R> aCase) {
+            this.aCase = aCase;
+        }
+
+        @Override
+        public Optional<Result.WithCapture<Pair<T, R>>> unapply(T t) {
+            return this.aCase.unapply(t).map(result -> Result.success(t).with(result));
         }
     }
 
-    public Case<T> getValue() {
-        return value;
+    class WithoutCapture<T> implements Case.WithCapture<T, T> {
+
+        private final Case.WithoutCapture<T> aCase;
+
+        public WithoutCapture(Case.WithoutCapture<T> aCase) {
+            this.aCase = aCase;
+        }
+
+        @Override
+        public Optional<Result.WithCapture<T>> unapply(T t) {
+            return this.aCase.unapply(t).map(result -> Result.success(t).with(result));
+        }
     }
 
-    @Override
-    public int variables() {
-        return value.variables() + 1;
-    }
 }

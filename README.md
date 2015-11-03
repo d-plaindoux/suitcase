@@ -23,7 +23,7 @@ Indeed pattern matching cases can be done on the object kind and it's internal s
 sample checks if an integer is <tt>O</tt> or not.
 
 ``` java
-final Match<Integer, Boolean> isZero = Match.match();
+Match<Integer, Boolean> isZero = Match.match();
 
 isZero.caseOf(0).then(true);
 isZero.caseOf(__).then(false);
