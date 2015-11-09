@@ -22,41 +22,39 @@ import org.smallibs.suitcase.cases.Case;
 
 public interface Cases {
 
-    Any __ = new Any();
-
-    static <T> Var.WithoutCapture<T> var() {
+    static <T> Var.WithoutCapture<T, T> Var() {
         return new Var.WithoutCapture<>(new Any<>());
     }
 
-    static <T> Var.WithoutCapture<T> var(T value) {
-        return new Var.WithoutCapture<>(constant(value));
+    static <T> Var.WithoutCapture<T, T> Var(T value) {
+        return new Var.WithoutCapture<>(Constant(value));
     }
 
-    static <T> Var.WithoutCapture<T> var(Class<T> value) {
+    static <T> Var.WithoutCapture<T, T> Var(Class<T> value) {
         return new Var.WithoutCapture<>(typeOf(value));
     }
 
-    static <T> Var.WithoutCapture<T> var(Case.WithoutCapture<T> value) {
+    static <T, R> Var.WithoutCapture<T, R> Var(Case.WithoutCapture<T, R> value) {
         return new Var.WithoutCapture<>(value);
     }
 
-    static <T, R> Var.WithCapture<T, R> var(Case.WithCapture<T, R> value) {
+    static <T, R> Var.WithCapture<T, R> Var(Case.WithCapture<T, R> value) {
         return new Var.WithCapture<>(value);
     }
 
-    static <T> Case.WithoutCapture<T> constant(T value) {
+    static <T> Case.WithoutCapture<T, T> Constant(T value) {
         return new Constant<>(value);
     }
 
-    static <T> Case.WithoutCapture<T> nil() {
+    static <T> Case.WithoutCapture<T, T> Null() {
         return new Null<>();
     }
 
-    static <T> Case.WithoutCapture<T> any() {
+    static <T> Case.WithoutCapture<T, T> Any() {
         return new Any<>();
     }
 
-    static <T> Case.WithoutCapture<T> typeOf(Class<T> type) {
+    static <T> Case.WithoutCapture<T, T> typeOf(Class<T> type) {
         return new TypeOf<>(type);
     }
 

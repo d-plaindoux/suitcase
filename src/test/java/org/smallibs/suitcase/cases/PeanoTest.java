@@ -18,22 +18,28 @@
 
 package org.smallibs.suitcase.cases;
 
+import org.smallibs.suitcase.cases.core.Case0;
+import org.smallibs.suitcase.cases.core.Case1;
+
 import java.util.Optional;
 
-public interface Case<T, R> {
+import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
-    Optional<R> unapply(T t);
+public class PeanoTest {
 
-    interface WithoutCapture<T, R> extends Case<T, Result.WithoutCapture<R>> {
-        static <T, R> WithoutCapture<T, R> adapt(Case<T, Result.WithoutCapture<R>> aCase) {
-            return aCase::unapply;
-        }
+    public static Case.WithoutCapture<Integer, Integer> Zero = new Case0<Integer, Integer>(p -> p == 0 ? Optional.of(0) : Optional.empty()).$();
+    public static Case1<Integer, Integer, Integer> Succ = new Case1<>(p -> p > 0 ? Optional.of(p) : Optional.empty(), p -> p - 1);
+
+    public static Case.WithoutCapture<Integer, Integer> Succ(int i) {
+        return Succ(Constant(i));
     }
 
-    interface WithCapture<T, R> extends Case<T, Result.WithCapture<R>> {
-        static <T, R> WithCapture<T, R> adapt(Case<T, Result.WithCapture<R>> aCase) {
-            return aCase::unapply;
-        }
+    public static <C> Case.WithoutCapture<Integer, C> Succ(Case.WithoutCapture<Integer, C> aCase) {
+        return Succ.$(aCase);
+    }
+
+    public static <C> Case.WithCapture<Integer, C> Succ(Case.WithCapture<Integer, C> aCase) {
+        return Succ.$(aCase);
     }
 
 }

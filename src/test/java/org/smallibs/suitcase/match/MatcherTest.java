@@ -21,10 +21,9 @@ package org.smallibs.suitcase.match;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import static org.smallibs.suitcase.cases.core.Cases.__;
-import static org.smallibs.suitcase.cases.core.Cases.any;
-import static org.smallibs.suitcase.cases.core.Cases.nil;
-import static org.smallibs.suitcase.cases.core.Cases.var;
+import static org.smallibs.suitcase.cases.core.Cases.Any;
+import static org.smallibs.suitcase.cases.core.Cases.Null;
+import static org.smallibs.suitcase.cases.core.Cases.Var;
 
 public class MatcherTest {
 
@@ -32,8 +31,8 @@ public class MatcherTest {
     public void shouldMatchNullValue() throws Exception {
         final Matcher<Object, Boolean> isNull = Matcher.create();
 
-        isNull.caseOf(nil()).then(true);
-        isNull.caseOf(__).then(false);
+        isNull.caseOf(Null()).then(true);
+        isNull.caseOf(Any()).then(false);
 
         TestCase.assertTrue(isNull.match(null));
         TestCase.assertFalse(isNull.match(2));
@@ -44,7 +43,7 @@ public class MatcherTest {
         final Matcher<Object, Boolean> isInteger = Matcher.create();
 
         isInteger.caseOf(Integer.class).then(true);
-        isInteger.caseOf(__).then(false);
+        isInteger.caseOf(Any()).then(false);
 
         TestCase.assertTrue(isInteger.match(0));
         TestCase.assertFalse(isInteger.match("0"));
@@ -55,7 +54,7 @@ public class MatcherTest {
         final Matcher<Object, Boolean> isInteger = Matcher.create();
 
         isInteger.caseOf(Integer.class).when(() -> true).then(true);
-        isInteger.caseOf(__).then(false);
+        isInteger.caseOf(Any()).then(false);
 
         TestCase.assertTrue(isInteger.match(0));
         TestCase.assertFalse(isInteger.match("0"));
@@ -66,7 +65,7 @@ public class MatcherTest {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
         isZero.caseOf(0).then(true);
-        isZero.caseOf(__).then(false);
+        isZero.caseOf(Any()).then(false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));
@@ -77,7 +76,7 @@ public class MatcherTest {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
         isZero.caseOf(0).then(() -> true);
-        isZero.caseOf(__).then(() -> false);
+        isZero.caseOf(Any()).then(() -> false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));
@@ -87,8 +86,8 @@ public class MatcherTest {
     public void shouldMatchIntegerByValueAndConditional() throws Exception {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
-        isZero.caseOf(var()).when(i -> i == 0).then(i -> true);
-        isZero.caseOf(__).then(() -> false);
+        isZero.caseOf(Var()).when(i -> i == 0).then(i -> true);
+        isZero.caseOf(Any()).then(() -> false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));
@@ -98,8 +97,8 @@ public class MatcherTest {
     public void shouldMatchIntegerByValueAndConditionalAndConstant() throws Exception {
         final Matcher<Integer, Boolean> isZero = Matcher.create();
 
-        isZero.caseOf(var()).when(i -> i == 0).then(true);
-        isZero.caseOf(__).then(false);
+        isZero.caseOf(Var()).when(i -> i == 0).then(true);
+        isZero.caseOf(Any()).then(false);
 
         TestCase.assertTrue(isZero.match(0));
         TestCase.assertFalse(isZero.match(1));
@@ -109,7 +108,7 @@ public class MatcherTest {
     public void shouldMatchExtractedInteger() throws Exception {
         final Matcher<Integer, Integer> isZero = Matcher.create();
 
-        isZero.caseOf(var()).then(s -> s + 1);
+        isZero.caseOf(Var()).then(s -> s + 1);
 
         TestCase.assertEquals((int) isZero.match(0), 1);
         TestCase.assertEquals((int) isZero.match(1), 2);
@@ -119,9 +118,19 @@ public class MatcherTest {
     public void shouldMatchExtractedIntegerTwice() throws Exception {
         final Matcher<Integer, Integer> isZero = Matcher.create();
 
-        isZero.caseOf(var(Integer.class)).then(s -> s + 1);
+        isZero.caseOf(Var(Integer.class)).then(s -> s + 1);
 
         TestCase.assertEquals((int) isZero.match(0), 1);
         TestCase.assertEquals((int) isZero.match(1), 2);
+    }
+
+
+    @Test(expected = MatchingException.class)
+    public void shouldNotMatch() throws Exception {
+        final Matcher<Integer, Boolean> wrong = Matcher.create();
+
+        wrong.caseOf(1).then(true);
+
+        wrong.match(2);
     }
 }

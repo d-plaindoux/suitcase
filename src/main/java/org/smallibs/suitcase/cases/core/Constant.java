@@ -24,7 +24,7 @@ import org.smallibs.suitcase.cases.Result;
 import java.util.Objects;
 import java.util.Optional;
 
-class Constant<T> implements Case.WithoutCapture<T> {
+class Constant<T> implements Case.WithoutCapture<T, T> {
 
     private final T object;
 
@@ -33,9 +33,9 @@ class Constant<T> implements Case.WithoutCapture<T> {
     }
 
     @Override
-    public Optional<Result.WithoutCapture> unapply(T object) {
+    public Optional<Result.WithoutCapture<T>> unapply(T object) {
         if (Objects.deepEquals(this.object, object)) {
-            return Optional.ofNullable(Result.success());
+            return Optional.of(Result.success(object));
         } else {
             return Optional.empty();
         }

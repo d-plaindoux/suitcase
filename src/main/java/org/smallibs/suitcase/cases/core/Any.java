@@ -23,15 +23,15 @@ import org.smallibs.suitcase.cases.Result;
 
 import java.util.Optional;
 
-class Any<T> implements Case.WithoutCapture<T> {
+class Any<T> implements Case.WithoutCapture<T, T> {
 
     Any() {
         // Nothing
     }
 
     @Override
-    public Optional<Result.WithoutCapture> unapply(T object) {
-        return Optional.ofNullable(Result.success());
+    public Optional<Result.WithoutCapture<T>> unapply(T object) {
+        return Optional.ofNullable(Result.success(object));
     }
 
 }

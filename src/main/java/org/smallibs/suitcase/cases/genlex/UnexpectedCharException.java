@@ -16,24 +16,10 @@
  * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package org.smallibs.suitcase.cases;
+package org.smallibs.suitcase.cases.genlex;
 
-import java.util.Optional;
-
-public interface Case<T, R> {
-
-    Optional<R> unapply(T t);
-
-    interface WithoutCapture<T, R> extends Case<T, Result.WithoutCapture<R>> {
-        static <T, R> WithoutCapture<T, R> adapt(Case<T, Result.WithoutCapture<R>> aCase) {
-            return aCase::unapply;
-        }
+public class UnexpectedCharException extends Exception {
+    public UnexpectedCharException(int index, char c) {
+        super("char <" + c + "> at position <" + index + ">");
     }
-
-    interface WithCapture<T, R> extends Case<T, Result.WithCapture<R>> {
-        static <T, R> WithCapture<T, R> adapt(Case<T, Result.WithCapture<R>> aCase) {
-            return aCase::unapply;
-        }
-    }
-
 }

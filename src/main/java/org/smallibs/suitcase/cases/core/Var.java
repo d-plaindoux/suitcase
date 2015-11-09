@@ -36,21 +36,21 @@ public interface Var {
 
         @Override
         public Optional<Result.WithCapture<Pair<T, R>>> unapply(T t) {
-            return this.aCase.unapply(t).map(result -> Result.success(t).with(result));
+            return this.aCase.unapply(t).map(r -> Result.successAndReturns(new Pair<>(t, r.resultValue())));
         }
     }
 
-    class WithoutCapture<T> implements Case.WithCapture<T, T> {
+    class WithoutCapture<T, R> implements Case.WithCapture<T, R> {
 
-        private final Case.WithoutCapture<T> aCase;
+        private final Case.WithoutCapture<T, R> aCase;
 
-        public WithoutCapture(Case.WithoutCapture<T> aCase) {
+        public WithoutCapture(Case.WithoutCapture<T, R> aCase) {
             this.aCase = aCase;
         }
 
         @Override
-        public Optional<Result.WithCapture<T>> unapply(T t) {
-            return this.aCase.unapply(t).map(result -> Result.success(t).with(result));
+        public Optional<Result.WithCapture<R>> unapply(T t) {
+            return this.aCase.unapply(t).map(result -> Result.successAndReturns(result.resultValue()));
         }
     }
 

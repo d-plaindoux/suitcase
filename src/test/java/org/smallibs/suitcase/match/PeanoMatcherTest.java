@@ -21,10 +21,12 @@ package org.smallibs.suitcase.match;
 import junit.framework.TestCase;
 import org.junit.Test;
 
-import static org.smallibs.suitcase.match.cases.PeanoTest.Succ;
-import static org.smallibs.suitcase.match.cases.PeanoTest.Zero;
-import static org.smallibs.suitcase.cases.core.Cases.__;
-import static org.smallibs.suitcase.cases.core.Cases.var;
+import java.util.Optional;
+
+import static org.smallibs.suitcase.cases.core.Cases.Any;
+import static org.smallibs.suitcase.cases.core.Cases.Var;
+import static org.smallibs.suitcase.cases.PeanoTest.Succ;
+import static org.smallibs.suitcase.cases.PeanoTest.Zero;
 
 public class PeanoMatcherTest {
 
@@ -34,7 +36,7 @@ public class PeanoMatcherTest {
         Matcher<Integer, Boolean> isZero = Matcher.create();
 
         isZero.caseOf(Zero).then(true);
-        isZero.caseOf(Succ(__)).then(false);
+        isZero.caseOf(Succ(Any())).then(false);
 
         TestCase.assertEquals((boolean) isZero.match(0), true);
         TestCase.assertEquals((boolean) isZero.match(1), false);
@@ -42,12 +44,15 @@ public class PeanoMatcherTest {
 
     @Test
     public void shouldMatchExtractedInteger() throws Exception {
-        final Matcher<Integer, Integer> nextInteger = Matcher.create();
+        final Matcher<Integer, Optional<Integer>> minus2 = Matcher.create();
 
-        nextInteger.caseOf(Zero).then(1);
-        nextInteger.caseOf(Succ(Succ(var()))).then(i -> (i + 1));
+        minus2.caseOf(Succ(Succ(Var()))).then(Optional::of);
+        minus2.caseOf(Any()).then(Optional.empty());
 
-        TestCase.assertEquals((int) nextInteger.match(0), 1);
-        TestCase.assertEquals((int) nextInteger.match(1), 2);
+
+        TestCase.assertFalse(minus2.match(0).isPresent());
+        TestCase.assertFalse(minus2.match(1).isPresent());
+        TestCase.assertEquals((int) minus2.match(2).get(), 0);
+        TestCase.assertEquals((int) minus2.match(4).get(), 2);
     }
 }

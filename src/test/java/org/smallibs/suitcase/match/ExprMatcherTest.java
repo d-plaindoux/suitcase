@@ -19,15 +19,15 @@
 package org.smallibs.suitcase.match;
 
 import org.junit.Test;
-import org.smallibs.suitcase.match.cases.ExprTest.Expr;
-import org.smallibs.suitcase.match.cases.ExprTest.Expr.Add;
-import org.smallibs.suitcase.match.cases.ExprTest.Expr.Nat;
-import org.smallibs.suitcase.match.cases.ExprTest.P;
+import org.smallibs.suitcase.cases.ExprTest.Expr;
+import org.smallibs.suitcase.cases.ExprTest.Expr.Add;
+import org.smallibs.suitcase.cases.ExprTest.Expr.Nat;
 
 import static junit.framework.Assert.assertEquals;
-import static org.smallibs.suitcase.match.cases.ExprTest.Expr.Add;
-import static org.smallibs.suitcase.match.cases.ExprTest.Expr.Nat;
-import static org.smallibs.suitcase.cases.core.Cases.var;
+import static org.smallibs.suitcase.cases.core.Cases.Var;
+import static org.smallibs.suitcase.cases.ExprTest.P.Add;
+import static org.smallibs.suitcase.cases.ExprTest.P.Nat;
+import static org.smallibs.suitcase.utils.Apply.function;
 
 public class ExprMatcherTest {
 
@@ -35,22 +35,32 @@ public class ExprMatcherTest {
     public void shouldEvalExpression() throws Exception {
         Matcher<Expr, Integer> adder = Matcher.create();
 
-        adder.caseOf(var(Nat.class)).then(n -> n.val);
-        adder.caseOf(var(Add.class)).then(n -> adder.match(n.left) + adder.match(n.right));
+        adder.caseOf(Var(Nat.class)).then(n -> n.val);
+        adder.caseOf(Var(Add.class)).then(n -> adder.match(n.left) + adder.match(n.right));
 
-        assertEquals((int) adder.match(Nat(1)), 1);
-        assertEquals((int) adder.match(Add(Nat(1), Nat(3))), 4);
+        assertEquals((int) adder.match(Expr.Nat(1)), 1);
+        assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
     }
 
     @Test
     public void shouldEvalCapturedExpression() throws Exception {
         Matcher<Expr, Integer> adder = Matcher.create();
 
-        adder.caseOf(P.Nat(var())).then(n -> n);
-        adder.caseOf(P.Add(var(), var())).then(n -> adder.match(n._1) + adder.match(n._2));
+        adder.caseOf(Nat(Var())).then(n -> n);
+        adder.caseOf(Add(Var(), Var())).then(function((e1, e2) -> adder.match(e1) + adder.match(e2)));
 
-        assertEquals((int) adder.match(Nat(1)), 1);
-        assertEquals((int) adder.match(Add(Nat(1), Nat(3))), 4);
+        assertEquals((int) adder.match(Expr.Nat(1)), 1);
+        assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
     }
 
+    @Test
+    public void shouldCaptureEvaluatedExpression() throws Exception {
+        Matcher<Expr, Integer> adder = Matcher.create();
+
+        adder.caseOf(Nat(Var())).then(n -> n);
+        adder.caseOf(Add(Var(adder), Var(adder))).then(function((e1, e2) -> e1 + e2));
+
+        assertEquals((int) adder.match(Expr.Nat(1)), 1);
+        assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
+    }
 }

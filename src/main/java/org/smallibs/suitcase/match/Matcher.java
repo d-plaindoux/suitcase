@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static org.smallibs.suitcase.cases.core.Cases.constant;
+import static org.smallibs.suitcase.cases.core.Cases.Constant;
 import static org.smallibs.suitcase.cases.core.Cases.typeOf;
 
 /**
@@ -38,12 +38,12 @@ import static org.smallibs.suitcase.cases.core.Cases.typeOf;
  * @param <R> The matching result type
  */
 
-public class Matcher<T, R> {
+public class Matcher<T, R> implements Case.WithoutCapture<T, R> {
 
     /**
      * The rule set
      */
-    private final List<Rule> rules;
+    private final List<Rule<?>> rules;
 
     /**
      * The constructor
@@ -70,8 +70,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRuleWithoutCapture caseOf(Case.WithoutCapture<? extends T> object) {
-        return new WhenRuleWithoutCapture(object);
+    public <C> WhenRuleWithoutCapture caseOf(WithoutCapture<? extends T, C> object) {
+        return new WhenRuleWithoutCapture<>(object);
     }
 
     /**
@@ -81,7 +81,7 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public <C> WhenRuleWithCapture<C> caseOf(Case.WithCapture<? extends T, C> object) {
+    public <C> WhenRuleWithCapture<C> caseOf(WithCapture<? extends T, C> object) {
         return new WhenRuleWithCapture<>(object);
     }
 
@@ -92,8 +92,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public <E extends T> WhenRuleWithoutCapture caseOf(Class<E> object) {
-        return new WhenRuleWithoutCapture(typeOf(object));
+    public <E extends T> WhenRuleWithoutCapture<E> caseOf(Class<E> object) {
+        return new WhenRuleWithoutCapture<>(typeOf(object));
     }
 
     /**
@@ -103,8 +103,8 @@ public class Matcher<T, R> {
      * @param object The pattern
      * @return a
      */
-    public WhenRuleWithoutCapture caseOf(T object) {
-        return new WhenRuleWithoutCapture(constant(object));
+    public WhenRuleWithoutCapture<T> caseOf(T object) {
+        return new WhenRuleWithoutCapture<>(Constant(object));
     }
 
     /**
@@ -116,7 +116,6 @@ public class Matcher<T, R> {
      */
     public R match(T object) throws MatchingException {
         for (Rule rule : rules) {
-            //noinspection unchecked
             final Optional<R> option = rule.match(object);
             if (option.isPresent()) {
                 return option.get();
@@ -126,6 +125,21 @@ public class Matcher<T, R> {
         throw new MatchingException();
     }
 
+    // =================================================================================================================
+    // Case<_,_> implementation
+    // =================================================================================================================
+
+    @Override
+    public Optional<Result.WithoutCapture<R>> unapply(T t) {
+        try {
+            return Optional.of(Result.success(this.match(t)));
+        } catch (MatchingException e) {
+            return Optional.empty();
+        }
+    }
+
+    // =================================================================================================================
+
     private abstract class Rule<O extends T> {
         abstract Optional<R> match(O object);
     }
@@ -134,12 +148,12 @@ public class Matcher<T, R> {
     // Behaviors for Rule Without Capture
     // =================================================================================================================
 
-    private class RuleWithoutCapture<O extends T> extends Rule<O> {
-        private final Case<O, Result.WithoutCapture> aCase;
+    private class RuleWithoutCapture<O extends T, C> extends Rule<O> {
+        private final Case<O, Result.WithoutCapture<C>> aCase;
         private final Supplier<Boolean> when;
         private final Supplier<R> then;
 
-        private RuleWithoutCapture(Case<O, Result.WithoutCapture> aCase, Supplier<Boolean> when, Supplier<R> then) {
+        private RuleWithoutCapture(Case<O, Result.WithoutCapture<C>> aCase, Supplier<Boolean> when, Supplier<R> then) {
             this.aCase = aCase;
             this.when = when;
             this.then = then;
@@ -157,16 +171,16 @@ public class Matcher<T, R> {
         }
     }
 
-    public class ThenRuleWithoutCapture {
+    public class ThenRuleWithoutCapture<C> {
         protected final Supplier<Boolean> when;
-        protected final Case<? extends T, Result.WithoutCapture> aCase;
+        protected final Case<? extends T, Result.WithoutCapture<C>> aCase;
 
-        public ThenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture> aCase) {
+        public ThenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture<C>> aCase) {
             this.when = null;
             this.aCase = aCase;
         }
 
-        public ThenRuleWithoutCapture(Supplier<Boolean> when, Case<? extends T, Result.WithoutCapture> aCase) {
+        public ThenRuleWithoutCapture(Supplier<Boolean> when, Case<? extends T, Result.WithoutCapture<C>> aCase) {
             this.when = when;
             this.aCase = aCase;
         }
@@ -181,17 +195,17 @@ public class Matcher<T, R> {
         }
     }
 
-    public class WhenRuleWithoutCapture extends ThenRuleWithoutCapture {
-        protected final Case<? extends T, Result.WithoutCapture> aCase;
+    public class WhenRuleWithoutCapture<C> extends ThenRuleWithoutCapture<C> {
+        protected final Case<? extends T, Result.WithoutCapture<C>> aCase;
 
-        public WhenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture> aCase) {
+        public WhenRuleWithoutCapture(Case<? extends T, Result.WithoutCapture<C>> aCase) {
             super(aCase);
 
             this.aCase = aCase;
         }
 
         public ThenRuleWithoutCapture when(Supplier<Boolean> callBack) {
-            return new ThenRuleWithoutCapture(callBack, this.aCase);
+            return new ThenRuleWithoutCapture<>(callBack, this.aCase);
         }
     }
 
@@ -214,8 +228,8 @@ public class Matcher<T, R> {
         @Override
         Optional<R> match(O object) {
             return aCase.unapply(object).flatMap(matchResult -> {
-                if (when == null || when.apply(matchResult.capturedObject())) {
-                    return Optional.of(then.apply(matchResult.capturedObject()));
+                if (when == null || when.apply(matchResult.resultValue())) {
+                    return Optional.of(then.apply(matchResult.resultValue()));
                 }
 
                 return Optional.empty();

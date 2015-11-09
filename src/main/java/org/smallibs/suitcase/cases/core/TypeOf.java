@@ -23,7 +23,7 @@ import org.smallibs.suitcase.cases.Result;
 
 import java.util.Optional;
 
-class TypeOf<T> implements Case.WithoutCapture<T> {
+class TypeOf<T> implements Case.WithoutCapture<T, T> {
     private final Class<?> type;
 
     TypeOf(Class<?> type) {
@@ -31,9 +31,9 @@ class TypeOf<T> implements Case.WithoutCapture<T> {
     }
 
     @Override
-    public Optional<Result.WithoutCapture> unapply(T object) {
+    public Optional<Result.WithoutCapture<T>> unapply(T object) {
         if (object != null && this.type.isAssignableFrom(object.getClass())) {
-            return Optional.ofNullable(Result.success());
+            return Optional.of(Result.success(object));
         } else {
             return Optional.empty();
         }
