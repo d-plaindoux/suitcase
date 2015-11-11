@@ -1,12 +1,16 @@
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
-import org.smallibs.suitcase.utils.Apply;
+import org.smallibs.suitcase.cases.Case.WithCapture;
+import org.smallibs.suitcase.cases.Case.WithoutCapture;
+import org.smallibs.suitcase.utils.Functions.Function2;
 import org.smallibs.suitcase.utils.Pair;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+
+import static org.smallibs.suitcase.cases.Result.success;
+import static org.smallibs.suitcase.cases.Result.successAndReturns;
 
 public class Case2<P, R, E1, E2> {
 
@@ -20,28 +24,43 @@ public class Case2<P, R, E1, E2> {
         this.compute2 = compute2;
     }
 
-    public <C1, C2> Case.WithoutCapture<P, Pair<C1, C2>> $(Case.WithoutCapture<E1, C1> aCase1, Case.WithoutCapture<E2, C2> aCase2) {
-        return Case.WithoutCapture.adapt(new Pattern<>(new Combinators.Combination2.None<>(), aCase1, aCase2));
+    public <C1, C2> WithoutCapture<P, Pair<C1, C2>> $(WithoutCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2) {
+        return WithoutCapture.adapt(new Pattern<>(
+                (c1, c2) -> success(new Pair<>(c1.resultValue(), c2.resultValue())),
+                aCase1,
+                aCase2));
     }
 
-    public <C1, C2> Case.WithCapture<P, C1> $(Case.WithCapture<E1, C1> aCase1, Case.WithoutCapture<E2, C2> aCase2) {
-        return Case.WithCapture.adapt(new Pattern<>(new Combinators.Combination2.With1<>(), aCase1, aCase2));
+    public <C1, C2> WithCapture<P, C1> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2) {
+        return WithCapture.adapt(new Pattern<>(
+                (c1, c2) -> c1,
+                aCase1,
+                aCase2)
+        );
     }
 
-    public <C1, C2> Case.WithCapture<P, C2> $(Case.WithoutCapture<E1, C1> aCase1, Case.WithCapture<E2, C2> aCase2) {
-        return Case.WithCapture.adapt(new Pattern<>(new Combinators.Combination2.With2<>(), aCase1, aCase2));
+    public <C1, C2> WithCapture<P, C2> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2) {
+        return WithCapture.adapt(new Pattern<>(
+                (c1, c2) -> c2,
+                aCase1,
+                aCase2)
+        );
     }
 
-    public <C1, C2> Case.WithCapture<P, Apply.Apply2<C1, C2>> $(Case.WithCapture<E1, C1> aCase1, Case.WithCapture<E2, C2> aCase2) {
-        return Case.WithCapture.adapt(new Pattern<>(new Combinators.Combination2.All<>(), aCase1, aCase2));
+    public <C1, C2> WithCapture<P, Pair<C1, C2>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2) {
+        return WithCapture.adapt(new Pattern<>(
+                (c1, c2) -> successAndReturns(new Pair<>(c1.resultValue(), c2.resultValue())),
+                aCase1,
+                aCase2)
+        );
     }
 
     public class Pattern<C1, C2, C> implements Case<P, C> {
-        private final Combinators.Combination2<C1, C2, C> combination;
+        private final Function2<C1, C2, C> combination;
         private final Case<E1, C1> aCase1;
         private final Case<E2, C2> aCase2;
 
-        public Pattern(Combinators.Combination2<C1, C2, C> combination, Case<E1, C1> aCase1, Case<E2, C2> aCase2) {
+        public Pattern(Function2<C1, C2, C> combination, Case<E1, C1> aCase1, Case<E2, C2> aCase2) {
             this.combination = combination;
             this.aCase1 = aCase1;
             this.aCase2 = aCase2;

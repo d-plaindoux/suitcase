@@ -22,13 +22,10 @@ import org.smallibs.suitcase.cases.Case.WithCapture;
 import org.smallibs.suitcase.cases.Case.WithoutCapture;
 import org.smallibs.suitcase.cases.core.Case0;
 import org.smallibs.suitcase.cases.core.Case2;
-import org.smallibs.suitcase.utils.Apply.Apply2;
 import org.smallibs.suitcase.utils.Pair;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public interface Lists {
 
@@ -58,7 +55,7 @@ public interface Lists {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
 
-    static <T, C1, C2> WithCapture<List<T>, Apply2<C1, C2>> Cons(WithCapture<T, C1> aCase1, WithCapture<List<T>, C2> aCase2) {
+    static <T, C1, C2> WithCapture<List<T>, Pair<C1, C2>> Cons(WithCapture<T, C1> aCase1, WithCapture<List<T>, C2> aCase2) {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
 }

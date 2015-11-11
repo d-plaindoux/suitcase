@@ -21,12 +21,9 @@ package org.smallibs.suitcase.cases.lang;
 import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.core.Case2;
 import org.smallibs.suitcase.cases.core.Cases;
-import org.smallibs.suitcase.utils.Apply.Apply2;
 import org.smallibs.suitcase.utils.Pair;
 
 import java.util.Optional;
-
-import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public interface Pairs {
 
@@ -66,7 +63,7 @@ public interface Pairs {
         return Pairs.<T1, T2>Pair().$(aCase1, aCase2);
     }
 
-    static <T1, T2, C1, C2> Case.WithCapture<Pair<T1, T2>, Apply2<C1, C2>> Pair(Case.WithCapture<T1, C1> aCase1, Case.WithCapture<T2, C2> aCase2) {
+    static <T1, T2, C1, C2> Case.WithCapture<Pair<T1, T2>, Pair<C1, C2>> Pair(Case.WithCapture<T1, C1> aCase1, Case.WithCapture<T2, C2> aCase2) {
         return Pairs.<T1, T2>Pair().$(aCase1, aCase2);
     }
 }

@@ -22,6 +22,7 @@ import org.smallibs.suitcase.cases.Case.WithCapture;
 import org.smallibs.suitcase.cases.Case.WithoutCapture;
 import org.smallibs.suitcase.cases.core.Case1;
 import org.smallibs.suitcase.cases.core.Case2;
+import org.smallibs.suitcase.cases.core.Case3;
 import org.smallibs.suitcase.cases.core.TypeCase;
 import org.smallibs.suitcase.utils.Apply;
 import org.smallibs.suitcase.utils.Pair;
@@ -40,6 +41,10 @@ public class ExprTest {
             return new Add(l, r);
         }
 
+        static Expr Add3(Expr l, Expr m, Expr r) {
+            return new Add3(l, m, r);
+        }
+
         class Nat implements Expr {
             public int val;
 
@@ -56,39 +61,23 @@ public class ExprTest {
                 this.right = right;
             }
         }
+
+        class Add3 implements Expr {
+            public Expr left, middle, right;
+
+            public Add3(Expr left, Expr middle, Expr right) {
+                this.left = left;
+                this.middle = middle;
+                this.right = right;
+            }
+        }
     }
 
     public interface P {
 
         Case1<Expr, Expr, Integer> Nat = TypeCase.of(Expr.Nat.class, (e -> e.val));
         Case2<Expr, Expr, Expr, Expr> Add = TypeCase.of(Expr.Add.class, (e -> e.left), (e -> e.right));
+        Case3<Expr, Expr, Expr, Expr, Expr> Add3 = TypeCase.of(Expr.Add3.class, (e -> e.left), (e -> e.middle), (e -> e.right));
 
-        static WithoutCapture<Expr, Integer> Nat(int c) {
-            return Nat(Constant(c));
-        }
-
-        static <C> WithoutCapture<Expr, C> Nat(WithoutCapture<Integer, C> aCase) {
-            return Nat.$(aCase);
-        }
-
-        static <C> WithCapture<Expr, C> Nat(WithCapture<Integer, C> aCase) {
-            return Nat.$(aCase);
-        }
-
-        static <C1, C2> WithoutCapture<Expr, Pair<C1, C2>> Add(WithoutCapture<Expr, C1> aCase1, WithoutCapture<Expr, C2> aCase2) {
-            return Add.$(aCase1, aCase2);
-        }
-
-        static <C1, C2> WithCapture<Expr, C1> Add(WithCapture<Expr, C1> aCase1, WithoutCapture<Expr, C2> aCase2) {
-            return Add.$(aCase1, aCase2);
-        }
-
-        static <C1, C2> WithCapture<Expr, C2> Add(WithoutCapture<Expr, C1> aCase1, WithCapture<Expr, C2> aCase2) {
-            return Add.$(aCase1, aCase2);
-        }
-
-        static <C1, C2> WithCapture<Expr, Apply.Apply2<C1, C2>> Add(WithCapture<Expr, C1> aCase1, WithCapture<Expr, C2> aCase2) {
-            return Add.$(aCase1, aCase2);
-        }
     }
 }

@@ -28,4 +28,12 @@ public interface TypeCase {
         );
     }
 
+    static <P, T extends P, E1, E2, E3> Case3<P, P, E1, E2, E3> of(Class<T> type, Function<T, E1> get1, Function<T, E2> get2, Function<T, E3> get3) {
+        return new Case3<>(
+                e -> e.getClass().isAssignableFrom(type) ? Optional.of(e) : Optional.empty(),
+                e -> get1.apply(type.cast(e)),
+                e -> get2.apply(type.cast(e)),
+                e -> get3.apply(type.cast(e))
+        );
+    }
 }

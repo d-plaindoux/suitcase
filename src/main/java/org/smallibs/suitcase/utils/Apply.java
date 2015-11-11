@@ -25,55 +25,16 @@ import java.util.function.Function;
 
 public interface Apply {
 
-    static <C1, R> Function<Apply1<C1>, R> function(Function<C1, R> function) {
-        return apply -> apply.eval(function);
+    static <C1, R> Function<C1, R> function(Function<C1, R> function) {
+        return function;
     }
 
-    static <C1, C2, R> Function<Apply2<C1, C2>, R> function(Function2<C1, C2, R> function) {
-        return apply -> apply.eval(function);
+    static <C1, C2, R> Function<Pair<C1, C2>, R> function(Function2<C1, C2, R> function) {
+        return params -> function.apply(params._1, params._2);
     }
 
-    class Apply1<C1> {
-        private final C1 c1;
-
-        public Apply1(C1 c1) {
-            this.c1 = c1;
-        }
-
-        public <R> R eval(Function<C1, R> function) {
-            return function.apply(c1);
-        }
+    static <C1, C2, C3, R> Function<Pair<C1, Pair<C2, C3>>, R> function(Function3<C1, C2, C3, R> function) {
+        return params -> function.apply(params._1, params._2._1, params._2._2);
     }
 
-    class Apply2<C1, C2> extends Pair<C1, C2> {
-        private final C1 c1;
-        private final C2 c2;
-
-        public Apply2(C1 c1, C2 c2) {
-            super(c1, c2);
-            this.c1 = c1;
-            this.c2 = c2;
-        }
-
-        public <R> R eval(Function2<C1, C2, R> function) {
-            return function.apply(c1, c2);
-        }
-    }
-
-    class Apply3<C1, C2, C3> extends Pair<C1, Pair<C2, C3>> {
-        private final C1 c1;
-        private final C2 c2;
-        private final C3 c3;
-
-        public Apply3(C1 c1, C2 c2, C3 c3) {
-            super(c1, new Pair<>(c2, c3));
-            this.c1 = c1;
-            this.c2 = c2;
-            this.c3 = c3;
-        }
-
-        public <R> R eval(Function3<C1, C2, C3, R> function) {
-            return function.apply(c1, c2, c3);
-        }
-    }
 }

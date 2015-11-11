@@ -24,15 +24,16 @@ import org.smallibs.suitcase.cases.ExprTest.Expr.Add;
 import org.smallibs.suitcase.cases.ExprTest.Expr.Nat;
 
 import static junit.framework.Assert.assertEquals;
-import static org.smallibs.suitcase.cases.core.Cases.Var;
 import static org.smallibs.suitcase.cases.ExprTest.P.Add;
+import static org.smallibs.suitcase.cases.ExprTest.P.Add3;
 import static org.smallibs.suitcase.cases.ExprTest.P.Nat;
+import static org.smallibs.suitcase.cases.core.Cases.Var;
 import static org.smallibs.suitcase.utils.Apply.function;
 
 public class ExprMatcherTest {
 
     @Test
-    public void shouldEvalExpression() throws Exception {
+    public void shouldEvalExpression() {
         Matcher<Expr, Integer> adder = Matcher.create();
 
         adder.caseOf(Var(Nat.class)).then(n -> n.val);
@@ -43,24 +44,26 @@ public class ExprMatcherTest {
     }
 
     @Test
-    public void shouldEvalCapturedExpression() throws Exception {
+    public void shouldEvalCapturedExpression() {
         Matcher<Expr, Integer> adder = Matcher.create();
 
-        adder.caseOf(Nat(Var())).then(n -> n);
-        adder.caseOf(Add(Var(), Var())).then(function((e1, e2) -> adder.match(e1) + adder.match(e2)));
+        adder.caseOf(Nat.$(Var())).then(n -> n);
+        adder.caseOf(Add.$(Var(), Var())).then(function((p1, p2) -> adder.match(p1) + adder.match(p2)));
 
         assertEquals((int) adder.match(Expr.Nat(1)), 1);
         assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
     }
 
     @Test
-    public void shouldCaptureEvaluatedExpression() throws Exception {
+    public void shouldCaptureEvaluatedExpression() {
         Matcher<Expr, Integer> adder = Matcher.create();
 
-        adder.caseOf(Nat(Var())).then(n -> n);
-        adder.caseOf(Add(Var(adder), Var(adder))).then(function((e1, e2) -> e1 + e2));
+        adder.caseOf(Nat.$(Var())).then(n -> n);
+        adder.caseOf(Add.$(Var(adder), Var(adder))).then(function((e1, e2) -> e1 + e2));
+        adder.caseOf(Add3.$(Var(adder), Var(adder), Var(adder))).then(function((e1, e2, e3) -> e1 + e2 + e3));
 
         assertEquals((int) adder.match(Expr.Nat(1)), 1);
         assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
+        assertEquals((int) adder.match(Expr.Add3(Expr.Nat(1), Expr.Nat(2), Expr.Nat(3))), 6);
     }
 }
