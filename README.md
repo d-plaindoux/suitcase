@@ -28,7 +28,7 @@ sample checks if an integer is <tt>O</tt> or not.
 Match<Integer, Boolean> isZero = Match.match();
 
 isZero.caseOf(0).then(true);
-isZero.caseOf(__).then(false);
+isZero.caseOf(Any()).then(false);
 
 isZero.match(0); // == true
 ```
