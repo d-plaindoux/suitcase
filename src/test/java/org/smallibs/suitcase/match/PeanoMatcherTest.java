@@ -53,6 +53,6 @@ public class PeanoMatcherTest {
         TestCase.assertFalse(minus2.match(0).isPresent());
         TestCase.assertFalse(minus2.match(1).isPresent());
         TestCase.assertEquals((int) minus2.match(2).get(), 0);
-        TestCase.assertEquals((int) minus2.match(4).get(), 2);
+        TestCase.assertEquals((int) minus2.match(3).get(), 1);
     }
 }
