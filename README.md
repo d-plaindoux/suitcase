@@ -1,6 +1,6 @@
 # SuitCase 
 
-**Deep review in progress in order to enable strong type checking**
+### <span style="color:red">Deep review in progress in order to enable strong type checking</span>
 
 [![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) 
 [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
@@ -28,7 +28,7 @@ sample checks if an integer is <tt>O</tt> or not.
 Match<Integer, Boolean> isZero = Match.match();
 
 isZero.caseOf(0).then(true);
-isZero.caseOf(__).then(false);
+isZero.caseOf(Any()).then(false);
 
 isZero.match(0); // == true
 ```
