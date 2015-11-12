@@ -20,6 +20,6 @@ package org.smallibs.suitcase.cases.genlex;
 
 public class UnexpectedCharException extends Exception {
     public UnexpectedCharException(int index, char c) {
-        sper("char <" + c + "> at position <" + index + ">");
+        super("char <" + c + "> at position <" + index + ">");
     }
 }
