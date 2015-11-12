@@ -20,18 +20,21 @@ package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case;
 
+import java.util.Objects;
+import java.util.Optional;
+
 public interface Cases {
 
     static <T> Var.WithoutCapture<T, T> Var() {
-        return new Var.WithoutCapture<>(new Any<>());
+        return Var(Any());
     }
 
     static <T> Var.WithoutCapture<T, T> Var(T value) {
-        return new Var.WithoutCapture<>(Constant(value));
+        return Var(Constant(value));
     }
 
     static <T> Var.WithoutCapture<T, T> Var(Class<T> value) {
-        return new Var.WithoutCapture<>(typeOf(value));
+        return Var(typeOf(value));
     }
 
     static <T, R> Var.WithoutCapture<T, R> Var(Case.WithoutCapture<T, R> value) {
@@ -43,7 +46,7 @@ public interface Cases {
     }
 
     static <T> Case.WithoutCapture<T, T> Constant(T value) {
-        return new Constant<>(value);
+        return new Case0<T, T>(p -> Objects.deepEquals(p, value) ? Optional.of(p) : Optional.empty()).$();
     }
 
     static <T> Case.WithoutCapture<T, T> Null() {
@@ -51,11 +54,10 @@ public interface Cases {
     }
 
     static <T> Case.WithoutCapture<T, T> Any() {
-        return new Any<>();
+        return new Case0<T, T>(Optional::of).$();
     }
 
     static <T> Case.WithoutCapture<T, T> typeOf(Class<T> type) {
-        return new TypeOf<>(type);
+        return new Case0<T, T>(p -> p.getClass().isAssignableFrom(type) ? Optional.of(type.cast(p)) : Optional.empty()).$();
     }
-
 }

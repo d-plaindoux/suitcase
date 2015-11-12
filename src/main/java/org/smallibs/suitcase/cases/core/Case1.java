@@ -17,7 +17,7 @@ public class Case1<P, R, E> {
         this.compute = compute;
     }
 
-    public <R> WithoutCapture<P, R> $(WithoutCapture<E, R> aCase) {
+    public <C> WithoutCapture<P, C> $(WithoutCapture<E, C> aCase) {
         return WithoutCapture.adapt(new Pattern<>(aCase));
     }
 

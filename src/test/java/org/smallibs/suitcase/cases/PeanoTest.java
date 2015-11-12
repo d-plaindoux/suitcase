@@ -27,8 +27,16 @@ import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public class PeanoTest {
 
-    public static Case.WithoutCapture<Integer, Integer> Zero = new Case0<Integer, Integer>(p -> p == 0 ? Optional.of(0) : Optional.empty()).$();
-    public static Case1<Integer, Integer, Integer> Succ = new Case1<>(p -> p > 0 ? Optional.of(p) : Optional.empty(), p -> p - 1);
+    public static Case.WithoutCapture<Integer, Integer> Zero =
+            new Case0<Integer, Integer>(
+                    p -> p == 0 ? Optional.of(0) : Optional.empty()
+            ).$();
+
+    public static Case1<Integer, Integer, Integer> Succ =
+            new Case1<>(
+                    p -> p > 0 ? Optional.of(p) : Optional.empty(),
+                    p -> p - 1
+            );
 
     public static Case.WithoutCapture<Integer, Integer> Succ(int i) {
         return Succ(Constant(i));

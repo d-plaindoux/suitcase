@@ -24,7 +24,7 @@ public class Case0<P, R> {
 
         @Override
         public Optional<Result.WithoutCapture<R>> unapply(P p) {
-            return predicate.apply(p).flatMap(r -> Optional.of(new Result.WithoutCapture<>(r)));
+            return predicate.apply(p).flatMap(r -> Optional.of(Result.success(r)));
         }
     }
 }

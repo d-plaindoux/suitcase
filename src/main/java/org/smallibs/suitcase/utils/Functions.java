@@ -33,7 +33,7 @@ public final class Functions {
     public interface Function3<A, B, C, R> {
         R apply(A a, B b, C c);
     }
-
+/*
     public interface Function4<A, B, C, D, R> {
         R apply(A a, B b, C c, D d);
     }
@@ -57,5 +57,6 @@ public final class Functions {
     public interface Function9<A, B, C, D, E, F, G, H, I, R> {
         R apply(A a, B b, C c);
     }
+*/
 }
 
