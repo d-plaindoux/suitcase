@@ -78,6 +78,16 @@ public class Case3<P, R, E1, E2, E3> {
         return case2.$(aCase1, capture);
     }
 
+    public <C1, C2, C3> WithCapture<P, Pair<C1, C3>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3) {
+        final Case2<P, R, E1, Pair<E2, E3>> case2 =
+                new Case2<>(predicate, compute1, (p -> new Pair<>(compute2.apply(p), compute3.apply(p))));
+
+        final WithCapture<Pair<E2, E3>, C3> capture = e2e3 ->
+                aCase2.unapply(e2e3._1).flatMap(c2 -> aCase3.unapply(e2e3._2));
+
+        return case2.$(aCase1, capture);
+    }
+
     public <C1, C2, C3> WithCapture<P, Pair<C2, C3>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3) {
         final Case2<P, R, E1, Pair<E2, E3>> case2 =
                 new Case2<>(predicate, compute1, (p -> new Pair<>(compute2.apply(p), compute3.apply(p))));

@@ -1,7 +1,5 @@
 package org.smallibs.suitcase.cases.core;
 
-import org.smallibs.suitcase.cases.Case;
-
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -34,6 +32,16 @@ public interface TypeCase {
                 e -> get1.apply(type.cast(e)),
                 e -> get2.apply(type.cast(e)),
                 e -> get3.apply(type.cast(e))
+        );
+    }
+
+    static <P, T extends P, E1, E2, E3, E4> Case4<P, P, E1, E2, E3, E4> of(Class<T> type, Function<T, E1> get1, Function<T, E2> get2, Function<T, E3> get3, Function<T, E4> get4) {
+        return new Case4<>(
+                e -> e.getClass().isAssignableFrom(type) ? Optional.of(e) : Optional.empty(),
+                e -> get1.apply(type.cast(e)),
+                e -> get2.apply(type.cast(e)),
+                e -> get3.apply(type.cast(e)),
+                e -> get4.apply(type.cast(e))
         );
     }
 }
