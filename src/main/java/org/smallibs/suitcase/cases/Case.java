@@ -25,7 +25,6 @@ public interface Case<T, R> {
     Optional<R> unapply(T t);
 
 
-
     interface WithoutCapture<T, R> extends Case<T, Result.WithoutCapture<R>> {
         static <T, R> WithoutCapture<T, R> adapt(Case<T, Result.WithoutCapture<R>> aCase) {
             return aCase::unapply;

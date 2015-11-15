@@ -18,6 +18,7 @@
 
 package org.smallibs.suitcase.utils;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class Functions {
@@ -26,6 +27,26 @@ public final class Functions {
         return () -> object;
     }
 
+    public static <C1, R> Function<C1, R> function(Function<C1, R> function) {
+        return function;
+    }
+
+    public static <C1, C2, R> Function<Pair<C1, C2>, R> function(Function2<C1, C2, R> function) {
+        return params -> function.apply(params._1, params._2);
+    }
+
+    public static <C1, C2, C3, R> Function<Pair<C1, Pair<C2, C3>>, R> function(Function3<C1, C2, C3, R> function) {
+        return params -> function.apply(params._1, params._2._1, params._2._2);
+    }
+
+    public static <C1, C2, C3, C4, R> Function<Pair<C1, Pair<C2, Pair<C3, C4>>>, R> function(Function4<C1, C2, C3, C4, R> function) {
+        return params -> function.apply(params._1, params._2._1, params._2._2._1, params._2._2._2);
+    }
+
+    //
+    // Interfaces
+    //
+
     public interface Function2<A, B, R> {
         R apply(A a, B b);
     }
@@ -33,11 +54,12 @@ public final class Functions {
     public interface Function3<A, B, C, R> {
         R apply(A a, B b, C c);
     }
-/*
+
     public interface Function4<A, B, C, D, R> {
         R apply(A a, B b, C c, D d);
     }
 
+/*
     public interface Function5<A, B, C, D, E, R> {
         R apply(A a, B b, C c);
     }

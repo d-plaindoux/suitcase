@@ -1,3 +1,21 @@
+/*
+ * Copyright (C)2015 D. Plaindoux.
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation; either version 2, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; see the file COPYING.  If not, write to
+ * the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package org.smallibs.suitcase.cases.core;
 
 import org.smallibs.suitcase.cases.Case.WithCapture;
@@ -81,18 +99,18 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,C2>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, C2>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
-        final WithoutCapture<Pair<E3, E4>, Pair<C3,C4>> capture = e3e4 ->
+        final WithoutCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
                 aCase3.unapply(e3e4._1)
                         .flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.success(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,C3>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, C3>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -102,7 +120,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,C4>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, C4>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -112,7 +130,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C2,C3>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C2, C3>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -122,7 +140,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C2,C4>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C2, C4>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -132,17 +150,17 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C3,C4>> $(WithoutCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C3, C4>> $(WithoutCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
-        final WithCapture<Pair<E3, E4>, Pair<C3,C4>> capture = e3e4 ->
+        final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
                 aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,Pair<C2,C3>>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, Pair<C2, C3>>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithoutCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -152,7 +170,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,Pair<C2,C4>>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, Pair<C2, C4>>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithoutCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
@@ -162,21 +180,21 @@ public class Case4<P, R, E1, E2, E3, E4> {
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C1,Pair<C3,C4>>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C1, Pair<C3, C4>>> $(WithCapture<E1, C1> aCase1, WithoutCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
-        final WithCapture<Pair<E3, E4>, Pair<C3,C4>> capture = e3e4 ->
+        final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
                 aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
 
-    public <C1, C2, C3, C4> WithCapture<P, Pair<C2,Pair<C3,C4>>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
+    public <C1, C2, C3, C4> WithCapture<P, Pair<C2, Pair<C3, C4>>> $(WithoutCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2, WithCapture<E3, C3> aCase3, WithCapture<E4, C4> aCase4) {
         final Case3<P, R, E1, E2, Pair<E3, E4>> case3 =
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
-        final WithCapture<Pair<E3, E4>, Pair<C3,C4>> capture = e3e4 ->
+        final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
                 aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
