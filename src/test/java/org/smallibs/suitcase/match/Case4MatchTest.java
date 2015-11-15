@@ -20,7 +20,6 @@ package org.smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.smallibs.suitcase.cases.core.Case3;
 import org.smallibs.suitcase.cases.core.Case4;
 import org.smallibs.suitcase.cases.core.TypeCase;
 
@@ -36,7 +35,7 @@ public class Case4MatchTest {
     public void shouldMatchVVVV() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(CC.$(Var(), Var(), Var(), Var())).then(function((a,b,c,d) -> a + b + c + d == 10));
+        matcher.caseOf(CC.$(Var(), Var(), Var(), Var())).then(function((a, b, c, d) -> a + b + c + d == 10));
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }
@@ -67,7 +66,7 @@ public class Case4MatchTest {
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }
-    
+
     @Test
     public void shouldMatchCCVC() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
@@ -163,6 +162,15 @@ public class Case4MatchTest {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Constant(1), Var(2), Var(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchVVVC() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Var(1), Var(2), Var(3), Constant(4))).then(true);
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }

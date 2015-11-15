@@ -2,6 +2,7 @@ package org.smallibs.suitcase.match;
 
 import junit.framework.TestCase;
 import org.junit.Test;
+import org.smallibs.suitcase.match.models.T;
 
 import static org.smallibs.suitcase.cases.core.Cases.Any;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
@@ -85,18 +86,4 @@ public class BeanMatcherTest {
     // Class Test
     //
 
-    public static class T {
-        public final int v1;
-        private final int v2;
-        private final int v3 = 3;
-
-        public T(int v1, int v2) {
-            this.v1 = v1;
-            this.v2 = v2;
-        }
-
-        public int getV2() {
-            return v2;
-        }
-    }
 }

@@ -7,6 +7,7 @@ import org.smallibs.suitcase.cases.core.TypeCase;
 
 import static org.smallibs.suitcase.cases.core.Cases.Constant;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
+import static org.smallibs.suitcase.utils.Functions.function;
 
 public class Case3MatchTest {
 
@@ -16,7 +17,7 @@ public class Case3MatchTest {
     public void shouldMatchVVV() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(CC.$(Var(), Var(), Var())).then(true);
+        matcher.caseOf(CC.$(Var(), Var(), Var())).then(function((o1, o2, o3) -> o1 + o2 + o3 == 6));
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3)));
     }
