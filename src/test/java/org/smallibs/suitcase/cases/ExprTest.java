@@ -18,16 +18,10 @@
 
 package org.smallibs.suitcase.cases;
 
-import org.smallibs.suitcase.cases.Case.WithCapture;
-import org.smallibs.suitcase.cases.Case.WithoutCapture;
 import org.smallibs.suitcase.cases.core.Case1;
 import org.smallibs.suitcase.cases.core.Case2;
 import org.smallibs.suitcase.cases.core.Case3;
 import org.smallibs.suitcase.cases.core.TypeCase;
-import org.smallibs.suitcase.utils.Apply;
-import org.smallibs.suitcase.utils.Pair;
-
-import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public class ExprTest {
 
