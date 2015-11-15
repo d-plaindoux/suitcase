@@ -24,7 +24,7 @@ public abstract class Result<R> {
         return new WithoutCapture<>(term);
     }
 
-    public static <C> WithCapture<C> successAndReturns(C result) {
+    public static <C> WithCapture<C> successWithCapture(C result) {
         return new WithCapture<>(result);
     }
 

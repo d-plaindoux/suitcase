@@ -36,7 +36,7 @@ public interface Var {
 
         @Override
         public Optional<Result.WithCapture<Pair<T, R>>> unapply(T t) {
-            return this.aCase.unapply(t).map(r -> Result.successAndReturns(new Pair<>(t, r.resultValue())));
+            return this.aCase.unapply(t).map(r -> Result.successWithCapture(new Pair<>(t, r.resultValue())));
         }
     }
 
@@ -50,7 +50,7 @@ public interface Var {
 
         @Override
         public Optional<Result.WithCapture<R>> unapply(T t) {
-            return this.aCase.unapply(t).map(result -> Result.successAndReturns(result.resultValue()));
+            return this.aCase.unapply(t).map(result -> Result.successWithCapture(result.resultValue()));
         }
     }
 

@@ -19,24 +19,53 @@
 package org.smallibs.suitcase.cases.lang;
 
 import org.smallibs.suitcase.cases.Case;
+import org.smallibs.suitcase.cases.Result;
+import org.smallibs.suitcase.utils.Pair;
 
 import java.util.Map;
-import java.util.Optional;
 
 import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public interface Maps {
 
-    static <T1, T2> Case.WithoutCapture<Map<T1, T2>, T2> Entry(T1 o1, T2 o2) {
+    static <T1, T2> Case.WithoutCapture<Map<T1, T2>, Pair<T1, T2>> Entry(T1 o1, T2 o2) {
+        return Entry(Constant(o1), Constant(o2));
+    }
+
+    static <T1, T2, C2> Case.WithoutCapture<Map<T1, T2>, Pair<T1, C2>> Entry(T1 o1, Case.WithoutCapture<T2, C2> o2) {
+        return Entry(Constant(o1), o2);
+    }
+
+    static <T1, T2, C1> Case.WithoutCapture<Map<T1, T2>, Pair<C1, T2>> Entry(Case.WithoutCapture<T1, C1> o1, T2 o2) {
         return Entry(o1, Constant(o2));
     }
 
-    static <T1, T2, C> Case.WithoutCapture<Map<T1, T2>, C> Entry(T1 o1, Case.WithoutCapture<T2, C> o2) {
-        return map -> Optional.ofNullable(map.get(o1)).flatMap(o2::unapply);
+    static <T1, T2, C2> Case.WithCapture<Map<T1, T2>, C2> Entry(T1 o1, Case.WithCapture<T2, C2> o2) {
+        return Entry(Constant(o1), o2);
     }
 
-    static <T1, T2, C> Case.WithCapture<Map<T1, T2>, C> Entry(T1 o1, Case.WithCapture<T2, C> o2) {
-        return map -> Optional.ofNullable(map.get(o1)).flatMap(o2::unapply);
+    static <T1, T2, C1> Case.WithCapture<Map<T1, T2>, C1> Entry(Case.WithCapture<T1, C1> o1, T2 o2) {
+        return Entry(o1, Constant(o2));
+    }
+
+    static <T1, T2, C1, C2> Case.WithoutCapture<Map<T1, T2>, Pair<C1, C2>> Entry(Case.WithoutCapture<T1, C1> o1, Case.WithoutCapture<T2, C2> o2) {
+        return map -> map.keySet().stream().filter(k -> o1.unapply(k).isPresent()).findFirst().
+                flatMap(k -> o2.unapply(map.get(k)).map(c2 -> Result.success(new Pair<>(o1.unapply(k).get().resultValue(), c2.resultValue()))));
+    }
+
+    static <T1, T2, C1, C2> Case.WithCapture<Map<T1, T2>, C1> Entry(Case.WithCapture<T1, C1> o1, Case.WithoutCapture<T2, C2> o2) {
+        return map -> map.keySet().stream().filter(k -> o1.unapply(k).isPresent()).findFirst().
+                flatMap(k -> o2.unapply(map.get(k)).flatMap(c2 -> o1.unapply(k)));
+    }
+
+    static <T1, T2, C1, C2> Case.WithCapture<Map<T1, T2>, C2> Entry(Case.WithoutCapture<T1, C1> o1, Case.WithCapture<T2, C2> o2) {
+        return map -> map.keySet().stream().filter(k -> o1.unapply(k).isPresent()).findFirst().
+                flatMap(k -> o2.unapply(map.get(k)));
+    }
+
+    static <T1, T2, C1, C2> Case.WithCapture<Map<T1, T2>, Pair<C1, C2>> Entry(Case.WithCapture<T1, C1> o1, Case.WithCapture<T2, C2> o2) {
+        return map -> map.keySet().stream().filter(k -> o1.unapply(k).isPresent()).findFirst().
+                flatMap(k -> o2.unapply(map.get(k)).map(c2 -> Result.successWithCapture(new Pair<>(o1.unapply(k).get().resultValue(), c2.resultValue()))));
     }
 
 }

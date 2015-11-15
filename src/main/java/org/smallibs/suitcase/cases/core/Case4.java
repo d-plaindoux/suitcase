@@ -155,7 +155,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
         final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
-                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
+                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successWithCapture(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
@@ -185,7 +185,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
         final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
-                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
+                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successWithCapture(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
@@ -195,7 +195,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
                 new Case3<>(predicate, compute1, compute2, (p -> new Pair<>(compute3.apply(p), compute4.apply(p))));
 
         final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
-                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
+                aCase3.unapply(e3e4._1).flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successWithCapture(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }
@@ -206,7 +206,7 @@ public class Case4<P, R, E1, E2, E3, E4> {
 
         final WithCapture<Pair<E3, E4>, Pair<C3, C4>> capture = e3e4 ->
                 aCase3.unapply(e3e4._1)
-                        .flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successAndReturns(new Pair<>(c3.resultValue(), c4.resultValue()))));
+                        .flatMap(c3 -> aCase4.unapply(e3e4._2).map(c4 -> Result.successWithCapture(new Pair<>(c3.resultValue(), c4.resultValue()))));
 
         return case3.$(aCase1, aCase2, capture);
     }

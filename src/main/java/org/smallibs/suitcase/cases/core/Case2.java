@@ -28,7 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static org.smallibs.suitcase.cases.Result.success;
-import static org.smallibs.suitcase.cases.Result.successAndReturns;
+import static org.smallibs.suitcase.cases.Result.successWithCapture;
 
 public class Case2<P, R, E1, E2> {
 
@@ -67,7 +67,7 @@ public class Case2<P, R, E1, E2> {
 
     public <C1, C2> WithCapture<P, Pair<C1, C2>> $(WithCapture<E1, C1> aCase1, WithCapture<E2, C2> aCase2) {
         return WithCapture.adapt(new Pattern<>(
-                (c1, c2) -> successAndReturns(new Pair<>(c1.resultValue(), c2.resultValue())),
+                (c1, c2) -> successWithCapture(new Pair<>(c1.resultValue(), c2.resultValue())),
                 aCase1,
                 aCase2)
         );

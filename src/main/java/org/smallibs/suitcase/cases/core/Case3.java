@@ -113,7 +113,7 @@ public class Case3<P, R, E1, E2, E3> {
         final WithCapture<Pair<E2, E3>, Pair<C2, C3>> capture = e2e3 ->
                 aCase2.unapply(e2e3._1).
                         flatMap(c2 -> aCase3.unapply(e2e3._2).
-                                map(c3 -> Result.successAndReturns(new Pair<>(c2.resultValue(), c3.resultValue()))));
+                                map(c3 -> Result.successWithCapture(new Pair<>(c2.resultValue(), c3.resultValue()))));
 
         return case2.$(aCase1, capture);
     }
@@ -125,7 +125,7 @@ public class Case3<P, R, E1, E2, E3> {
         final WithCapture<Pair<E2, E3>, Pair<C2, C3>> capture = e2e3 ->
                 aCase2.unapply(e2e3._1).
                         flatMap(c2 -> aCase3.unapply(e2e3._2).
-                                map(c3 -> Result.successAndReturns(new Pair<>(c2.resultValue(), c3.resultValue()))));
+                                map(c3 -> Result.successWithCapture(new Pair<>(c2.resultValue(), c3.resultValue()))));
 
         return case2.$(aCase1, capture);
     }
