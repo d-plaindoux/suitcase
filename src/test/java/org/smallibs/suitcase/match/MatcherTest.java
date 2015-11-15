@@ -21,6 +21,8 @@ package org.smallibs.suitcase.match;
 import junit.framework.TestCase;
 import org.junit.Test;
 
+import java.util.Objects;
+
 import static org.smallibs.suitcase.cases.core.Cases.Any;
 import static org.smallibs.suitcase.cases.core.Cases.Null;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
@@ -116,20 +118,29 @@ public class MatcherTest {
 
     @Test
     public void shouldMatchExtractedIntegerTwice() throws Exception {
-        final Matcher<Integer, Integer> isZero = Matcher.create();
+        final Matcher<Integer, Integer> twice = Matcher.create();
 
-        isZero.caseOf(Var(Integer.class)).then(s -> s + 1);
+        twice.caseOf(Var(Var())).then(s -> s._1 + s._2);
 
-        TestCase.assertEquals((int) isZero.match(0), 1);
-        TestCase.assertEquals((int) isZero.match(1), 2);
+        TestCase.assertEquals((int) twice.match(0), 0);
+        TestCase.assertEquals((int) twice.match(1), 2);
+        TestCase.assertEquals((int) twice.match(2), 4);
     }
-
 
     @Test(expected = MatchingException.class)
     public void shouldNotMatch() throws Exception {
         final Matcher<Integer, Boolean> wrong = Matcher.create();
 
         wrong.caseOf(1).then(true);
+
+        wrong.match(2);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void shouldNotMatchWhenErrorComeFromRule() throws Exception {
+        final Matcher<Object, String> wrong = Matcher.create();
+
+        wrong.caseOf(Var()).then(String.class::cast);
 
         wrong.match(2);
     }

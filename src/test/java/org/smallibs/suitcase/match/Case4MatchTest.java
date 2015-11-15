@@ -33,7 +33,7 @@ public class Case4MatchTest {
     private final Case4<C, C, Integer, Integer, Integer, Integer> CC = TypeCase.of(C.class, p -> p.i1, p -> p.i2, p -> p.i3, p -> p.i4);
 
     @Test
-    public void shouldMatch() throws Exception {
+    public void shouldMatchVVVV() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Var(), Var(), Var(), Var())).then(function((a,b,c,d) -> a + b + c + d == 10));
@@ -42,7 +42,7 @@ public class Case4MatchTest {
     }
 
     @Test
-    public void shouldMatchExactly() throws Exception {
+    public void shouldMatchCCCC() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Constant(1), Constant(2), Constant(3), Constant(4))).then(true);
@@ -51,7 +51,7 @@ public class Case4MatchTest {
     }
 
     @Test
-    public void shouldMatchAndCaptureSecond() throws Exception {
+    public void shouldMatchCVCC() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Constant(1), Var(), Constant(3), Constant(4))).then(true);
@@ -60,16 +60,7 @@ public class Case4MatchTest {
     }
 
     @Test
-    public void shouldMatchAndCaptureExactlySecond() throws Exception {
-        Matcher<C, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(CC.$(Constant(1), Var(2), Constant(3), Constant(4))).then(true);
-
-        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
-    }
-
-    @Test
-    public void shouldMatchAndCaptureFirst() throws Exception {
+    public void shouldMatchVCCC() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Var(), Constant(2), Constant(3), Constant(4))).then(true);
@@ -78,7 +69,7 @@ public class Case4MatchTest {
     }
     
     @Test
-    public void shouldMatchAndCaptureExactlyThird() throws Exception {
+    public void shouldMatchCCVC() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Constant(1), Constant(2), Var(3), Constant(4))).then(true);
@@ -87,10 +78,91 @@ public class Case4MatchTest {
     }
 
     @Test
-    public void shouldMatchFourth() throws Exception {
+    public void shouldMatchVVCV() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Var(), Var(), Constant(3), Var())).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchCCCV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Constant(1), Constant(2), Constant(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchVVCC() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Var(1), Var(2), Constant(3), Constant(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchVCVC() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Var(1), Constant(2), Var(3), Constant(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchVCCV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Var(1), Constant(2), Constant(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchCVVC() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Constant(1), Var(2), Var(3), Constant(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchCVCV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Constant(1), Var(2), Constant(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchCCVV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Constant(1), Constant(2), Var(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchVCVV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Var(1), Constant(2), Var(3), Var(4))).then(true);
+
+        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
+    }
+
+    @Test
+    public void shouldMatchCVVV() throws Exception {
+        Matcher<C, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(CC.$(Constant(1), Var(2), Var(3), Var(4))).then(true);
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }

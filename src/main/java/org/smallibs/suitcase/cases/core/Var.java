@@ -26,11 +26,11 @@ import java.util.Optional;
 
 public interface Var {
 
-    class WithCapture<T, R> implements Case.WithCapture<T, Pair<T, R>> {
+    class WithInnerCapture<T, R> implements Case.WithCapture<T, Pair<T, R>> {
 
         private final Case.WithCapture<T, R> aCase;
 
-        public WithCapture(Case.WithCapture<T, R> aCase) {
+        public WithInnerCapture(Case.WithCapture<T, R> aCase) {
             this.aCase = aCase;
         }
 
@@ -40,11 +40,11 @@ public interface Var {
         }
     }
 
-    class WithoutCapture<T, R> implements Case.WithCapture<T, R> {
+    class WithoutInnerCapture<T, R> implements Case.WithCapture<T, R> {
 
         private final Case.WithoutCapture<T, R> aCase;
 
-        public WithoutCapture(Case.WithoutCapture<T, R> aCase) {
+        public WithoutInnerCapture(Case.WithoutCapture<T, R> aCase) {
             this.aCase = aCase;
         }
 

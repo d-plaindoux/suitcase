@@ -25,24 +25,24 @@ import java.util.Optional;
 
 public interface Cases {
 
-    static <T> Var.WithoutCapture<T, T> Var() {
+    static <T> Var.WithoutInnerCapture<T, T> Var() {
         return Var(Any());
     }
 
-    static <T> Var.WithoutCapture<T, T> Var(T value) {
+    static <T> Var.WithoutInnerCapture<T, T> Var(T value) {
         return Var(Constant(value));
     }
 
-    static <T> Var.WithoutCapture<T, T> Var(Class<T> value) {
+    static <T> Var.WithoutInnerCapture<T, T> Var(Class<T> value) {
         return Var(typeOf(value));
     }
 
-    static <T, R> Var.WithoutCapture<T, R> Var(Case.WithoutCapture<T, R> value) {
-        return new Var.WithoutCapture<>(value);
+    static <T, R> Var.WithoutInnerCapture<T, R> Var(Case.WithoutCapture<T, R> value) {
+        return new Var.WithoutInnerCapture<>(value);
     }
 
-    static <T, R> Var.WithCapture<T, R> Var(Case.WithCapture<T, R> value) {
-        return new Var.WithCapture<>(value);
+    static <T, R> Var.WithInnerCapture<T, R> Var(Case.WithCapture<T, R> value) {
+        return new Var.WithInnerCapture<>(value);
     }
 
     static <T> Case.WithoutCapture<T, T> Constant(T value) {

@@ -22,10 +22,4 @@ package org.smallibs.suitcase.match;
  * Exception used for pattern matching failure denotation
  */
 public class MatchingException extends RuntimeException {
-    public MatchingException() {
-    }
-
-    public MatchingException(Exception e) {
-        super(e);
-    }
 }
