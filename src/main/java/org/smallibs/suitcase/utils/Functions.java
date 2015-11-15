@@ -27,10 +27,6 @@ public final class Functions {
         return () -> object;
     }
 
-    public static <C1, R> Function<C1, R> function(Function<C1, R> function) {
-        return function;
-    }
-
     public static <C1, C2, R> Function<Pair<C1, C2>, R> function(Function2<C1, C2, R> function) {
         return params -> function.apply(params._1, params._2);
     }

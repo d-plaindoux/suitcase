@@ -18,82 +18,25 @@
 
 package org.smallibs.suitcase.cases.lang;
 
-public class Maps {
-    /*
-    public static <T1, T2> Case<Map<T1, T2>> Map(Object... entries) {
-        return new MapCase<>(entries);
+import org.smallibs.suitcase.cases.Case;
+
+import java.util.Map;
+import java.util.Optional;
+
+import static org.smallibs.suitcase.cases.core.Cases.Constant;
+
+public interface Maps {
+
+    static <T1, T2> Case.WithoutCapture<Map<T1, T2>, T2> Entry(T1 o1, T2 o2) {
+        return Entry(o1, Constant(o2));
     }
 
-    public static <T1, T2> Case<Map<T1, T2>> Entry(T1 o1, Object o2) {
-        return new EntryCase<>(o1, o2);
+    static <T1, T2, C> Case.WithoutCapture<Map<T1, T2>, C> Entry(T1 o1, Case.WithoutCapture<T2, C> o2) {
+        return map -> Optional.ofNullable(map.get(o1)).flatMap(o2::unapply);
     }
 
-    // ------------------------------------------------------------------------------------------------------------------
-    // Private case classes
-    // ------------------------------------------------------------------------------------------------------------------
-
-    @CaseType(Map.class)
-    private static class MapCase<T1, T2> implements Case<Map<T1, T2>> {
-
-        private final List<Case<Map<T1, T2>>> entries;
-
-        MapCase(Object... contents) {
-            this.entries = new ArrayList<>();
-            for (Object content : contents) {
-                final Case<Map<T1, T2>> aCase = Cases.fromObject(content);
-                this.entries.add(aCase);
-            }
-        }
-
-        @Override
-        public Optional<MatchResult> unapply(Map<T1, T2> map) {
-            final MatchResult matchResult = new MatchResult(map);
-            for (Case<Map<T1, T2>> entry : this.entries) {
-                final Optional<MatchResult> unapply = entry.unapply(map);
-                if (!unapply.isPresent()) {
-                    return unapply;
-                } else {
-                    matchResult.with(unapply.get());
-                }
-            }
-            return Optional.ofNullable(matchResult);
-        }
-
-        @Override
-        public int variables() {
-            int variables = 0;
-
-            for (Case<?> aCase : this.entries) {
-                variables += aCase.variables();
-            }
-
-            return variables;
-        }
+    static <T1, T2, C> Case.WithCapture<Map<T1, T2>, C> Entry(T1 o1, Case.WithCapture<T2, C> o2) {
+        return map -> Optional.ofNullable(map.get(o1)).flatMap(o2::unapply);
     }
 
-    private static class EntryCase<T1, T2> implements Case<Map<T1, T2>> {
-
-        private final T1 key;
-        private final Case<T2> valCase;
-
-        EntryCase(T1 key, Object o2) {
-            this.key = key;
-            this.valCase = Cases.fromObject(o2);
-        }
-
-        @Override
-        public Optional<MatchResult> unapply(Map<T1, T2> map) {
-            if (map.containsKey(this.key)) {
-                return this.valCase.unapply(map.get(this.key));
-            } else {
-                return Optional.empty();
-            }
-        }
-
-        @Override
-        public int variables() {
-            return valCase.variables();
-        }
-    }
-    */
 }

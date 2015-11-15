@@ -26,6 +26,7 @@ import org.smallibs.suitcase.cases.core.TypeCase;
 
 import static org.smallibs.suitcase.cases.core.Cases.Constant;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
+import static org.smallibs.suitcase.utils.Functions.function;
 
 public class Case4MatchTest {
 
@@ -35,7 +36,7 @@ public class Case4MatchTest {
     public void shouldMatch() throws Exception {
         Matcher<C, Boolean> matcher = Matcher.create();
 
-        matcher.caseOf(CC.$(Var(), Var(), Var(), Var())).then(true);
+        matcher.caseOf(CC.$(Var(), Var(), Var(), Var())).then(function((a,b,c,d) -> a + b + c + d == 10));
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }
@@ -90,15 +91,6 @@ public class Case4MatchTest {
         Matcher<C, Boolean> matcher = Matcher.create();
 
         matcher.caseOf(CC.$(Var(), Var(), Constant(3), Var())).then(true);
-
-        TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
-    }
-
-    @Test
-    public void shouldAndCaptureExactlyFirst() throws Exception {
-        Matcher<C, Boolean> matcher = Matcher.create();
-
-        matcher.caseOf(CC.$(Var(1), Constant(2), Constant(3), Constant(4))).then(true);
 
         TestCase.assertTrue(matcher.match(new C(1, 2, 3, 4)));
     }
