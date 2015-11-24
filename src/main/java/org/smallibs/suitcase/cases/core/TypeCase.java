@@ -62,4 +62,27 @@ public interface TypeCase {
                 e -> get4.apply(type.cast(e))
         );
     }
+
+    static <P, T extends P, E1, E2, E3, E4, E5> Case5<P, P, E1, E2, E3, E4, E5> of(Class<T> type, Function<T, E1> get1, Function<T, E2> get2, Function<T, E3> get3, Function<T, E4> get4, Function<T, E5> get5) {
+        return new Case5<>(
+                e -> e.getClass().isAssignableFrom(type) ? Optional.of(e) : Optional.empty(),
+                e -> get1.apply(type.cast(e)),
+                e -> get2.apply(type.cast(e)),
+                e -> get3.apply(type.cast(e)),
+                e -> get4.apply(type.cast(e)),
+                e -> get5.apply(type.cast(e))
+        );
+    }
+
+    static <P, T extends P, E1, E2, E3, E4, E5, E6> Case6<P, P, E1, E2, E3, E4, E5, E6> of(Class<T> type, Function<T, E1> get1, Function<T, E2> get2, Function<T, E3> get3, Function<T, E4> get4, Function<T, E5> get5, Function<T, E6> get6) {
+        return new Case6<>(
+                e -> e.getClass().isAssignableFrom(type) ? Optional.of(e) : Optional.empty(),
+                e -> get1.apply(type.cast(e)),
+                e -> get2.apply(type.cast(e)),
+                e -> get3.apply(type.cast(e)),
+                e -> get4.apply(type.cast(e)),
+                e -> get5.apply(type.cast(e)),
+                e -> get6.apply(type.cast(e))
+        );
+    }
 }
