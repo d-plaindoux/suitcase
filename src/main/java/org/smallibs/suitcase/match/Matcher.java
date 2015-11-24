@@ -67,6 +67,7 @@ public class Matcher<T, R> implements Case.WithoutCapture<T, R> {
      * Method called in order to create a new rule. The returns a When
      * object able to capture a conditional or a termination.
      *
+     * @param <C> The type of the capture
      * @param object The pattern
      * @return a
      */
@@ -78,6 +79,7 @@ public class Matcher<T, R> implements Case.WithoutCapture<T, R> {
      * Method called in order to create a new rule. The returns a When
      * object able to capture a conditional or a termination.
      *
+     * @param <C> The type of the capture
      * @param object The pattern
      * @return a
      */
@@ -89,6 +91,7 @@ public class Matcher<T, R> implements Case.WithoutCapture<T, R> {
      * Method called in order to create a new rule. The returns a When
      * object able to capture a conditional or a termination.
      *
+     * @param <E> The class type to be matched
      * @param object The pattern
      * @return a
      */

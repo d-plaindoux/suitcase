@@ -22,8 +22,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.smallibs.suitcase.utils.Pair;
 
-import java.util.function.Function;
-
 import static java.util.function.Function.identity;
 import static org.smallibs.suitcase.cases.core.Cases.Any;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
@@ -74,5 +72,14 @@ public class PairMatcherTest {
         matcher.caseOf(Pair(Any(), "3")).then(true);
 
         matcher.match(new Pair<>(1, "2"));
+    }
+
+    @Test
+    public void shouldMatchAnEntirePair() {
+        final Matcher<Pair<Object, String>, Boolean> matcher = Matcher.create();
+
+        matcher.caseOf(Pair(1, "3")).then(true);
+
+        TestCase.assertTrue(matcher.match(new Pair<>(1, "3")));
     }
 }

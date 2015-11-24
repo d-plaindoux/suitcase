@@ -39,6 +39,14 @@ public final class Functions {
         return params -> function.apply(params._1, params._2._1, params._2._2._1, params._2._2._2);
     }
 
+    public static <C1, C2, C3, C4, C5, R> Function<Pair<C1, Pair<C2, Pair<C3, Pair<C4, C5>>>>, R> function(Function5<C1, C2, C3, C4, C5, R> function) {
+        return params -> function.apply(params._1, params._2._1, params._2._2._1, params._2._2._2._1, params._2._2._2._2);
+    }
+
+    public static <C1, C2, C3, C4, C5, C6, R> Function<Pair<C1, Pair<C2, Pair<C3, Pair<C4, Pair<C5, C6>>>>>, R> function(Function6<C1, C2, C3, C4, C5, C6, R> function) {
+        return params -> function.apply(params._1, params._2._1, params._2._2._1, params._2._2._2._1, params._2._2._2._2._1, params._2._2._2._2._2);
+    }
+
     //
     // Interfaces
     //
@@ -55,26 +63,13 @@ public final class Functions {
         R apply(A a, B b, C c, D d);
     }
 
-/*
     public interface Function5<A, B, C, D, E, R> {
-        R apply(A a, B b, C c);
+        R apply(A a, B b, C c, D d, E e);
     }
+
 
     public interface Function6<A, B, C, D, E, F, R> {
-        R apply(A a, B b, C c);
+        R apply(A a, B b, C c, D d, E e, F f);
     }
-
-    public interface Function7<A, B, C, D, E, F, G, R> {
-        R apply(A a, B b, C c);
-    }
-
-    public interface Function8<A, B, C, D, E, F, G, H, R> {
-        R apply(A a, B b, C c);
-    }
-
-    public interface Function9<A, B, C, D, E, F, G, H, I, R> {
-        R apply(A a, B b, C c);
-    }
-*/
 }
 

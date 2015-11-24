@@ -27,6 +27,8 @@ import org.smallibs.suitcase.utils.Pair;
 import java.util.List;
 import java.util.Optional;
 
+import static org.smallibs.suitcase.cases.core.Cases.Constant;
+
 public interface Lists {
 
     static <T> WithoutCapture<List<T>, List<T>> Empty() {

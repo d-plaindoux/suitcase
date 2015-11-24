@@ -20,10 +20,11 @@ package org.smallibs.suitcase.cases.lang;
 
 import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.core.Case2;
-import org.smallibs.suitcase.cases.core.Cases;
 import org.smallibs.suitcase.utils.Pair;
 
 import java.util.Optional;
+
+import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public interface Pairs {
 
@@ -35,20 +36,24 @@ public interface Pairs {
         );
     }
 
+    static <T1, T2> Case.WithoutCapture<Pair<T1, T2>, Pair<T1, T2>> Pair(T1 aCase1, T2 aCase2) {
+        return Pair(Constant(aCase1), Constant(aCase2));
+    }
+
     static <T1, T2, C2> Case.WithoutCapture<Pair<T1, T2>, Pair<T1, C2>> Pair(T1 aCase1, Case.WithoutCapture<T2, C2> aCase2) {
-        return Pair(Cases.Constant(aCase1), aCase2);
+        return Pair(Constant(aCase1), aCase2);
     }
 
     static <T1, T2, C2> Case.WithCapture<Pair<T1, T2>, C2> Pair(T1 aCase1, Case.WithCapture<T2, C2> aCase2) {
-        return Pair(Cases.Constant(aCase1), aCase2);
+        return Pair(Constant(aCase1), aCase2);
     }
 
     static <T1, T2, C1> Case.WithoutCapture<Pair<T1, T2>, Pair<C1, T2>> Pair(Case.WithoutCapture<T1, C1> aCase1, T2 aCase2) {
-        return Pair(aCase1, Cases.Constant(aCase2));
+        return Pair(aCase1, Constant(aCase2));
     }
 
     static <T1, T2, C1> Case.WithCapture<Pair<T1, T2>, C1> Pair(Case.WithCapture<T1, C1> aCase1, T2 aCase2) {
-        return Pair(aCase1, Cases.Constant(aCase2));
+        return Pair(aCase1, Constant(aCase2));
     }
 
     static <T1, T2, C1, C2> Case.WithoutCapture<Pair<T1, T2>, Pair<C1, C2>> Pair(Case.WithoutCapture<T1, C1> aCase1, Case.WithoutCapture<T2, C2> aCase2) {
