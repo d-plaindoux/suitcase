@@ -40,7 +40,6 @@ expression, XML etc.
 See also:
 
 * [Core Pattern Matching](https://github.com/d-plaindoux/suitcase/wiki#core-pattern-matching)
-* [Generic Parser](https://github.com/d-plaindoux/suitcase/wiki#generic-parser)
 
 ## Releases
 
@@ -51,13 +50,9 @@ dependency to your pom project.
 <dependency>
   <groupId>org.smallibs</groupId>
   <artifactId>suitcase</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
 </dependency>
 ```
-
-## Dependencies
-
-* Google JSON 2.2.4
 
 ## Other Propositions & Discussions
    
