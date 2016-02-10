@@ -37,10 +37,6 @@ More information and descriptions are given in the [Wiki](https://github.com/d-p
 particular ad-hoc case is explained with practical implementations covering matching for lists, string regular 
 expression, XML etc.
 
-See also:
-
-* [Core Pattern Matching](https://github.com/d-plaindoux/suitcase/wiki#core-pattern-matching)
-
 ## Releases
 
 This library is available at Sonatype OSS Repository Hosting service and can be simply used adding the following 
