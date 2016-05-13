@@ -50,6 +50,11 @@ dependency to your pom project.
 </dependency>
 ```
 
+## Presentation
+
+A [presentation (in french)](http://www.slideshare.net/dplaindoux/java-amp-le-pattern-matching-54806648) has be given 
+during a [Toulouse Java User Group](http://toulousejug.org) session.
+
 ## Other Propositions & Discussions
    
 A review of various approaches is given in the [Structural Pattern Matching in Java](http://blog.higher-order.com/blog/2009/08/21/structural-pattern-matching-in-java/). 
