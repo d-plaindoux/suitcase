@@ -52,7 +52,7 @@ dependency to your pom project.
 
 ## Presentation
 
-A [presentation (in french)](http://www.slideshare.net/dplaindoux/java-amp-le-pattern-matching-54806648) has be given 
+A [presentation (in french)](http://www.slideshare.net/dplaindoux/java-amp-le-pattern-matching-54806648) has been given 
 during a [Toulouse Java User Group](http://toulousejug.org) session.
 
 ## Other Propositions & Discussions
