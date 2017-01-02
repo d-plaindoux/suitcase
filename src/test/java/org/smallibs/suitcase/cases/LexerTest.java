@@ -124,10 +124,10 @@ public class LexerTest {
 
     private static class ALexer extends Lexer {
 
-        public static final Tokenizer IDENT =
+        static final Tokenizer IDENT =
                 Tokenizer.Ident("([\\p{L}$][\\p{L}\\p{N}_$]*\\.)*[\\p{L}_$][\\p{L}\\p{N}_$]*");
 
-        public ALexer() {
+        ALexer() {
             super();
             this.tokenizers(Tokenizer.Generic("Operator", Tokenizer.Kwd("++")));
             // Keywords

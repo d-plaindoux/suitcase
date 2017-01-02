@@ -30,6 +30,7 @@ import static org.smallibs.suitcase.cases.core.Cases.Constant;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
 import static org.smallibs.suitcase.cases.lang.Lists.Cons;
 import static org.smallibs.suitcase.cases.lang.Lists.Empty;
+import static org.smallibs.suitcase.utils.Functions.function;
 
 
 public class ListMatcherTest {
@@ -61,7 +62,7 @@ public class ListMatcherTest {
         final Matcher<List<Integer>, Integer> addAll = Matcher.create();
 
         addAll.caseOf(Empty()).then(0);
-        addAll.caseOf(Cons(Var(), Var())).then((p) -> p._1 + addAll.match(p._2));
+        addAll.caseOf(Cons(Var(), Var())).then(function((p1,p2) -> p1 + addAll.match(p2)));
 
         TestCase.assertEquals(0, addAll.match(Collections.emptyList()).intValue());
         TestCase.assertEquals(10, addAll.match(Arrays.asList(1, 2, 3, 4)).intValue());
@@ -77,4 +78,12 @@ public class ListMatcherTest {
         TestCase.assertTrue(headIsZero.match(Collections.singletonList(0)));
         TestCase.assertFalse(headIsZero.match(Arrays.asList(1, 2)));
     }
-}
+
+    @Test
+    public void shouldCheckListWithOnlyOneElement() throws MatchingException {
+        final Matcher<List<Integer>, Boolean> singletonList = Matcher.create();
+
+        singletonList.caseOf(Cons(Var(), Empty())).then(true);
+
+        TestCase.assertTrue(singletonList.match(Collections.singletonList(0)));
+    }}

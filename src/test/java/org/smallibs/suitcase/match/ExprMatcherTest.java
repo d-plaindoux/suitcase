@@ -22,12 +22,11 @@ import org.junit.Test;
 import org.smallibs.suitcase.cases.ExprTest.Expr;
 import org.smallibs.suitcase.cases.ExprTest.Expr.Add;
 import org.smallibs.suitcase.cases.ExprTest.Expr.Nat;
-import org.smallibs.suitcase.utils.Functions;
 
 import static junit.framework.Assert.assertEquals;
-import static org.smallibs.suitcase.cases.ExprTest.P.Add;
-import static org.smallibs.suitcase.cases.ExprTest.P.Add3;
-import static org.smallibs.suitcase.cases.ExprTest.P.Nat;
+import static org.smallibs.suitcase.cases.ExprTest.Patterns.Add;
+import static org.smallibs.suitcase.cases.ExprTest.Patterns.Add3;
+import static org.smallibs.suitcase.cases.ExprTest.Patterns.Nat;
 import static org.smallibs.suitcase.cases.core.Cases.Var;
 import static org.smallibs.suitcase.utils.Functions.function;
 
@@ -49,7 +48,7 @@ public class ExprMatcherTest {
         Matcher<Expr, Integer> adder = Matcher.create();
 
         adder.caseOf(Nat.$(Var())).then(n -> n);
-        adder.caseOf(Add.$(Var(), Var())).then(Functions.function((p1, p2) -> adder.match(p1) + adder.match(p2)));
+        adder.caseOf(Add.$(Var(), Var())).then(function((p1, p2) -> adder.match(p1) + adder.match(p2)));
 
         assertEquals((int) adder.match(Expr.Nat(1)), 1);
         assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);
@@ -60,8 +59,8 @@ public class ExprMatcherTest {
         Matcher<Expr, Integer> adder = Matcher.create();
 
         adder.caseOf(Nat.$(Var())).then(n -> n);
-        adder.caseOf(Add.$(Var(adder), Var(adder))).then(Functions.function((e1, e2) -> e1 + e2));
-        adder.caseOf(Add3.$(Var(adder), Var(adder), Var(adder))).then(Functions.function((e1, e2, e3) -> e1 + e2 + e3));
+        adder.caseOf(Add.$(Var(adder), Var(adder))).then(function((e1, e2) -> e1 + e2));
+        adder.caseOf(Add3.$(Var(adder), Var(adder), Var(adder))).then(function((e1, e2, e3) -> e1 + e2 + e3));
 
         assertEquals((int) adder.match(Expr.Nat(1)), 1);
         assertEquals((int) adder.match(Expr.Add(Expr.Nat(1), Expr.Nat(3))), 4);

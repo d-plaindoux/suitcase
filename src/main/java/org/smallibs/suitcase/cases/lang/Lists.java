@@ -18,8 +18,7 @@
 
 package org.smallibs.suitcase.cases.lang;
 
-import org.smallibs.suitcase.cases.Case.WithCapture;
-import org.smallibs.suitcase.cases.Case.WithoutCapture;
+import org.smallibs.suitcase.cases.Case;
 import org.smallibs.suitcase.cases.core.Case0;
 import org.smallibs.suitcase.cases.core.Case2;
 import org.smallibs.suitcase.utils.Pair;
@@ -27,11 +26,9 @@ import org.smallibs.suitcase.utils.Pair;
 import java.util.List;
 import java.util.Optional;
 
-import static org.smallibs.suitcase.cases.core.Cases.Constant;
-
 public interface Lists {
 
-    static <T> WithoutCapture<List<T>, List<T>> Empty() {
+    static <T> Case.WithoutCapture<List<T>, List<T>> Empty() {
         return new Case0<List<T>, List<T>>(
                 p -> p.isEmpty() ? Optional.of(p) : Optional.empty()
         ).$();
@@ -45,19 +42,20 @@ public interface Lists {
         );
     }
 
-    static <T, C1, C2> WithoutCapture<List<T>, Pair<C1, C2>> Cons(WithoutCapture<T, C1> aCase1, WithoutCapture<List<T>, C2> aCase2) {
+    static <T, C1, C2> Case.WithoutCapture<List<T>, Pair<C1, C2>> Cons(Case.WithoutCapture<T, C1> aCase1, Case.WithoutCapture<List<T>, C2> aCase2) {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
 
-    static <T, C1, C2> WithCapture<List<T>, C1> Cons(WithCapture<T, C1> aCase1, WithoutCapture<List<T>, C2> aCase2) {
+    static <T, C1, C2> Case.WithCapture<List<T>, C1> Cons(Case.WithCapture<T, C1> aCase1, Case.WithoutCapture<List<T>, C2> aCase2) {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
 
-    static <T, C1, C2> WithCapture<List<T>, C2> Cons(WithoutCapture<T, C1> aCase1, WithCapture<List<T>, C2> aCase2) {
+    static <T, C1, C2> Case.WithCapture<List<T>, C2> Cons(Case.WithoutCapture<T, C1> aCase1, Case.WithCapture<List<T>, C2> aCase2) {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
 
-    static <T, C1, C2> WithCapture<List<T>, Pair<C1, C2>> Cons(WithCapture<T, C1> aCase1, WithCapture<List<T>, C2> aCase2) {
+    static <T, C1, C2> Case.WithCapture<List<T>, Pair<C1, C2>> Cons(Case.WithCapture<T, C1> aCase1, Case.WithCapture<List<T>, C2> aCase2) {
         return Lists.<T>Cons().$(aCase1, aCase2);
     }
+
 }

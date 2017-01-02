@@ -67,7 +67,7 @@ public class ExprTest {
         }
     }
 
-    public interface P {
+    public interface Patterns {
 
         Case1<Expr, Expr, Integer> Nat = TypeCase.of(Expr.Nat.class, (e -> e.val));
         Case2<Expr, Expr, Expr, Expr> Add = TypeCase.of(Expr.Add.class, (e -> e.left), (e -> e.right));

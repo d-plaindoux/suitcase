@@ -35,7 +35,7 @@ public class PeanoMatcherTest {
 
         Matcher<Integer, Boolean> isZero = Matcher.create();
 
-        isZero.caseOf(Zero).then(true);
+        isZero.caseOf(Zero()).then(true);
         isZero.caseOf(Succ(Any())).then(false);
 
         TestCase.assertEquals((boolean) isZero.match(0), true);

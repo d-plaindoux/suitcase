@@ -18,6 +18,7 @@
 
 package org.smallibs.suitcase.cases;
 
+import org.smallibs.suitcase.cases.Case.WithoutCapture;
 import org.smallibs.suitcase.cases.core.Case0;
 import org.smallibs.suitcase.cases.core.Case1;
 
@@ -27,22 +28,28 @@ import static org.smallibs.suitcase.cases.core.Cases.Constant;
 
 public class PeanoTest {
 
-    public static Case.WithoutCapture<Integer, Integer> Zero =
-            new Case0<Integer, Integer>(
-                    p -> p == 0 ? Optional.of(0) : Optional.empty()
-            ).$();
+    /* Generic patterns */
 
-    public static Case1<Integer, Integer, Integer> Succ =
-            new Case1<>(
-                    p -> p > 0 ? Optional.of(p) : Optional.empty(),
-                    p -> p - 1
-            );
+    public static Case0<Integer, Integer> Zero = new Case0<Integer, Integer>(
+            p -> p == 0 ? Optional.of(0) : Optional.empty()
+    );
 
-    public static Case.WithoutCapture<Integer, Integer> Succ(int i) {
-        return Succ(Constant(i));
+    public static Case1<Integer, Integer, Integer> Succ = new Case1<>(
+            p -> p > 0 ? Optional.of(p) : Optional.empty(),
+            p -> p - 1
+    );
+
+    /* Specific patterns */
+
+    public static WithoutCapture<Integer, Integer> Zero() {
+        return Zero.$();
     }
 
-    public static <C> Case.WithoutCapture<Integer, C> Succ(Case.WithoutCapture<Integer, C> aCase) {
+    public static WithoutCapture<Integer, Integer> Succ(int i) {
+        return Succ.$(Constant(i));
+    }
+
+    public static <C> WithoutCapture<Integer, C> Succ(WithoutCapture<Integer, C> aCase) {
         return Succ.$(aCase);
     }
 
