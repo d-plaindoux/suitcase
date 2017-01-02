@@ -1,9 +1,8 @@
 # SuitCase 
 
-### <span style="color:red">Deep review in progress in order to enable strong type checking</span>
-
 [![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) 
 [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
+[![Maven Central](https://img.shields.io/maven-central/v/org.smallibs/suitcase.svg)](http://search.maven.org/#artifactdetails%7Corg.smallibs%7Csuitcase%7C0.3%7Cjar)
 [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 
 SuitCase is a convenient Java library dedicated to object manipulation using `pattern matching` mechanism.
@@ -33,16 +32,11 @@ isZero.caseOf(Any()).then(false);
 isZero.match(0); // == true
 ```
 
-## Regexp, XML, List Patterns and more ...
+## Regexp, List Patterns and more ...
 
 More information and descriptions are given in the [Wiki](https://github.com/d-plaindoux/suitcase/wiki) and in 
 particular ad-hoc case is explained with practical implementations covering matching for lists, string regular 
 expression, XML etc.
-
-See also:
-
-* [Core Pattern Matching](https://github.com/d-plaindoux/suitcase/wiki#core-pattern-matching)
-* [Generic Parser](https://github.com/d-plaindoux/suitcase/wiki#generic-parser)
 
 ## Releases
 
@@ -53,13 +47,14 @@ dependency to your pom project.
 <dependency>
   <groupId>org.smallibs</groupId>
   <artifactId>suitcase</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
 </dependency>
 ```
 
-## Dependencies
+## Presentation
 
-* Google JSON 2.2.4
+A [presentation (in french)](http://www.slideshare.net/dplaindoux/java-amp-le-pattern-matching-54806648) has been given 
+during a [Toulouse Java User Group](http://toulousejug.org) session.
 
 ## Other Propositions & Discussions
    
