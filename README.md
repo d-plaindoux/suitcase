@@ -1,7 +1,7 @@
 # SuitCase 
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a18ca2b92f16401fba1c6c80909af250)](https://app.codacy.com/manual/d-plaindoux/suitcase?utm_source=github.com&utm_medium=referral&utm_content=d-plaindoux/suitcase&utm_campaign=Badge_Grade_Dashboard)
-[![Build Status](https://travis-ci.org/d-plaindoux/suitcase.svg?branch=master)](https://travis-ci.org/d-plaindoux/suitcase) 
+Note: With Java 21+ this project is finally obsolete!
+
 [![Coverage Status](https://coveralls.io/repos/d-plaindoux/suitcase/badge.png)](https://coveralls.io/r/d-plaindoux/suitcase)
 [![Maven Central](https://img.shields.io/maven-central/v/org.smallibs/suitcase.svg)](http://search.maven.org/#artifactdetails%7Corg.smallibs%7Csuitcase%7C0.3%7Cjar)
 [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
